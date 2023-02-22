@@ -23,7 +23,7 @@ export default function Table(props){
 
             list.push(
                 <div>
-                    <span className='street'>{s.name}</span>
+                    <span className='street'>{s.name}</span>&nbsp;
                     {
                          c.map((x) => {
                             return (<img className='actionscard' src={"./images/c" + x + ".png"}/>)
@@ -33,27 +33,26 @@ export default function Table(props){
                     }
                 </div>
             );  
-            
-/*
-                        if(s.cards_dealt !== null){
-                            let c = s?.cards_dealt?.replace("[","")?.replace("]","")?.split(" ");
-                            c.map((x) => (<img className='holecard' src={"./images/c" + x + ".png"}/>))
-                        }
-*/
 
-              s?.handequities?.forEach(e => {
-                list.push(
-                  <div><span className='equities'>{e.player + " W: " + e.win + ", T: " + e.tie}</span></div>
-                );
-            })
+            if(s?.handequities?.length>0){
+                list.push(<div><span className='equitiestitle'>{s.name} ODDS: </span></div>);
+                s.handequities.forEach(e => {
+                    list.push(
+                        <div><span className='equities'>{e.player + " W: " + e.win + ", T: " + e.tie}</span></div>
+                    );
+                })
+            }
 
-            s?.actions?.forEach(a => {
-                var amt ="";
-                if(a.amount != 0) amt = a.amount;
-                list.push(
-                  <div><span className='actions'>{a.player + " " + a.action + " " + amt}</span></div>
-                );
-            })
+            if(s?.actions?.length>0){
+                list.push(<div><span className='equitiestitle'>{s.name} ACTION: </span></div>);                
+                s.actions.forEach(a => {
+                    var amt ="";
+                    if(a.amount != 0) amt = a.amount;
+                    list.push(
+                      <div><span className='actions'>{a.player + " " + a.action + " " + amt}</span></div>
+                    );
+                })
+            }
         });
 
         return list;
@@ -107,7 +106,14 @@ export default function Table(props){
             <tr>
                 <td><Seat hand={o} seatid={9} class=""/></td>
                 <td rowSpan="4">
-                    <div className='scroll'>{getActions(o)}</div>
+                    <div className='pokertable'>{getActions(o)}</div>
+                    {/* <table className='pokertableboard'>
+                        <tr>
+                            <td>
+                                <div className='scroll'>{getActions(o)}</div>
+                            </td>
+                        </tr>
+                    </table> */}
                 </td>
                 <td><Seat hand={o} seatid={1} /></td>
             </tr>

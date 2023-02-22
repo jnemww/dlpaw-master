@@ -13,22 +13,40 @@ code {
 }
 
 div.scroll {
-  /* background-color: #fed9ff; */
-  height: 100%;
-  
+  height: 100%;  
   text-align: left;
   padding: 20px;
-
-
   overflow-y:auto;
   scrollbar-width: none;
+  margin: 0 auto;
 }
+div.pokertable{
+  border-start-start-radius: 10px 10px;
+  border-start-end-radius: 10px 10px;
+  border-end-end-radius: 10px 10px;
+  border-end-start-radius: 10px 10px;
+  border-color: brown;
+  border: 2px solid;
+  text-align: left;
+  height: 100%;
+  width: 100%;
+  overflow-y:auto;
+  /* scrollbar-width: none; */
+  margin: 150px auto;
 
+}
 td.numeric{
   text-align: right;
   padding: 2px;
 }
-
+td.rightborder{
+  text-align: center;
+  border-right: 1px solid;
+}
+td.leftborder{
+  text-align: center;
+  border-right: 1px solid;
+}
 td.text{
   text-align: left;
   padding: 2px;
@@ -44,10 +62,14 @@ table.pokertable{
   text-align: center;
   height: 100%;
   width: 100%;
+  overflow-y:auto;
+  scrollbar-width: none;
+  margin: 0 auto;
+
 }
 
 table.pokertableseat{
-  width: 100px;
+  width: 90px;
   height: 75;
   border: 2px;
   border-start-start-radius: 10px 10px;
@@ -65,7 +87,7 @@ table.pokertableseat{
   margin: 0 auto;
 }
 table.pokertableseatbutton{
-  width: 100px;
+  width: 90px;
   height: 75;
   border: 2px;
   border-start-start-radius: 10px 10px;
@@ -200,11 +222,24 @@ span.street{
   text-align: left;
   color: darkblue;
   font-weight: bold;
-  font-size: 16pt;
+  font-size: 12pt;
   text-decoration: underline;
   font-family: serif;
 }
+span.actionstitle{
+  text-align: left;
+  color: white;
+  font-size: 12pt;
+  font-family: serif;
+}
 span.actions{
+  text-align: left;
+  color: white;
+  font-size: 12pt;
+  font-family: serif;
+  margin-left: 20px;
+}
+span.equitiestitle{
   text-align: left;
   color: white;
   font-size: 12pt;
@@ -215,6 +250,7 @@ span.equities{
   color: white;
   font-size: 12pt;
   font-family: serif;
+  margin-left: 20px;
 }
 td.seat{
   background-color: white;
@@ -256,4 +292,7 @@ tr.datatablegrey{
 }
 tr.datatablewhite{
   background-color: white;
+}
+p.tab {
+   margin-left: 20px; 
 }

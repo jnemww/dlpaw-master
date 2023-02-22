@@ -140,11 +140,11 @@ export default function Params(){
             <div>
                 <table className='menu'>
                     <tr>
-                        <td onClick={()=>setScreen(SCREEN.Table)}>Game Review</td>
-                        <td onClick={()=>setScreen(SCREEN.Standings)}>Standings</td>
-                        <td onClick={()=>setScreen(SCREEN.Frequency)}>Frequencies</td>
-                        <td onClick={()=>setScreen(SCREEN.ProfitSummary)}>Profit Summary</td>
-                        <td onClick={()=>setScreen(SCREEN.HandQuery)}>Find Hands</td>
+                        <td className='rightborder' onClick={()=>setScreen(SCREEN.Table)}>Game Review</td>
+                        <td className='rightborder' onClick={()=>setScreen(SCREEN.Standings)}>Standings</td>
+                        <td className='rightborder' onClick={()=>setScreen(SCREEN.Frequency)}>Frequencies</td>
+                        <td className='rightborder' onClick={()=>setScreen(SCREEN.ProfitSummary)}>Profit Summary</td>
+                        <td className='rightborder' onClick={()=>setScreen(SCREEN.HandQuery)}>Find Hands</td>
                     </tr>
                 </table>
             </div>
