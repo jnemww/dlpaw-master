@@ -26,7 +26,7 @@ export default function Table(props){
                     <span className='street'>{s.name}</span>&nbsp;
                     {
                          c.map((x) => {
-                            return (<img className='actionscard' src={"./images/c" + x + ".png"}/>)
+                            return (<img className='actionscard' src={"./images/c" + x.toLowerCase() + ".png"}/>)
 
 
                         })
@@ -78,7 +78,7 @@ export default function Table(props){
                                     <tr>
                                         <td>
                                             {
-                                                o?.summary?.board.split(" ").map((x) => (<img className='boardcard' src={"./images/c" + x + ".png"}/>))
+                                                o?.summary?.board.split(" ").map((x) => (<img className='boardcard' src={"./images/c" + x.toLowerCase() + ".png"}/>))
                                             }
                                         </td>
                                     </tr>
@@ -92,7 +92,7 @@ export default function Table(props){
                                     <tr>
                                         <td>
                                             {
-                                                o?.summary?.rabbit.split(" ").map((x) => (<img className='rabbitcard' src={"./images/c" + x + ".png"}/>))
+                                                o?.summary?.rabbit.split(" ").map((x) => (<img className='rabbitcard' src={"./images/c" + x.toLowerCase() + ".png"}/>))
                                             }
                                         </td>
                                     </tr>

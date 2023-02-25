@@ -52,9 +52,9 @@ export default function Seat({hand, seatid}){
         </tr> */}
         <tr>
           <td>
-            <img className='holecard' src={"./images/c" + p.holecards.split(" ")[0] +  ".png"} />
+            <img className='holecard' src={"./images/c" + p.holecards.split(" ")[0].toLowerCase() +  ".png"} />
             &nbsp;
-            <img className='holecard' src={"./images/c" + p.holecards.split(" ")[1] +  ".png"} />
+            <img className='holecard' src={"./images/c" + p.holecards.split(" ")[1].toLowerCase() +  ".png"} />
           </td>
         </tr>
       </table>
