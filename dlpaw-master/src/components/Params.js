@@ -1,15 +1,19 @@
 import Enumerable from 'linq';
-import React, { useEffect, useState, useFetch } from 'react';
+import React, { useEffect, useState, useFetch, useSyncExternalStore } from 'react';
 import ProfitSummary from './ProfitSummary';
 import Standings from './Standings';
 import PlayFrequencies from './PlayFrequencies';
 import HandQuery from './HandQuery';
 import Table from './Table';
+import Login from './Login';
 import Enums, { SCREEN } from '../enums'
 import styled, { keyframes } from "styled-components";
 import { LoadingSpinner } from "./Spinner";
+import GameScheduler from './GameScheduler';
 
 export default function Params(){
+    const [user, setUser] = useState();
+    const [tokens, setTokens] = useState();
     const [processing, setProcessing] = useState(false);
     const [seasons, setSeasons] = useState();
     const [seasonitems, setSeasonitems] = useState();
@@ -132,83 +136,105 @@ export default function Params(){
 
     return(
         <div>
-            {processing && //[FETCH_STATE.LOADING, FETCH_STATE.IDLE].includes(fetchState) 
+            {!user &&
+                <div>
+                    <Login setUser={setUser} setTokens={setTokens} />
+                </div>
+            }
+            {   user &&
+                processing && 
                 <div>
                     <LoadingSpinner />
                 </div>
             }
-            <div>
-                <table className='menu'>
-                    <tr>
-                        <td className='rightborder' onClick={()=>setScreen(SCREEN.Table)}>Game Review</td>
-                        <td className='rightborder' onClick={()=>setScreen(SCREEN.Standings)}>Standings</td>
-                        <td className='rightborder' onClick={()=>setScreen(SCREEN.Frequency)}>Frequencies</td>
-                        <td className='rightborder' onClick={()=>setScreen(SCREEN.ProfitSummary)}>Profit Summary</td>
-                        <td className='rightborder' onClick={()=>setScreen(SCREEN.HandQuery)}>Find Hands</td>
-                    </tr>
-                </table>
-            </div>
-            <div>&nbsp;</div>
-            <div>
-                <table className='pokertableboard'>
-                    <tr>
-                        <td>
-                        {screen}: {selectedseason}, Game: {selectedgame}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                        <select onChange={(e) => {setSelectedseason(e.target.value); getGames(e.target.value);}}>{seasonitems}</select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                        <select onChange={(e) => setSelectedgame(e.target.value)}>{gameitems}</select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <button onClick={ScrollBack}>&lt;&lt;</button>
-                        {/* {React.createElement('button', {onClick: () => {if(document.getElementById('selhand').selectedIndex > 1) document.getElementById('selhand').selectedIndex -=1; setSelectedhand(document.getElementById('selhand').value)}}, "<<")} */}
-                        <select id="selhand" onChange={(e) => setSelectedhand(e.target.value)}>{handitems}</select>
-                        {/* {React.createElement('button', {onClick: () => {if(document.getElementById('selhand').selectedIndex < document.getElementById('selhand').length-1) document.getElementById('selhand').selectedIndex +=1; setSelectedhand(document.getElementById('selhand').value)}}, ">>")} */}
-                        <button onClick={ScrollFwd}>&gt;&gt;</button>
-                        </td>
-                    </tr>
-                </table>
-            </div>
-            <div>&nbsp;</div>
-            <div>
-                {screen === SCREEN.Table &&
+            {   user &&
+                <div>
                     <div>
-                        {selectedhand && <Table currenthand={selectedhand} />}
+                        <table className='menu'>
+                            <tr>
+                                <td className='rightborder' onClick={()=>setScreen(SCREEN.Table)}>Game Review</td>
+                                <td className='rightborder' onClick={()=>setScreen(SCREEN.Standings)}>Standings</td>
+                                <td className='rightborder' onClick={()=>setScreen(SCREEN.Frequency)}>Frequencies</td>
+                                <td className='rightborder' onClick={()=>setScreen(SCREEN.ProfitSummary)}>Profit Summary</td>
+                            </tr>
+                            <tr>
+                                <td className='rightborder' onClick={()=>setScreen(SCREEN.HandQuery)}>Find Hands</td>
+                                <td className='rightborder' onClick={()=>setScreen(SCREEN.GameScheduler)}>Schedule</td>
+                                <td className='rightborder'></td>
+                                <td className='rightborder'>{user}</td>
+                            </tr>
+                        </table>
                     </div>
-                }
-                {screen === SCREEN.ProfitSummary &&
+                    <div>&nbsp;</div>
                     <div>
-                        <ProfitSummary gamedata={selectedgamedata} status={setProcessing} setQueryhanditems={setQueryhanditems} />
-                        {queryhanditems && <Table currenthand={selectedhand} />}
+                        <table className='pokertableboard'>
+                            <tr>
+                                <td>
+                                {screen}: {selectedseason}, Game: {selectedgame}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                <select onChange={(e) => {setSelectedseason(e.target.value); getGames(e.target.value);}}>{seasonitems}</select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                <select onChange={(e) => setSelectedgame(e.target.value)}>{gameitems}</select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <button onClick={ScrollBack}>&lt;&lt;</button>
+                                {/* {React.createElement('button', {onClick: () => {if(document.getElementById('selhand').selectedIndex > 1) document.getElementById('selhand').selectedIndex -=1; setSelectedhand(document.getElementById('selhand').value)}}, "<<")} */}
+                                <select id="selhand" onChange={(e) => setSelectedhand(e.target.value)}>{handitems}</select>
+                                {/* {React.createElement('button', {onClick: () => {if(document.getElementById('selhand').selectedIndex < document.getElementById('selhand').length-1) document.getElementById('selhand').selectedIndex +=1; setSelectedhand(document.getElementById('selhand').value)}}, ">>")} */}
+                                <button onClick={ScrollFwd}>&gt;&gt;</button>
+                                </td>
+                            </tr>
+                        </table>
                     </div>
-                }
-                {screen === SCREEN.Standings &&
-                    <div>
-                        <button onClick={getSeasonGameData}>Get Standings</button>
-                        {seasongamedata && <Standings games={seasongamedata} status={setProcessing} />}
+                    <div>&nbsp;</div>
+                    <div className='splashscreen'>
+                        {screen === SCREEN.Table &&
+                            <div>
+                                {selectedhand && <Table currenthand={selectedhand} />}
+                            </div>
+                        }
+                        {screen === SCREEN.ProfitSummary &&
+                            <div>
+                            Click on hand type description to drill into individual hands for the group.
+                                <ProfitSummary gamedata={selectedgamedata} status={setProcessing} setQueryhanditems={setQueryhanditems} /> 
+                                {queryhanditems && <Table currenthand={selectedhand} />}
+                            </div>
+                        }
+                        {screen === SCREEN.Standings &&
+                            <div>
+                                <button onClick={getSeasonGameData}>Get Standings</button> Click on player for individual results.
+                                {seasongamedata && <Standings games={seasongamedata} status={setProcessing} />}
+                            </div>
+                        }
+                        {screen === SCREEN.Frequency &&
+                            <div>
+                                {/* <button onClick={getSeasonGameData}>Play Frequencies</button> */}
+                                {selectedgamedata && <PlayFrequencies gamedata={selectedgamedata} status={setProcessing} />}
+                            </div>
+                        }
+                        {screen === SCREEN.HandQuery &&
+                            <div>
+                                {selectedgamedata && <HandQuery gamedata={selectedgamedata} setQueryhanditems={setQueryhanditems} />}
+                                {queryhanditems && <Table currenthand={selectedhand} />}
+                            </div>
+                        }
+                        {screen === SCREEN.GameScheduler &&
+                            <div>
+                                <GameScheduler username={user} />
+                            </div>
+                        }
                     </div>
-                }
-                {screen === SCREEN.Frequency &&
-                    <div>
-                        {/* <button onClick={getSeasonGameData}>Play Frequencies</button> */}
-                        {selectedgamedata && <PlayFrequencies gamedata={selectedgamedata} status={setProcessing} />}
-                    </div>
-                }
-                {screen === SCREEN.HandQuery &&
-                    <div>
-                        {selectedgamedata && <HandQuery gamedata={selectedgamedata} setQueryhanditems={setQueryhanditems} />}
-                        {queryhanditems && <Table currenthand={selectedhand} />}
-                    </div>
-                }
-            </div>
+                </div>
+            }
+            
 
         </div>
     );

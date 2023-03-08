@@ -4,6 +4,7 @@ export const SCREEN = {
     Table: "Table",
     ProfitSummary: "Profit Summary",
     Standings: "Standings",
-    HandQuery: "Query"
+    HandQuery: "Query",
+    GameScheduler: "Schedule"
 };
 

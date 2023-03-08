@@ -11,7 +11,45 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
-
+div.login{
+  height: 500px;
+  width: 500px;
+}
+table.login{
+  background-image: url("../public/images/donkey_button.png");
+  background-size: 450px 450px;
+  background-position-x: center;
+  background-position-y: center;
+  background-blend-mode: lighten;
+  background-repeat: no-repeat;
+  vertical-align: middle;
+  height: 600px;
+  width: 100%;
+  border: 2px;
+  border-start-start-radius: 5px 5px;
+  border-start-end-radius: 5px 5px;
+  border-end-end-radius: 5px 5px;
+  border-end-start-radius: 5px 5px;
+  border-style: solid;
+  padding: 30px;
+  height: 20;
+  margin: 15px auto;
+}
+div.splashscreen{
+  background-image: url("../public/images/donkey_button.png");
+  background-size: 1200px 1200px;
+  background-position-x: center;
+  background-position-y: center;
+  background-blend-mode: lighten;
+  background-repeat: no-repeat;
+  border: 1px solid;
+  text-align: center;
+  height: 100%;
+  width: 100%;
+  overflow-y:auto;
+  scrollbar-width: none;
+  margin: 0 auto;
+}
 div.scroll {
   height: 100%;  
   text-align: left;
@@ -41,6 +79,7 @@ td.numeric{
 td.rightborder{
   text-align: center;
   border-right: 1px solid;
+  border-bottom: 1px solid;
 }
 td.leftborder{
   text-align: center;
@@ -52,12 +91,12 @@ td.text{
 }
 
 table.pokertable{
-  background-image: url("../public/images/donkey_button.png");
+  /* background-image: url("../public/images/donkey_button.png");
   background-size: 800px 800px;
   background-position-x: center;
   background-position-y: center;
   background-blend-mode: lighten;
-  background-repeat: no-repeat;
+  background-repeat: no-repeat; */
   border: 1px solid;
   text-align: center;
   height: 100%;
@@ -111,6 +150,8 @@ table.centercontent{
 table.menu{
   width: 100%;
   border: 1px solid;
+  border-top: 1px solid;
+  border-bottom: 1px solid;
 }
 table.pokertableboard{
   height: 75;
