@@ -2,22 +2,24 @@ import Enumerable from 'linq';
 import React, { useEffect, useState, useFetch, useSyncExternalStore } from 'react';
 import styled, { keyframes } from "styled-components";
 import { LoadingSpinner } from "./Spinner";
+import DataTable from './DataTable';
 
 export default function GameScheduler({username}){
     const [user, setUser] = useState(username);
     const [tokens, setTokens] = useState();
     const [processing, setProcessing] = useState(false);
     const [savestatus, setSavestatus] = useState();
+    const [schedules, setSchedules] = useState();
     const [schedule, setSchedule] = useState({
                                                 Player: user,
                                                 StartofWeek: null,
-                                                Days: [ {Play: 0, StartTime: 9},
-                                                        {Play: 0, StartTime: 9},
-                                                        {Play: 0, StartTime: 9},
-                                                        {Play: 0, StartTime: 9},
-                                                        {Play: 0, StartTime: 9},
-                                                        {Play: 0, StartTime: 9},
-                                                        {Play: 0, StartTime: 9}
+                                                Days: [ {Day: "Sunday", Play: 0, StartTime: 9},
+                                                        {Day: "Monday", Play: 0, StartTime: 9},
+                                                        {Day: "Tuesday", Play: 0, StartTime: 9},
+                                                        {Day: "Wednesday", Play: 0, StartTime: 9},
+                                                        {Day: "Thursday", Play: 0, StartTime: 9},
+                                                        {Day: "Friday", Play: 0, StartTime: 9},
+                                                        {Day: "Saturday", Play: 0, StartTime: 9}
                                                     ]
                                             });
     const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -53,7 +55,7 @@ function getWeeks(){
         }else{
             dtnext.setDate(dtnext.getDate() + 7);
         }
-        list.push(<option value={dtnext.toLocaleDateString()}>{dtnext.toLocaleDateString()}</option>)
+        list.push(<option value={dtnext.toISOString().substring(0,10).replaceAll("-","")}>{dtnext.toLocaleDateString()}</option>)
     }
     return list;
 }
@@ -91,6 +93,55 @@ async function saveSchedule(){
         });
 }
 
+async function getSchedule(){
+    //console.log("user auth attempt: " + localuser)
+    if(schedule.StartofWeek == null){
+        setSavestatus("Select a week date before saving.");
+        return;
+    }
+
+    var f = await fetch("http://192.168.1.155:3000/schedules/donkleague/" + schedule.StartofWeek,
+        {
+            method: "GET",
+            mode: "cors"
+        })
+        .then(res => {
+            if(res.status !== 200) bposterror = true;
+            return res.json();
+        })
+        // .then(data => {
+        //     setSavestatus(data.message);
+        //     if(bposterror){
+                
+        //     }else{
+        //         //console.log("user: " + localuser + ", pwd: " + localpassword)
+        //         console.log(data);
+        //     }
+        // })
+        .catch(error => {
+            setSavestatus(error.toString());
+            console.log(error.toString());
+        });
+
+        let r = Enumerable.from(f)
+            .selectMany(d => d.Days)
+            //.where(s => s.Play == 1)
+            .groupBy(d => d.Day)
+            .orderBy(o => days.indexOf(o.first().Day))
+            .select(z => ({ Day : z.first().Day, 
+                            Available : z.sum(s => (s.Play==1?1:0)), 
+                            Earliest : z.min(t => t.StartTime), 
+                            Latest : z.max(t => t.StartTime) }))
+            .toArray();
+
+        // let r = Enumerable.from(f)
+        //     .select(r => ({ Player : r.Player, StartofWeek : r.StartofWeek }))
+        //     .toArray();
+
+        setSchedules(r);
+        console.dir(f);
+}
+
     return(
         <div>        
             {   user &&
@@ -112,7 +163,7 @@ async function saveSchedule(){
                                 }
                                 return (    <tr key={i}>
                                                 <td>
-                                                    {days[i]}
+                                                    {schedule.Days[i].Day}
                                                 </td>
                                                 <td>
                                                     <select key={i} onChange={(e) => handleChange(e.target.value, i, UPDATE_TYPE.Availability)}>
@@ -140,6 +191,23 @@ async function saveSchedule(){
                             <tr>
                                 <td colSpan={3}>
                                     <button onClick={saveSchedule}>Save Schedule</button>
+                                </td>
+                            </tr><tr>
+                                <td colSpan={3}>
+                                    <button onClick={getSchedule}>View Schedule</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colSpan={3}>
+                                    <div>
+                                        {schedules && 
+                                            <DataTable  tbodyData={schedules} 
+                                                        rowclasses={["datatablegrey","datatablewhite"]} 
+                                                        classes={["text", "numeric", "numeric", "numeric"]}
+                                                        functions={[,,,]}
+                                            />
+                                        }
+                                    </div>
                                 </td>
                             </tr>
                         </table>
