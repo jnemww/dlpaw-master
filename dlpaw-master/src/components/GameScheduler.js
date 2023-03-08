@@ -7,11 +7,10 @@ export default function GameScheduler({username}){
     const [user, setUser] = useState(username);
     const [tokens, setTokens] = useState();
     const [processing, setProcessing] = useState(false);
-    const [weekstarting, setWeekestarting] = useState();
     const [savestatus, setSavestatus] = useState();
     const [schedule, setSchedule] = useState({
                                                 Player: user,
-                                                StartofWeek: weekstarting,
+                                                StartofWeek: null,
                                                 Days: [ {Play: 0, StartTime: 9},
                                                         {Play: 0, StartTime: 9},
                                                         {Play: 0, StartTime: 9},
@@ -22,33 +21,24 @@ export default function GameScheduler({username}){
                                                     ]
                                             });
     const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    const UPDATE_TYPE = {Availability: "A", StartofWeek: "D", StartTime: "T"};
     let bposterror = false;
 
-    useEffect(()=>{ 
+    useEffect(()=>{
+        setSavestatus("");
         //console.log("Screen Change: " + screen);        
-    },[]);
+    },[schedule]);//, weekstarting
 
-    const handlePlayChange = (e, i) => {
+    const handleChange = (e, i, t) => {
         let updatedValue = schedule;
-        updatedValue.StartofWeek = weekstarting;
-        updatedValue.Days[i].Play = (e=="Yes")?1:0;
+        if(t == UPDATE_TYPE.StartofWeek ) updatedValue.StartofWeek = e;
+        if(t == UPDATE_TYPE.Availability ) updatedValue.Days[i].Play = (e=="Yes")?1:0;
+        if(t == UPDATE_TYPE.StartTime ) updatedValue.Days[i].StartTime = +e;
         setSchedule(ns => ({
              ...ns,
              ...updatedValue
            }));
         console.dir(schedule);
-    }
-
-    const handleTimeChange = (e, i) => {
-        let updatedValue = schedule;
-        updatedValue.StartofWeek = weekstarting;
-        updatedValue.Days[i].StartTime = +e;
-        setSchedule(ns => ({
-             ...ns,
-             ...updatedValue
-           }));
-           console.dir(schedule);
-           console.log(JSON.stringify(schedule));
     }
 
 function getWeeks(){
@@ -70,7 +60,7 @@ function getWeeks(){
 
 async function saveSchedule(){
     //console.log("user auth attempt: " + localuser)
-    if(weekstarting == null || weekstarting == undefined){
+    if(schedule.StartofWeek == null){
         setSavestatus("Select a week date before saving.");
         return;
     }
@@ -110,7 +100,7 @@ async function saveSchedule(){
                             <tr>
                                 <td>Week of:</td>
                                 <td colSpan={2}>
-                                    <select onChange={(e) => {setWeekestarting(e.target.value);}}>
+                                    <select onChange={(e) => handleChange(e.target.value, 1, UPDATE_TYPE.StartofWeek)}>
                                         {getWeeks()}
                                     </select>
                                 </td>
@@ -125,14 +115,14 @@ async function saveSchedule(){
                                                     {days[i]}
                                                 </td>
                                                 <td>
-                                                    <select key={i} onChange={(e) => handlePlayChange(e.target.value, i)}>
+                                                    <select key={i} onChange={(e) => handleChange(e.target.value, i, UPDATE_TYPE.Availability)}>
                                                         <option>No</option>
                                                         <option>Yes</option>
                                                     </select>
                                                 </td>
 
                                                 <td>
-                                                    <select key={i} onChange={(e) => handleTimeChange(e.target.value, i)}>
+                                                    <select key={i} onChange={(e) => handleChange(e.target.value, i, UPDATE_TYPE.StartTime)}>
                                                         <option value="0">Flexible</option>
                                                         <option value="11">11pm</option>
                                                         <option value="10">10pm</option>
