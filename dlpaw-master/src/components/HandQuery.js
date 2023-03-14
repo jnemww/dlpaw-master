@@ -77,9 +77,10 @@ export default function HandQuery({gamedata, setQueryhanditems}){
         <div>
             <div>
                 <div>
+                    <br/>
                     <table className='pokertableboard'>
                         <tr>
-                            <td colSpan={2}>Params</td>
+                            <td colSpan={2}><span className='actions'>Search Parameters</span></td>
                         </tr>
                         <tr>
                             <td>
@@ -89,7 +90,7 @@ export default function HandQuery({gamedata, setQueryhanditems}){
                             </td>
                         </tr>
                         <tr>
-                            <td colSpan={2}>Select Holecards:</td>
+                            <td colSpan={2}><span className='actions'>Select Holecards:</span></td>
                         </tr>
                         <tr>
                             <td>

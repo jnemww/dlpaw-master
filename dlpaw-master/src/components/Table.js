@@ -2,14 +2,16 @@ import Enumerable from 'linq';
 import React, { useEffect, useState } from 'react';
 import Seat from './Seat';
 
-export default function Table(props){
-
-    console.log("Table loading...");
+export default function Table({currenthand}){
 
     let o = {};
-    if(props.currenthand !== undefined){
-        o = JSON.parse(props.currenthand);
+    if(currenthand !== undefined){
+        o = JSON.parse(currenthand);
     }
+    
+    useEffect(()=>{
+        
+    },);
 
     function getActions(o){
         var list = [];
@@ -107,13 +109,6 @@ export default function Table(props){
                 <td><Seat hand={o} seatid={9} class=""/></td>
                 <td rowSpan="4">
                     <div className='pokertable'>{getActions(o)}</div>
-                    {/* <table className='pokertableboard'>
-                        <tr>
-                            <td>
-                                <div className='scroll'>{getActions(o)}</div>
-                            </td>
-                        </tr>
-                    </table> */}
                 </td>
                 <td><Seat hand={o} seatid={1} /></td>
             </tr>

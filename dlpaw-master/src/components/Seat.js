@@ -10,7 +10,14 @@ export default function Seat({hand, seatid}){
       .toArray()[0];
   
     if(s == null){
-      return "Open";
+      return (  <table className='pokertableopenseat'>
+                  <tr>
+                    <td>
+                      <p>seat {seatid}</p>
+                      <p>open</p>
+                    </td>
+                  </tr>
+                </table>);
     }
   
     var p = Enumerable.from(hand.summary.playerinfo)
@@ -47,9 +54,6 @@ export default function Seat({hand, seatid}){
         <tr>
           <td className={isProfit()}>{p.profit.toLocaleString()}</td>
         </tr>
-        {/* <tr>
-          <td>{p.holecards}</td>
-        </tr> */}
         <tr>
           <td>
             <img className='holecard' src={"./images/c" + p.holecards.split(" ")[0].toLowerCase() +  ".png"} />

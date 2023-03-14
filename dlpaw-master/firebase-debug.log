@@ -1,0 +1,35 @@
+[debug] [2023-03-14T07:35:53.407Z] ----------------------------------------------------------------------
+[debug] [2023-03-14T07:35:53.411Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\joseph\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js deploy
+[debug] [2023-03-14T07:35:53.412Z] CLI Version:   11.24.1
+[debug] [2023-03-14T07:35:53.412Z] Platform:      win32
+[debug] [2023-03-14T07:35:53.412Z] Node Version:  v16.16.0
+[debug] [2023-03-14T07:35:53.414Z] Time:          Tue Mar 14 2023 03:35:53 GMT-0400 (Eastern Daylight Time)
+[debug] [2023-03-14T07:35:53.415Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2023-03-14T07:35:53.560Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2023-03-14T07:35:53.561Z] > authorizing via signed-in user (josephnemeth1@gmail.com)
+[debug] [2023-03-14T07:35:53.561Z] [iam] checking project donkleague-7d178 for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2023-03-14T07:35:53.564Z] > refreshing access token with scopes: []
+[debug] [2023-03-14T07:35:53.568Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2023-03-14T07:35:53.568Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2023-03-14T07:35:53.776Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2023-03-14T07:35:53.776Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2023-03-14T07:35:53.798Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/donkleague-7d178:testIamPermissions [none]
+[debug] [2023-03-14T07:35:53.798Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/donkleague-7d178:testIamPermissions x-goog-quota-user=projects/donkleague-7d178
+[debug] [2023-03-14T07:35:53.799Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/donkleague-7d178:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2023-03-14T07:35:54.048Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/donkleague-7d178:testIamPermissions 200
+[debug] [2023-03-14T07:35:54.048Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/donkleague-7d178:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2023-03-14T07:35:54.050Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/donkleague-7d178 [none]
+[debug] [2023-03-14T07:35:54.422Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/donkleague-7d178 200
+[debug] [2023-03-14T07:35:54.422Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/donkleague-7d178 {"projectId":"donkleague-7d178","projectNumber":"454008325540","displayName":"donkleague","name":"projects/donkleague-7d178","resources":{"hostingSite":"donkleague-7d178","realtimeDatabaseInstance":"donkleague-7d178-default-rtdb"},"state":"ACTIVE","etag":"1_d94c396a-dbfd-4498-8684-b99eaedf0f95"}
+[info] 
+[info] === Deploying to 'donkleague-7d178'...
+[info] 
+[info] i  deploying hosting 
+[debug] [2023-03-14T07:35:54.433Z] >>> [apiv2][query] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/donkleague-7d178/versions [none]
+[debug] [2023-03-14T07:35:54.433Z] >>> [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/donkleague-7d178/versions {"status":"CREATED","labels":{"deployment-tool":"cli-firebase"}}
+[debug] [2023-03-14T07:35:55.250Z] <<< [apiv2][status] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/donkleague-7d178/versions 200
+[debug] [2023-03-14T07:35:55.250Z] <<< [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/donkleague-7d178/versions {"name":"projects/454008325540/sites/donkleague-7d178/versions/02bc91a42aa88d21","status":"CREATED","config":{},"labels":{"deployment-tool":"cli-firebase"}}
+[info] i  hosting[donkleague-7d178]: beginning deploy... 
+[info] i  hosting[donkleague-7d178]: found 72 files in build 
+[debug] [2023-03-14T07:35:55.297Z] [hosting] uploading with 200 concurrency

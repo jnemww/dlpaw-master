@@ -13,21 +13,21 @@ import SignIn from './Auth/SignIn';
 import AuthDetails from './Auth/AuthDetails';
 
 export default function Params(){
-    const [user, setUser] = useState();
-    const [tokens, setTokens] = useState();
+    const [user, setUser] = useState(null);
+    const [tokens, setTokens] = useState(null);
     const [processing, setProcessing] = useState(false);
-    const [seasons, setSeasons] = useState();
-    const [seasonitems, setSeasonitems] = useState();
-    const [gameitems, setGameitems] = useState();
-    const [handitems, setHanditems] = useState();
-    const [selectedgame, setSelectedgame] = useState();
-    const [selectedseason, setSelectedseason] = useState();
-    const [selectedgamedata, setSelectedgamedata] = useState();
-    const [selectedhand, setSelectedhand] = useState();
-    const [seasongamedata, setSeasongamedata] = useState();
-    const [screen, setScreen] = useState();
-    const [queryhanditems, setQueryhanditems] = useState();
-    const [token, setToken] = useState();
+    const [seasons, setSeasons] = useState(null);
+    const [seasonitems, setSeasonitems] = useState(null);
+    const [gameitems, setGameitems] = useState(null);
+    const [handitems, setHanditems] = useState(null);
+    const [selectedgame, setSelectedgame] = useState(null);
+    const [selectedseason, setSelectedseason] = useState(null);
+    const [selectedgamedata, setSelectedgamedata] = useState(null);
+    const [selectedhand, setSelectedhand] = useState(null);
+    const [seasongamedata, setSeasongamedata] = useState(null);
+    const [screen, setScreen] = useState(null);
+    const [queryhanditems, setQueryhanditems] = useState(null);
+    const [token, setToken] = useState(null);
     const pe = process.env;
     const league = pe.REACT_APP_LEAGUE;
     const seasonslisturl = pe.REACT_APP_SERVICE_URL + pe.REACT_APP_DS_URL_SEASONS_LIST;
@@ -40,70 +40,49 @@ export default function Params(){
     const sf = pe.REACT_APP_SPACE_FILLER;
 
 
-    console.log(pe.REACT_APP_DS_URL_SEASONS);
-
-    useEffect(()=>{ 
-        console.log("Screen Change: " + screen);        
-    },[screen]);
-
-    useEffect(()=>{ 
-        console.log("Processing: " + processing);        
-    },[processing]);
-
-    useEffect(()=>{ 
-        console.log("Processing query.");        
-    },[queryhanditems]);
-
+    //load seasons
     useEffect(()=>{
-        if(queryhanditems === undefined) return;
-        console.log("Processing query results.");        
-        let list = [];
-        list.push(<option value="">Select a Hand</option>)
-        queryhanditems.forEach(h => {
-            list.push(<option value={JSON.stringify(h)}>{h.handID + ": (" + h.blind_small  + "/" + h.blind_big + ")"}</option>)
-        });
-        setHanditems(list);
-        setSelectedhand(JSON.stringify(queryhanditems[0]));
-        setScreen(SCREEN.Table);
-    },[queryhanditems]);
+        if(token == null) 
+            return;
 
-    useEffect(()=>{
-
-        if(seasons == undefined){
             console.log("Mounting seasons...");
-            (async() => {
-                let url = seasonslisturl
-                    .replace(leaguetkn, league)
-                    .replaceAll(" ", sf);;
-                var res = await fetch(url, {
-                    headers: { 'Authorization': 'Bearer ' + token }
-                  });
-                var data = await res.json();
-                setSeasons(data);
-                
-                let list = [];
-                list.push(<option value="">Select a Season</option>)
-                data.forEach(s => {
-                    list.push(<option value={s.id}>{s.id}</option>)
-                });
-                setSeasonitems(list);
-            })();
-        }
-        setSelectedgame(null);//added 3/11/2023 3:27pm
-    },); //selectedseason
 
+        (async() => {
+            let url = seasonslisturl
+                .replace(leaguetkn, league)
+                .replaceAll(" ", sf);;
+            var res = await fetch(url, {
+                headers: { 'Authorization': 'Bearer ' + token }
+                });
+            var data = await res.json();
+            setSeasons(data);
+            
+            let list = [];
+            list.push(<option value="">Select a Season</option>)
+            data.forEach(s => {
+                list.push(<option value={s.id}>{s.id}</option>)
+            });
+            setSeasonitems(list);
+        })();
+
+        setHanditems(null);
+        setQueryhanditems(null);       
+        setSelectedgame(null);
+        setSelectedhand(null);
+    },[token]);
+
+    //selected new season, now get games
     useEffect(()=>{
-        if(selectedseason == undefined){
-            setSelectedgame(null);
+        if(selectedseason == null){
             return;
         }
-        
+
         (async() => {
             let url = gameslisturl.replace(leaguetkn, league)
                 .replace(seasontkn, selectedseason);
             let res = await fetch(url, {
                 headers: { 'Authorization': 'Bearer ' + token }
-              });
+            });
             let data = await res.json();
             
             let list = [];
@@ -113,13 +92,18 @@ export default function Params(){
             });
             setGameitems(list);
         })();
+
+        setQueryhanditems(null);
+        setHanditems(null);
+        setSelectedgame(null);
+        setSelectedhand(null);
     },[selectedseason]);
 
+    //selected new game, now get hands
     useEffect(()=>{ 
-        if(selectedseason == undefined || selectedgame == undefined){
-            if(selectedseason == null || selectedseason == undefined)
-                setSelectedgame(null);
-                return;
+        if(selectedseason == null || selectedgame == null){
+            setSelectedgame(null);
+            return;
         }
 
         (async() => {
@@ -131,8 +115,6 @@ export default function Params(){
                   });
                 let data = await res.json();
                 setSelectedgamedata(data);
-    
-                console.log({data});
                 
                 let list = [];
                 list.push(<option value="">Select a Hand</option>)
@@ -141,10 +123,23 @@ export default function Params(){
                 });
                 setHanditems(list);
             })();
-    },[selectedseason, selectedgame]);
+    },[selectedgame]);
+
+    useEffect(()=>{
+        if(queryhanditems == null) return;
+        console.log("Processing query results.");        
+        let list = [];
+        list.push(<option value="">Select a Hand</option>)
+        queryhanditems.forEach(h => {
+            list.push(<option value={JSON.stringify(h)}>{h.handID + ": (" + h.blind_small  + "/" + h.blind_big + ")"}</option>)
+        });
+        setHanditems(list);
+        setSelectedhand(JSON.stringify(queryhanditems[0]));
+        setScreen(SCREEN.Table);
+    },[queryhanditems]);
 
     function getSeasonGameData(){
-        if(selectedseason !== undefined){
+        if(selectedseason !== null){
             (async() => {
                 let url = allgamesurl.replace(leaguetkn, league)
                     .replace(seasontkn, selectedseason);
@@ -208,7 +203,7 @@ export default function Params(){
                         </table>
                     </div>
                     {/* <div>&nbsp;</div> */}
-                    {(screen === SCREEN.Frequency || 
+                    {(  screen === SCREEN.Frequency || 
                         screen === SCREEN.Table || 
                         screen === SCREEN.ProfitSummary ||
                         screen === SCREEN.Games ||
@@ -248,10 +243,11 @@ export default function Params(){
                             </div>
                         }
                         {screen === SCREEN.ProfitSummary &&
+                            selectedgamedata &&
                             <div>
                             Click on hand type description to drill into individual hands for the group.
                                 <ProfitSummary gamedata={selectedgamedata} status={setProcessing} setQueryhanditems={setQueryhanditems} /> 
-                                {queryhanditems && <Table currenthand={selectedhand} />}
+                                {/* {queryhanditems && <Table currenthand={selectedhand} />} */}
                             </div>
                         }
                         {screen === SCREEN.Standings &&
@@ -269,7 +265,7 @@ export default function Params(){
                         {screen === SCREEN.HandQuery &&
                             <div>
                                 {selectedgamedata && <HandQuery gamedata={selectedgamedata} setQueryhanditems={setQueryhanditems} />}
-                                {queryhanditems && <Table currenthand={selectedhand} />}
+                                {/* {queryhanditems && <Table currenthand={selectedhand} />} */}
                             </div>
                         }
                         {screen === SCREEN.GameScheduler &&

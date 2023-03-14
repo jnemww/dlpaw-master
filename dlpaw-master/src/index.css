@@ -150,6 +150,25 @@ table.pokertableseatbutton{
   font-family: serif;
   margin: 0 auto;
 }
+table.pokertableopenseat{
+  width: 90px;
+  height: 150px;
+  border: 2px;
+  border-start-start-radius: 10px 10px;
+  border-start-end-radius: 10px 10px;
+  border-end-end-radius: 10px 10px;
+  border-end-start-radius: 10px 10px;
+  border-color: darkgray;
+  border-style: solid;
+  background-color: gainsboro;
+  text-align: center;
+  padding: 2px;
+  width: 75;
+  height: 20;
+  font-size: 12pt;
+  font-family: serif;
+  margin: 0 auto;
+}
 table.centercontent{
   margin: 0 auto;
 }
@@ -372,4 +391,5 @@ p.tab {
 a.signout{
   font-size: 7pt;
   color:blue;
+  text-decoration: underline;
 }

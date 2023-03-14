@@ -21,16 +21,17 @@ export default function ProfitSummary({gamedata, status, setQueryhanditems}){
             list.push(<option value={s}>{s}</option>)
         });
         setPlayeritems(list);
-    },[gamedata]);
+        setHands(gamedata);
+    },[]);
 
     useEffect(()=>{ 
         GetProfitSummary();
-    },[selectedplayer, hands]);
+    },[selectedplayer]);//, hands
 
-    useEffect(()=>{
-        setHands(gamedata);
-        setQueryhanditems(undefined);
-    },[gamedata]);
+    // useEffect(()=>{
+    //     //setHands(gamedata);
+    //     //setQueryhanditems(undefined);
+    // },[gamedata]);
 
     function GetProfitSummary(){
         if (hands == null) return (<div>Please load a game and try again.</div>);
@@ -85,7 +86,7 @@ export default function ProfitSummary({gamedata, status, setQueryhanditems}){
         }
         else{
             //setResults(undefined);
-            setQueryhanditems(undefined);
+            setQueryhanditems(null);
         }
     }
 
