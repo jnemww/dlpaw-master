@@ -1,15 +1,16 @@
-import Enumerable from 'linq';
-import React, { useEffect, useState, useFetch, useSyncExternalStore } from 'react';
+//import Enumerable from 'linq';
+import React, { useEffect, useState } from 'react';
 import ProfitSummary from './ProfitSummary';
 import Standings from './Standings';
 import PlayFrequencies from './PlayFrequencies';
 import HandQuery from './HandQuery';
 import Table from './Table';
-import Login from './Login';
-import Enums, { SCREEN } from '../enums'
+import { SCREEN } from '../enums'
 import styled, { keyframes } from "styled-components";
 import { LoadingSpinner } from "./Spinner";
 import GameScheduler from './GameScheduler';
+import SignIn from './Auth/SignIn';
+import AuthDetails from './Auth/AuthDetails';
 
 export default function Params(){
     const [user, setUser] = useState();
@@ -24,8 +25,22 @@ export default function Params(){
     const [selectedgamedata, setSelectedgamedata] = useState();
     const [selectedhand, setSelectedhand] = useState();
     const [seasongamedata, setSeasongamedata] = useState();
-    const [screen, setScreen] = useState(SCREEN.Table);
+    const [screen, setScreen] = useState();
     const [queryhanditems, setQueryhanditems] = useState();
+    const [token, setToken] = useState();
+    const pe = process.env;
+    const league = pe.REACT_APP_LEAGUE;
+    const seasonslisturl = pe.REACT_APP_SERVICE_URL + pe.REACT_APP_DS_URL_SEASONS_LIST;
+    const gameslisturl = pe.REACT_APP_SERVICE_URL + pe.REACT_APP_DS_URL_SEASON_GAMES_LIST;
+    const allgamesurl = pe.REACT_APP_SERVICE_URL + pe.REACT_APP_ALL_GAMES_URL;
+    const snglgamesurl = pe.REACT_APP_SERVICE_URL + pe.REACT_APP_SINGLE_GAME_URL;
+    const leaguetkn = pe.REACT_APP_LEAGUE_TOKEN;
+    const seasontkn = pe.REACT_APP_SEASON_TOKEN;
+    const gametkn = pe.REACT_APP_GAME_TOKEN;
+    const sf = pe.REACT_APP_SPACE_FILLER;
+
+
+    console.log(pe.REACT_APP_DS_URL_SEASONS);
 
     useEffect(()=>{ 
         console.log("Screen Change: " + screen);        
@@ -49,32 +64,71 @@ export default function Params(){
         });
         setHanditems(list);
         setSelectedhand(JSON.stringify(queryhanditems[0]));
+        setScreen(SCREEN.Table);
     },[queryhanditems]);
 
-    useEffect(()=>{ 
+    useEffect(()=>{
 
         if(seasons == undefined){
             console.log("Mounting seasons...");
             (async() => {
-                var res = await fetch("./results/pm_seasons.json");
+                let url = seasonslisturl
+                    .replace(leaguetkn, league)
+                    .replaceAll(" ", sf);;
+                var res = await fetch(url, {
+                    headers: { 'Authorization': 'Bearer ' + token }
+                  });
                 var data = await res.json();
                 setSeasons(data);
                 
                 let list = [];
                 list.push(<option value="">Select a Season</option>)
-                data.seasons.forEach(s => {
-                    list.push(<option value={s.name}>{s.name}</option>)
+                data.forEach(s => {
+                    list.push(<option value={s.id}>{s.id}</option>)
                 });
                 setSeasonitems(list);
             })();
         }
+        setSelectedgame(null);//added 3/11/2023 3:27pm
+    },); //selectedseason
+
+    useEffect(()=>{
+        if(selectedseason == undefined){
+            setSelectedgame(null);
+            return;
+        }
+        
+        (async() => {
+            let url = gameslisturl.replace(leaguetkn, league)
+                .replace(seasontkn, selectedseason);
+            let res = await fetch(url, {
+                headers: { 'Authorization': 'Bearer ' + token }
+              });
+            let data = await res.json();
+            
+            let list = [];
+            list.push(<option value="">Select a Game</option>)
+            data.forEach(s => {
+                list.push(<option value={s.id}>{s.id}</option>)
+            });
+            setGameitems(list);
+        })();
     },[selectedseason]);
 
     useEffect(()=>{ 
-        if(selectedseason == undefined || selectedgame == undefined) return;
-        (async() => {
+        if(selectedseason == undefined || selectedgame == undefined){
+            if(selectedseason == null || selectedseason == undefined)
+                setSelectedgame(null);
+                return;
+        }
 
-                let res = await fetch("./results/" + selectedseason + selectedgame + ".json");
+        (async() => {
+                let url = snglgamesurl.replace(leaguetkn, league)
+                    .replace(seasontkn, selectedseason)
+                    .replace(gametkn, selectedgame);
+                let res = await fetch(url, {
+                    headers: { 'Authorization': 'Bearer ' + token }
+                  });
                 let data = await res.json();
                 setSelectedgamedata(data);
     
@@ -89,33 +143,15 @@ export default function Params(){
             })();
     },[selectedseason, selectedgame]);
 
-    function getGames(sseason){
-        let list = [];
-            list.push(<option value="">Select a Game</option>)
-            let s = Enumerable.from(seasons.seasons).where(x => x.name == sseason).first();
-            s.games.forEach(g => {
-                list.push(<option value={g}>{g}</option>)
-            });
-            setGameitems(list);
-    }
-
     function getSeasonGameData(){
         if(selectedseason !== undefined){
-            let list = [];
-
             (async() => {
-                let games = Enumerable.from(seasons.seasons)
-                    .where(s => s.name == selectedseason)
-                    .select(x => x.games)
-                    .toArray();
-
-                for(let n = 0; n < games[0].length; n++){
-                    console.log("retrieving..." + "./results/" + selectedseason + games[0][n] + ".json");
-                    let res = await fetch("./results/" + selectedseason + games[0][n] + ".json");
-                    let data = await res.json();
-                    list.push(data)
-                    console.log("League Standings: Data for " + selectedseason + games[0][n] + ".json retrieved.");
-                }
+                let url = allgamesurl.replace(leaguetkn, league)
+                    .replace(seasontkn, selectedseason);
+                let res = await fetch(url, {
+                    headers: { 'Authorization': 'Bearer ' + token }
+                  });
+                let list = await res.json();
 
                 setSeasongamedata(list);
             })();
@@ -138,7 +174,10 @@ export default function Params(){
         <div>
             {!user &&
                 <div>
-                    <Login setUser={setUser} setTokens={setTokens} />
+                    <SignIn setToken={setToken} />
+                    {/* <SignUp /> */}
+                    <AuthDetails setUser={setUser}/>
+                    {/* <Login setUser={setUser} setTokens={setTokens} /> */}
                 </div>
             }
             {   user &&
@@ -161,41 +200,48 @@ export default function Params(){
                                 <td className='rightborder' onClick={()=>setScreen(SCREEN.HandQuery)}>Find Hands</td>
                                 <td className='rightborder' onClick={()=>setScreen(SCREEN.GameScheduler)}>Schedule</td>
                                 <td className='rightborder'></td>
-                                <td className='rightborder'>{user}</td>
+                                <td className='rightborder'><AuthDetails setUser={setUser}/></td>
                             </tr>
+                            {/* <tr>
+                                <td colSpan={4}>{token}</td>
+                            </tr> */}
                         </table>
                     </div>
-                    <div>&nbsp;</div>
+                    {/* <div>&nbsp;</div> */}
+                    {(screen === SCREEN.Frequency || 
+                        screen === SCREEN.Table || 
+                        screen === SCREEN.ProfitSummary ||
+                        screen === SCREEN.Games ||
+                        screen === SCREEN.Standings ||
+                        screen === SCREEN.HandQuery) &&
+                        <div>
+                            <table className='pokertableboard'>
+                                <tr>
+                                    <td>
+                                    {screen}: {selectedseason}, Game: {selectedgame}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                    <select onChange={(e) => {setSelectedseason(e.target.value)}}>{seasonitems}</select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                    <select onChange={(e) => setSelectedgame(e.target.value)}>{gameitems}</select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <button onClick={ScrollBack}>&lt;&lt;</button>
+                                    <select id="selhand" onChange={(e) => setSelectedhand(e.target.value)}>{handitems}</select>
+                                    <button onClick={ScrollFwd}>&gt;&gt;</button>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    }
                     <div>
-                        <table className='pokertableboard'>
-                            <tr>
-                                <td>
-                                {screen}: {selectedseason}, Game: {selectedgame}
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                <select onChange={(e) => {setSelectedseason(e.target.value); getGames(e.target.value);}}>{seasonitems}</select>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                <select onChange={(e) => setSelectedgame(e.target.value)}>{gameitems}</select>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <button onClick={ScrollBack}>&lt;&lt;</button>
-                                {/* {React.createElement('button', {onClick: () => {if(document.getElementById('selhand').selectedIndex > 1) document.getElementById('selhand').selectedIndex -=1; setSelectedhand(document.getElementById('selhand').value)}}, "<<")} */}
-                                <select id="selhand" onChange={(e) => setSelectedhand(e.target.value)}>{handitems}</select>
-                                {/* {React.createElement('button', {onClick: () => {if(document.getElementById('selhand').selectedIndex < document.getElementById('selhand').length-1) document.getElementById('selhand').selectedIndex +=1; setSelectedhand(document.getElementById('selhand').value)}}, ">>")} */}
-                                <button onClick={ScrollFwd}>&gt;&gt;</button>
-                                </td>
-                            </tr>
-                        </table>
-                    </div>
-                    <div>&nbsp;</div>
-                    <div className='splashscreen'>
                         {screen === SCREEN.Table &&
                             <div>
                                 {selectedhand && <Table currenthand={selectedhand} />}
@@ -228,7 +274,7 @@ export default function Params(){
                         }
                         {screen === SCREEN.GameScheduler &&
                             <div>
-                                <GameScheduler username={user} />
+                                <GameScheduler username={user} usertoken={token} />
                             </div>
                         }
                     </div>

@@ -12,34 +12,52 @@ export default function Login({setUser, setTokens}) {
     },[]);
 
 async function authenticateUser(){
-    console.log("user auth attempt: " + localuser)
-    var f = await fetch("http://192.168.1.155:4000/login",
-        {
-            method: "POST",
-            mode: "cors",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({username: localuser, password: localpassword})
-        })
-        .then(res => {
-            if(res.status !== 200) bloginerror = true;
-            return res.json();
-        })
-        .then(data => {
-            if(bloginerror){
-                setLoginerror(data.message);
-            }else{
-                setLocaltokens(data);
-                setTokens(data);
-                setUser(localuser);
-                console.log("user: " + localuser + ", pwd: " + localpassword)
-                console.log(data);
-            }   
-        })
-        .catch(error => {
-            setLoginerror(error.toString());
-            console.log(error.toString());
-        });
+    setUser({user:"jnemeth"});
+    // console.log("user auth attempt: " + localuser)
+    // var f = await fetch("http://192.168.1.155:4000/login",
+    //     {
+    //         method: "POST",
+    //         mode: "cors",
+    //         headers: {"Content-Type": "application/json"},
+    //         body: JSON.stringify({username: localuser, password: localpassword})
+    //     })
+    //     .then(res => {
+    //         if(res.status !== 200) bloginerror = true;
+    //         return res.json();
+    //     })
+    //     .then(data => {
+    //         if(bloginerror){
+    //             setLoginerror(data.message);
+    //         }else{
+    //             setLocaltokens(data);
+    //             setTokens(data);
+    //             setUser(localuser);
+    //             console.log("user: " + localuser + ", pwd: " + localpassword)
+    //             console.log(data);
+    //         }   
+    //     })
+    //     .catch(error => {
+    //         setLoginerror(error.toString());
+    //         console.log(error.toString());
+    //     });
 }
+
+/* firebase user code
+const signupForm = document.querySelector('#signup-form');
+signupForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+
+  const email = signupForm['signup-email'].value;
+  const password = signupForm['signup-password'].value;
+
+  auth.createUserWithEmailAndPassword(email, password).then(cred => {
+    return db.collection('users').add();
+    const modal = document.querySelector('#modal-signup');
+    M.Modal.getInstance(modeal).close();
+    signupForm.reset();
+  });
+});
+*/
 
 return (
             <div>

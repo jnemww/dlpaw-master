@@ -1,29 +1,38 @@
 import Enumerable from 'linq';
 import React, { useEffect, useState, useFetch, useSyncExternalStore } from 'react';
-import styled, { keyframes } from "styled-components";
-import { LoadingSpinner } from "./Spinner";
 import DataTable from './DataTable';
 
-export default function GameScheduler({username}){
+export default function GameScheduler({username, usertoken}){
     const [user, setUser] = useState(username);
-    const [tokens, setTokens] = useState();
+    const [token, setToken] = useState(usertoken);
     const [processing, setProcessing] = useState(false);
     const [savestatus, setSavestatus] = useState();
     const [schedules, setSchedules] = useState();
+    const [schedulereport, setSchedulereport] = useState();
+    const [scheduledetails, setScheduledetails] = useState();
     const [schedule, setSchedule] = useState({
-                                                Player: user,
-                                                StartofWeek: null,
-                                                Days: [ {Day: "Sunday", Play: 0, StartTime: 9},
-                                                        {Day: "Monday", Play: 0, StartTime: 9},
-                                                        {Day: "Tuesday", Play: 0, StartTime: 9},
-                                                        {Day: "Wednesday", Play: 0, StartTime: 9},
-                                                        {Day: "Thursday", Play: 0, StartTime: 9},
-                                                        {Day: "Friday", Play: 0, StartTime: 9},
-                                                        {Day: "Saturday", Play: 0, StartTime: 9}
+                                                "League": "Donk League",
+                                                "Player": user,
+                                                "StartofWeek": null,
+                                                "Days": [ {"Day": "Sunday", "Play": 0, "StartTime": 9},
+                                                          {"Day": "Monday", "Play": 0, "StartTime": 9},
+                                                          {"Day": "Tuesday", "Play": 0, "StartTime": 9},
+                                                          {"Day": "Wednesday", "Play": 0, "StartTime": 9},
+                                                          {"Day": "Thursday", "Play": 0, "StartTime": 9},
+                                                          {"Day": "Friday", "Play": 0, "StartTime": 9},
+                                                          {"Day": "Saturday", "Play": 0, "StartTime": 9}
                                                     ]
                                             });
     const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
     const UPDATE_TYPE = {Availability: "A", StartofWeek: "D", StartTime: "T"};
+    const pe = process.env;
+    const league = pe.REACT_APP_LEAGUE;
+    const dtkn = pe.REACT_APP_SCHEDULE_DATE_TOKEN;
+    const postsheduleurl = pe.REACT_APP_SERVICE_URL + pe.REACT_APP_POST_SCHEDULES_URL;
+    const getsheduleurl = pe.REACT_APP_SERVICE_URL + pe.REACT_APP_GET_SCHEDULES_URL;
+    const leaguetkn = pe.REACT_APP_LEAGUE_TOKEN;
+    const sf = pe.REACT_APP_SPACE_FILLER;
+
     let bposterror = false;
 
     useEffect(()=>{
@@ -67,12 +76,13 @@ async function saveSchedule(){
         return;
     }
     console.log(JSON.stringify(schedule, null, 2));
-    var f = await fetch("http://192.168.1.155:3000/schedules/donkleague",
+    
+    var f = await fetch(postsheduleurl, //"https://us-central1-donkleaguedataservices.cloudfunctions.net/userfunctions/schedules/",
         {
             method: "POST",
             mode: "cors",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({schedule: schedule}, null, 2)
+            headers: {'Authorization': 'Bearer ' + token, "Content-Type": "application/json"},
+            body: JSON.stringify(schedule, null, 2)
         })
         .then(res => {
             if(res.status !== 200) bposterror = true;
@@ -94,30 +104,23 @@ async function saveSchedule(){
 }
 
 async function getSchedule(){
-    //console.log("user auth attempt: " + localuser)
     if(schedule.StartofWeek == null){
         setSavestatus("Select a week date before saving.");
         return;
     }
 
-    var f = await fetch("http://192.168.1.155:3000/schedules/donkleague/" + schedule.StartofWeek,
+    let url = getsheduleurl
+        .replace(leaguetkn, league)
+        .replace(dtkn, schedule.StartofWeek)
+        .replaceAll(" ", sf);
+    var f = await fetch(url, //"https://us-central1-donkleaguedataservices.cloudfunctions.net/userfunctions/schedules/Donk%20League/" + schedule.StartofWeek, 
         {
-            method: "GET",
-            mode: "cors"
+            headers: { 'Authorization': 'Bearer ' + token }
         })
         .then(res => {
             if(res.status !== 200) bposterror = true;
             return res.json();
         })
-        // .then(data => {
-        //     setSavestatus(data.message);
-        //     if(bposterror){
-                
-        //     }else{
-        //         //console.log("user: " + localuser + ", pwd: " + localpassword)
-        //         console.log(data);
-        //     }
-        // })
         .catch(error => {
             setSavestatus(error.toString());
             console.log(error.toString());
@@ -125,7 +128,6 @@ async function getSchedule(){
 
         let r = Enumerable.from(f)
             .selectMany(d => d.Days)
-            //.where(s => s.Play == 1)
             .groupBy(d => d.Day)
             .orderBy(o => days.indexOf(o.first().Day))
             .select(z => ({ Day : z.first().Day, 
@@ -134,12 +136,33 @@ async function getSchedule(){
                             Latest : z.max(t => t.StartTime) }))
             .toArray();
 
-        // let r = Enumerable.from(f)
-        //     .select(r => ({ Player : r.Player, StartofWeek : r.StartofWeek }))
-        //     .toArray();
-
-        setSchedules(r);
+        setSchedules(f);
+        setSchedulereport(r);
         console.dir(f);
+}
+
+function getScheduleDetails(day){
+    if (schedules == null) return (<div>Please a date and try again.</div>);
+
+    let res = Enumerable.from(schedules)
+        .selectMany(x => Enumerable.from(x.Days), (player, day) => ({ player, day }))
+        .where(d => d.day.Day == day)
+        .select(z => ({
+                        Player : z.player.Player,
+                        Day : z.day.Day.substring(0,3),
+                        Available : z.day.Play==1?"Yes":"No",
+                        Start: z.day.Play==1?z.day.StartTime:""
+                        })
+        )
+        .orderBy(o => o.Player.toLowerCase())
+        .toArray();
+    
+    if(res?.length>0){
+        setScheduledetails(res);
+    }
+    else{
+        setScheduledetails(undefined);
+    }
 }
 
     return(
@@ -147,10 +170,11 @@ async function getSchedule(){
             {   user &&
                 <div>
                     <div>
-                        <table>
+                        <br/>
+                        <br />
+                        <table className='gamescheduler'>
                             <tr>
-                                <td>Week of:</td>
-                                <td colSpan={2}>
+                                <td className='items' align='center' colSpan={3}>Week of :
                                     <select onChange={(e) => handleChange(e.target.value, 1, UPDATE_TYPE.StartofWeek)}>
                                         {getWeeks()}
                                     </select>
@@ -162,7 +186,7 @@ async function getSchedule(){
 
                                 }
                                 return (    <tr key={i}>
-                                                <td>
+                                                <td className='items'>
                                                     {schedule.Days[i].Day}
                                                 </td>
                                                 <td>
@@ -189,27 +213,51 @@ async function getSchedule(){
                             }
                             )}
                             <tr>
-                                <td colSpan={3}>
+                                <td align='center' colSpan={3}>
                                     <button onClick={saveSchedule}>Save Schedule</button>
                                 </td>
-                            </tr><tr>
-                                <td colSpan={3}>
+                            </tr>
+                            <tr>
+                                <td colSpan={3}></td>
+                            </tr>
+                            <tr>
+                                <td colSpan={3}></td>
+                            </tr>
+                            <tr>
+                                <td align='center' colSpan={3}>
                                     <button onClick={getSchedule}>View Schedule</button>
                                 </td>
                             </tr>
                             <tr>
                                 <td colSpan={3}>
                                     <div>
-                                        {schedules && 
-                                            <DataTable  tbodyData={schedules} 
+                                        {schedulereport && 
+                                            <DataTable  tbodyData={schedulereport} 
                                                         rowclasses={["datatablegrey","datatablewhite"]} 
-                                                        classes={["text", "numeric", "numeric", "numeric"]}
-                                                        functions={[,,,]}
+                                                        classes={["text", "numeric", "numeric", "numeric", "numeric"]}
+                                                        functions={[getScheduleDetails,,,,]}
                                             />
                                         }
                                     </div>
                                 </td>
                             </tr>
+
+                            <tr>
+                                <td colSpan={3}>
+                                    <div>
+                                        {scheduledetails &&
+                                            <DataTable  tbodyData={scheduledetails}
+                                                        rowclasses={["datatablegrey","datatablewhite"]}
+                                                        classes={["text", "numeric", "numeric"]}
+                                                        functions={[,,]}
+                                            />
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+
+
+
                         </table>
                     </div>
                 </div>
