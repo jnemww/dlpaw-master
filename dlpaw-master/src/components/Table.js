@@ -8,7 +8,7 @@ export default function Table({currenthand}){
     if(currenthand !== undefined){
         o = JSON.parse(currenthand);
     }
-    
+
     useEffect(()=>{
         
     },);
@@ -25,14 +25,19 @@ export default function Table({currenthand}){
 
             list.push(
                 <div>
-                    <span className='street'>{s.name}</span>&nbsp;
-                    {
-                         c.map((x) => {
-                            return (<img className='actionscard' src={"./images/c" + x.toLowerCase() + ".png"}/>)
+                    <div>
+                        <span className='street'>{s.name}</span>&nbsp;
+                        {
+                            c.map((x) => {
+                                return (<img className='actionscard' src={"./images/c" + x.toLowerCase() + ".png"}/>)
 
 
-                        })
-                    }
+                            })
+                        }
+                    </div>
+                    <div>
+                        <span className='substreet'>POT: {s.runningpot} {(s.name != "PREFLOP")?", +" + s.pot:""}</span>
+                    </div>
                 </div>
             );  
 

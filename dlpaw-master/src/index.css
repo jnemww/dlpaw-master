@@ -112,10 +112,90 @@ table.pokertable{
   margin: 0 auto;
 
 }
-
+table.seat1{
+  background-image: url("../public/images/seat1.png");
+  background-size: 20px 20px;
+  background-position-x: -5px;
+  background-position-y: -2px;
+  background-blend-mode: inherit;
+  background-repeat: no-repeat;
+  z-index: 1;
+}
+table.seat2{
+  background-image: url("../public/images/seat2.png");
+  background-size: 20px 20px;
+  background-position-x: -5px;
+  background-position-y: -2px;
+  background-blend-mode: inherit;
+  background-repeat: no-repeat;
+  z-index: 1;
+}
+table.seat3{
+  background-image: url("../public/images/seat3.png");
+  background-size: 20px 20px;
+  background-position-x: -5px;
+  background-position-y: -2px;
+  background-blend-mode: inherit;
+  background-repeat: no-repeat;
+  z-index: 1;
+}
+table.seat4{
+  background-image: url("../public/images/seat4.png");
+  background-size: 20px 20px;
+  background-position-x: -5px;
+  background-position-y: -2px;
+  background-blend-mode: inherit;
+  background-repeat: no-repeat;
+  z-index: 1;
+}
+table.seat5{
+  background-image: url("../public/images/seat5.png");
+  background-size: 20px 20px;
+  background-position-x: -5px;
+  background-position-y: -2px;
+  background-blend-mode: inherit;
+  background-repeat: no-repeat;
+  z-index: 1;
+}
+table.seat6{
+  background-image: url("../public/images/seat6.png");
+  background-size: 20px 20px;
+  background-position-x: -5px;
+  background-position-y: -2px;
+  background-blend-mode: inherit;
+  background-repeat: no-repeat;
+  z-index: 1;
+}
+table.seat7{
+  background-image: url("../public/images/seat7.png");
+  background-size: 20px 20px;
+  background-position-x: -5px;
+  background-position-y: -2px;
+  background-blend-mode: inherit;
+  background-repeat: no-repeat;
+  z-index: 1;
+}
+table.seat8{
+  background-image: url("../public/images/seat8.png");
+  background-size: 20px 20px;
+  background-position-x: -5px;
+  background-position-y: -2px;
+  background-blend-mode: inherit;
+  background-repeat: no-repeat;
+  z-index: 1;
+}
+table.seat9{
+  background-image: url("../public/images/seat9.png");
+  background-size: 20px 20px;
+  background-position-x: -5px;
+  background-position-y: -2px;
+  background-blend-mode: inherit;
+  background-repeat: no-repeat;
+  z-index: 1;
+}
 table.pokertableseat{
   width: 90px;
-  height: 75;
+  height: 120px;
   border: 2px;
   border-start-start-radius: 10px 10px;
   border-start-end-radius: 10px 10px;
@@ -133,7 +213,7 @@ table.pokertableseat{
 }
 table.pokertableseatbutton{
   width: 90px;
-  height: 75;
+  height: 120px;
   border: 2px;
   border-start-start-radius: 10px 10px;
   border-start-end-radius: 10px 10px;
@@ -149,18 +229,19 @@ table.pokertableseatbutton{
   font-size: 12pt;
   font-family: serif;
   margin: 0 auto;
+  z-index: 0;
 }
 table.pokertableopenseat{
   width: 90px;
-  height: 150px;
+  height: 120px;
   border: 2px;
   border-start-start-radius: 10px 10px;
   border-start-end-radius: 10px 10px;
   border-end-end-radius: 10px 10px;
   border-end-start-radius: 10px 10px;
   border-color: darkgray;
-  border-style: solid;
   background-color: gainsboro;
+  border-style: solid;
   text-align: center;
   padding: 2px;
   width: 75;
@@ -316,6 +397,13 @@ span.street{
   font-weight: bold;
   font-size: 12pt;
   text-decoration: underline;
+  font-family: serif;
+}
+span.substreet{
+  text-align: left;
+  color: darkblue;
+  font-weight: bold;
+  font-size: 12pt;
   font-family: serif;
 }
 span.actionstitle{

@@ -14,13 +14,13 @@ export default function GameScheduler({username, usertoken}){
                                                 "League": "Donk League",
                                                 "Player": user,
                                                 "StartofWeek": null,
-                                                "Days": [ {"Day": "Sunday", "Play": 0, "StartTime": 9},
-                                                          {"Day": "Monday", "Play": 0, "StartTime": 9},
-                                                          {"Day": "Tuesday", "Play": 0, "StartTime": 9},
-                                                          {"Day": "Wednesday", "Play": 0, "StartTime": 9},
-                                                          {"Day": "Thursday", "Play": 0, "StartTime": 9},
-                                                          {"Day": "Friday", "Play": 0, "StartTime": 9},
-                                                          {"Day": "Saturday", "Play": 0, "StartTime": 9}
+                                                "Days": [ {"Day": "Sunday", "Play": 0, "StartTime": 0},
+                                                          {"Day": "Monday", "Play": 0, "StartTime": 0},
+                                                          {"Day": "Tuesday", "Play": 0, "StartTime": 0},
+                                                          {"Day": "Wednesday", "Play": 0, "StartTime": 0},
+                                                          {"Day": "Thursday", "Play": 0, "StartTime": 0},
+                                                          {"Day": "Friday", "Play": 0, "StartTime": 0},
+                                                          {"Day": "Saturday", "Play": 0, "StartTime": 0}
                                                     ]
                                             });
     const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -198,10 +198,10 @@ function getScheduleDetails(day){
 
                                                 <td>
                                                     <select key={i} onChange={(e) => handleChange(e.target.value, i, UPDATE_TYPE.StartTime)}>
-                                                        <option value="0">Flexible</option>
+                                                        <option value="0" selected>Flexible</option>
                                                         <option value="11">11pm</option>
                                                         <option value="10">10pm</option>
-                                                        <option value="9" selected>9pm</option>
+                                                        <option value="9" >9pm</option>
                                                         <option value="8">8pm</option>
                                                         <option value="7">7pm</option>
                                                         <option value="6">6pm</option>

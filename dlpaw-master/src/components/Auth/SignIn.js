@@ -11,21 +11,18 @@ export default function SignIn({setToken}){
         e.preventDefault();
         signInWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
-                //console.log(userCredential.user.getIdToken().then(token => { return token}).then(token => { return token}).then(token => { return token}));
-                
                 const userref = collection(db, "users");
 
                 const d = async () => {
                     const tkn = await userCredential.user.getIdToken();
                     setToken(tkn);
-                    console.log("Tokenid: ", tkn);
+                    //console.log(tkn);
                     
                     await setDoc(doc(db, "users", userCredential.user.uid),
                         {email: email});
                     return;                    
                 };
                 const p = d.call();
-                //console.log(p);
 
                 //return users.doc(userCredential.user.uid).set({email: email});
             }).catch((error) => {

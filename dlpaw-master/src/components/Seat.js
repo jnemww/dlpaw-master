@@ -10,10 +10,10 @@ export default function Seat({hand, seatid}){
       .toArray()[0];
   
     if(s == null){
-      return (  <table className='pokertableopenseat'>
+      return (  <table className={`seat${seatid} pokertableopenseat`}>
                   <tr>
                     <td>
-                      <p>seat {seatid}</p>
+                      {/* <p>seat {seatid}</p> */}
                       <p>open</p>
                     </td>
                   </tr>
@@ -26,9 +26,9 @@ export default function Seat({hand, seatid}){
 
     function isButton(){
       if(s.isbutton)
-        return "pokertableseatbutton";
+        return "pokertableseatbutton seat" + seatid;
       else
-        return "pokertableseat";
+        return "pokertableseat seat" + seatid;
     }
   
     function isProfit(){
@@ -42,9 +42,9 @@ export default function Seat({hand, seatid}){
 
     return (
       <table className={isButton()}>
-        <tr>
+        {/* <tr>
           <td>{s.id}</td>
-        </tr>
+        </tr> */}
         <tr>
           <td>{s.player}</td>
         </tr>

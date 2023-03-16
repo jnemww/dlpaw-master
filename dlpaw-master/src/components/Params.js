@@ -253,19 +253,17 @@ export default function Params(){
                         {screen === SCREEN.Standings &&
                             <div>
                                 <button onClick={getSeasonGameData}>Get Standings</button> Click on player for individual results.
-                                {seasongamedata && <Standings games={seasongamedata} status={setProcessing} />}
+                                {seasongamedata && <Standings games={seasongamedata} season={selectedseason} status={setProcessing} />}
                             </div>
                         }
                         {screen === SCREEN.Frequency &&
                             <div>
-                                {/* <button onClick={getSeasonGameData}>Play Frequencies</button> */}
                                 {selectedgamedata && <PlayFrequencies gamedata={selectedgamedata} status={setProcessing} />}
                             </div>
                         }
                         {screen === SCREEN.HandQuery &&
                             <div>
                                 {selectedgamedata && <HandQuery gamedata={selectedgamedata} setQueryhanditems={setQueryhanditems} />}
-                                {/* {queryhanditems && <Table currenthand={selectedhand} />} */}
                             </div>
                         }
                         {screen === SCREEN.GameScheduler &&
