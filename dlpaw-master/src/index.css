@@ -195,7 +195,7 @@ table.seat9{
 }
 table.pokertableseat{
   width: 90px;
-  height: 120px;
+  height: 132px;
   border: 2px;
   border-start-start-radius: 10px 10px;
   border-start-end-radius: 10px 10px;
@@ -213,7 +213,7 @@ table.pokertableseat{
 }
 table.pokertableseatbutton{
   width: 90px;
-  height: 120px;
+  height: 132px;
   border: 2px;
   border-start-start-radius: 10px 10px;
   border-start-end-radius: 10px 10px;
@@ -233,7 +233,7 @@ table.pokertableseatbutton{
 }
 table.pokertableopenseat{
   width: 90px;
-  height: 120px;
+  height: 132px;
   border: 2px;
   border-start-start-radius: 10px 10px;
   border-start-end-radius: 10px 10px;
@@ -480,4 +480,23 @@ a.signout{
   font-size: 7pt;
   color:blue;
   text-decoration: underline;
+}
+span.processing{
+  width: 200px;
+  height: 75px;
+  border: 2px;
+  border-start-start-radius: 20px 20px;
+  border-start-end-radius: 20px 20px;
+  border-end-end-radius: 20px 20px;
+  border-end-start-radius: 20px 20px;
+  border-color: brown;
+  border-style: solid;
+  text-align: center;
+  font-style: italic;
+  font-weight: bold;
+  color: white;
+  padding: 2px;
+  font-size: 20pt;
+  font-family: serif;
+  margin: 0 auto;
 }

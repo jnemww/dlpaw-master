@@ -13,7 +13,6 @@ export default function Seat({hand, seatid}){
       return (  <table className={`seat${seatid} pokertableopenseat`}>
                   <tr>
                     <td>
-                      {/* <p>seat {seatid}</p> */}
                       <p>open</p>
                     </td>
                   </tr>

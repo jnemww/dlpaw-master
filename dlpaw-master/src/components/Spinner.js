@@ -24,8 +24,8 @@ const SpinnerContainer = styled.div`
 `;
 
 const Spinner = styled.div`
-  width: 20px;
-  height: 20px;
+  width: 50px;
+  height: 50px;
   border: 2px solid #ccc;
   border-top-color: #333;
   border-radius: 50%;
