@@ -1,26 +1,27 @@
 import { initializeApp } from "firebase/app";
-import {getAuth} from "firebase/auth";
-import {getFirestore} from "firebase/firestore";
-
-import { FirebaseApp } from "@firebase/app";
+import { getAuth } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const pe = process.env;
 const firebaseConfig = {
-  apiKey: "AIzaSyA17Bc2iCKf1TvPd6uYey2-j-AAn97MZ5U",
-  authDomain: "donkleaguedataservices.firebaseapp.com",
-  databaseURL: "https://donkleaguedataservices-default-rtdb.firebaseio.com",
-  projectId: "donkleaguedataservices",
-  storageBucket: "donkleaguedataservices.appspot.com",
-  messagingSenderId: "409762083746",
-  appId: "1:409762083746:web:ebf6b538d1aaa4fe9278fb",
-  measurementId: "G-45D0JKEVW3"
+  apiKey: pe.REACT_APP_APIKEY,
+  authDomain: pe.REACT_APP_AUTHDOMAIN,
+  databaseURL: pe.REACT_APP_DATABASEURL,
+  projectId: pe.REACT_APP_PROJECTID,
+  storageBucket: pe.REACT_APP_STORAGEBUCKET,
+  messagingSenderId: pe.REACT_APP_MESSAGINGSENDERID,
+  appId: pe.REACT_APP_APPID,
+  measurementId: pe.REACT_APP_MEASUREMENTID
 };
 
 // Initialize Firebase
 export const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 export const auth = getAuth(app);
+export const storage = getStorage(app);

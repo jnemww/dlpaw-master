@@ -500,3 +500,23 @@ span.processing{
   font-family: serif;
   margin: 0 auto;
 }
+img.spinner{
+  backface-visibility: visible;
+  width: 150px;
+  height: 150px;
+  /* border: solid 2px;
+  border-radius:50%; */
+  -moz-border-radius:50%;
+  -webkit-border-radius:50%;
+  background-color: blue;
+}
+table.spinner{
+  margin: 0 auto;
+  z-index: 100;
+  position: relative;
+}
+dialog.spinner{
+  background-color: transparent;
+  border: none;
+  enable-background: false;
+}

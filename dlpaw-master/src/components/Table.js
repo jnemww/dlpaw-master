@@ -9,10 +9,6 @@ export default function Table({currenthand}){
         o = JSON.parse(currenthand);
     }
 
-    useEffect(()=>{
-        
-    },);
-
     function getActions(o){
         var list = [];
         if(o?.streets == undefined) return "";

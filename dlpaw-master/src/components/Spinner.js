@@ -12,6 +12,8 @@ export const LoadingSpinner = () => {
 const spinAnimation = keyframes`
   to {
     transform: rotate(360deg);
+    {/* background: url("../public/images/donkey_button.png") no-repeat center fixed;     
+    background-size:contain; */}
   }
 `;
 

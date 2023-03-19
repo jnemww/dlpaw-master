@@ -6,7 +6,7 @@ import PlayFrequencies from './PlayFrequencies';
 import HandQuery from './HandQuery';
 import Table from './Table';
 import { SCREEN } from '../enums'
-import { LoadingSpinner } from "./Spinner";
+import { LoadingSpinner } from "./Spinner2";
 import GameScheduler from './GameScheduler';
 import SignIn from './Auth/SignIn';
 import AuthDetails from './Auth/AuthDetails';
@@ -19,6 +19,7 @@ export default function Params() {
     const [seasonitems, setSeasonitems] = useState(null);
     const [gameitems, setGameitems] = useState(null);
     const [handitems, setHanditems] = useState(null);
+    const [orighanditems, setOrighanditems] = useState(null);
     const [selectedgame, setSelectedgame] = useState(null);
     const [selectedseason, setSelectedseason] = useState(null);
     const [selectedgamedata, setSelectedgamedata] = useState(null);
@@ -58,8 +59,9 @@ export default function Params() {
             setSeasons(data);
 
             let list = [];
-            list.push(<option value="">Select a Season</option>)
+            list.push(<option value={null}>Select a Season</option>)
             data.forEach(s => {
+                //let selected = (s.id == selectedseason)?"selected":"";
                 list.push(<option value={s.id}>{s.id}</option>)
             });
             setSeasonitems(list);
@@ -79,6 +81,9 @@ export default function Params() {
         }
 
         (async () => {
+            if (selectedseason == null ||
+                league == null ||
+                token == null) return;
             setProcessing(true);
             let url = gameslisturl.replace(leaguetkn, league)
                 .replace(seasontkn, selectedseason);
@@ -126,6 +131,7 @@ export default function Params() {
                 list.push(<option value={JSON.stringify(h)}>{h.handID + ": (" + h.blind_small + "/" + h.blind_big + "/" + h.ante + ")"}</option>)
             });
             setHanditems(list);
+            setOrighanditems(list);
             setProcessing(false);
         })();
     }, [selectedgame]);
@@ -136,12 +142,16 @@ export default function Params() {
         let list = [];
         list.push(<option value="">Select a Hand</option>)
         queryhanditems.forEach(h => {
-            list.push(<option value={JSON.stringify(h)}>{h.handID + ": (" + h.blind_small + "/" + h.blind_big + ")"}</option>)
+            list.push(<option value={JSON.stringify(h)}>{h.handID + ": (" + h.blind_small + "/" + h.blind_big + "/" + h.ante + ")"}</option>)
         });
         setHanditems(list);
         setSelectedhand(JSON.stringify(queryhanditems[0]));
         setScreen(SCREEN.Table);
     }, [queryhanditems]);
+
+    function RefreshHands() {
+        setHanditems(orighanditems);
+    }
 
     function getSeasonGameData() {
         if (selectedseason !== null) {
@@ -190,13 +200,12 @@ export default function Params() {
                                 <td className='rightborder' onClick={() => setScreen(SCREEN.Table)}>Game Review</td>
                                 <td className='rightborder' onClick={() => setScreen(SCREEN.Standings)}>Standings</td>
                                 <td className='rightborder' onClick={() => setScreen(SCREEN.Frequency)}>Frequencies</td>
-                                <td className='rightborder' onClick={() => setScreen(SCREEN.ProfitSummary)}>Profit Summary</td>
+                                <td className='rightborder' rowSpan={2}><AuthDetails setUser={setUser} /></td>
                             </tr>
                             <tr>
                                 <td className='rightborder' onClick={() => setScreen(SCREEN.HandQuery)}>Find Hands</td>
                                 <td className='rightborder' onClick={() => setScreen(SCREEN.GameScheduler)}>Schedule</td>
-                                <td className='rightborder'></td>
-                                <td className='rightborder'><AuthDetails setUser={setUser} /></td>
+                                <td className='rightborder' onClick={() => setScreen(SCREEN.ProfitSummary)}>Profit Summary</td>
                             </tr>
                             {/* <tr>
                                 <td colSpan={4}>{token}</td>
@@ -218,18 +227,19 @@ export default function Params() {
                                 </tr>
                                 <tr>
                                     <td>
-                                        <select onChange={(e) => { setSelectedseason(e.target.value) }}>{seasonitems}</select>
+                                        <select onChange={(e) => { setSelectedseason(e.target.value) }} defaultValue={selectedseason}>{seasonitems}</select>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        <select onChange={(e) => setSelectedgame(e.target.value)}>{gameitems}</select>
+                                        <select onChange={(e) => setSelectedgame(e.target.value)} defaultValue={selectedgame}>{gameitems}</select>
+                                        <button onClick={RefreshHands}>Clear Filter</button>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
                                         <button onClick={ScrollBack}>&lt;&lt;</button>
-                                        <select id="selhand" onChange={(e) => setSelectedhand(e.target.value)}>{handitems}</select>
+                                        <select id="selhand" defaultValue={selectedhand} onChange={(e) => setSelectedhand(e.target.value)}>{handitems}</select>
                                         <button onClick={ScrollFwd}>&gt;&gt;</button>
                                     </td>
                                 </tr>
@@ -238,9 +248,22 @@ export default function Params() {
                     }
                     {user &&
                         processing &&
-                        <div style={{textAlign:"center"}}>
-                            <LoadingSpinner />
-                            <span className='processing'>Processing...</span>
+                        <div style={{ textAlign: "center" }}>
+                            <LoadingSpinner url={user.photourl} />
+                            {/* <table className='spinner'>
+                                <tr>
+                                    <td>
+                                        <LoadingSpinner />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span className='processing'>Processing...</span>
+                                    </td>
+                                </tr>
+                            </table> */}
+
+
                         </div>
                     }
                     <div>
@@ -275,7 +298,7 @@ export default function Params() {
                         }
                         {screen === SCREEN.GameScheduler &&
                             <div>
-                                <GameScheduler username={user} usertoken={token} setProcessing={setProcessing} />
+                                <GameScheduler username={user.username} usertoken={token} setProcessing={setProcessing} />
                             </div>
                         }
                     </div>

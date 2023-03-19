@@ -43,16 +43,19 @@ export default function GameScheduler({ username, usertoken, setProcessing }) {
     function getWeeks() {
         let list = [];
         let dtnext = new Date(new Date().toLocaleDateString());
+        if (dtnext.getDay() > 0) 
+            dtnext.setDate(dtnext.getDate() - dtnext.getDay());
 
         list.push(<option>Select Week</option>);
 
         for (let n = 0; n < 4; n++) {
-            if (dtnext.getDay() > 0) {
-                dtnext.setDate(dtnext.getDate() - dtnext.getDay());
-            } else {
-                dtnext.setDate(dtnext.getDate() + 7);
-            }
+            // if (dtnext.getDay() > 0) {
+            //     dtnext.setDate(dtnext.getDate() - dtnext.getDay());
+            // } else {
+            //     dtnext.setDate(dtnext.getDate() + 7);
+            // }
             list.push(<option value={dtnext.toISOString().substring(0, 10).replaceAll("-", "")}>{dtnext.toLocaleDateString()}</option>)
+            dtnext.setDate(dtnext.getDate() + 7);
         }
         return list;
     }
