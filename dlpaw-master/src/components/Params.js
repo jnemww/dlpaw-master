@@ -27,6 +27,8 @@ export default function Params() {
     const [seasongamedata, setSeasongamedata] = useState(null);
     const [screen, setScreen] = useState(null);
     const [queryhanditems, setQueryhanditems] = useState(null);
+    //const [playerimages, setPlayerimages] = useState([]);
+    const [leaguemembers, setLeaguemembers] = useState(null);
     const [token, setToken] = useState(null);
     const pe = process.env;
     const league = pe.REACT_APP_LEAGUE;
@@ -39,6 +41,10 @@ export default function Params() {
     const gametkn = pe.REACT_APP_GAME_TOKEN;
     const sf = pe.REACT_APP_SPACE_FILLER;
 
+    // useEffect(() => {
+    //     console.log("leaguemembers in params.js =>", leaguemembers);
+    //     //console.log("player images in params.js =>", playerimages);
+    // }, [leaguemembers]);
 
     //load seasons
     useEffect(() => {
@@ -186,27 +192,28 @@ export default function Params() {
         <div>
             {!user &&
                 <div>
-                    <SignIn setToken={setToken} />
-                    {/* <SignUp /> */}
+                    <SignIn setToken={setToken} setLeaguemembers={setLeaguemembers} />
                     <AuthDetails setUser={setUser} />
-                    {/* <Login setUser={setUser} setTokens={setTokens} /> */}
                 </div>
             }
             {user &&
                 <div>
                     <div>
                         <table className='menu'>
-                            <tr>
-                                <td className='rightborder' onClick={() => setScreen(SCREEN.Table)}>Game Review</td>
-                                <td className='rightborder' onClick={() => setScreen(SCREEN.Standings)}>Standings</td>
-                                <td className='rightborder' onClick={() => setScreen(SCREEN.Frequency)}>Frequencies</td>
-                                <td className='rightborder' rowSpan={2}><AuthDetails setUser={setUser} /></td>
-                            </tr>
-                            <tr>
-                                <td className='rightborder' onClick={() => setScreen(SCREEN.HandQuery)}>Find Hands</td>
-                                <td className='rightborder' onClick={() => setScreen(SCREEN.GameScheduler)}>Schedule</td>
-                                <td className='rightborder' onClick={() => setScreen(SCREEN.ProfitSummary)}>Profit Summary</td>
-                            </tr>
+                            <tbody>
+                                <tr>
+                                    <td className='rightborder' onClick={() => setScreen(SCREEN.Table)}>Game Review</td>
+                                    <td className='rightborder' onClick={() => setScreen(SCREEN.Standings)}>Standings</td>
+                                    <td className='rightborder' onClick={() => setScreen(SCREEN.Frequency)}>Frequencies</td>
+                                    <td className='rightborder' rowSpan={2}><AuthDetails setUser={setUser} /></td>
+                                </tr>
+                                <tr>
+                                    <td className='rightborder' onClick={() => setScreen(SCREEN.HandQuery)}>Find Hands</td>
+                                    <td className='rightborder' onClick={() => setScreen(SCREEN.GameScheduler)}>Schedule</td>
+                                    <td className='rightborder' onClick={() => setScreen(SCREEN.ProfitSummary)}>Profit Summary</td>
+                                </tr>
+                            </tbody>
+
                             {/* <tr>
                                 <td colSpan={4}>{token}</td>
                             </tr> */}
@@ -220,29 +227,31 @@ export default function Params() {
                         screen === SCREEN.HandQuery) &&
                         <div>
                             <table className='pokertableboard'>
-                                <tr>
-                                    <td>
-                                        {screen}: {selectedseason}, Game: {selectedgame}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <select onChange={(e) => { setSelectedseason(e.target.value) }} defaultValue={selectedseason}>{seasonitems}</select>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <select onChange={(e) => setSelectedgame(e.target.value)} defaultValue={selectedgame}>{gameitems}</select>
-                                        <button onClick={RefreshHands}>Clear Filter</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <button onClick={ScrollBack}>&lt;&lt;</button>
-                                        <select id="selhand" defaultValue={selectedhand} onChange={(e) => setSelectedhand(e.target.value)}>{handitems}</select>
-                                        <button onClick={ScrollFwd}>&gt;&gt;</button>
-                                    </td>
-                                </tr>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            {screen}: {selectedseason}, Game: {selectedgame}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <select onChange={(e) => { setSelectedseason(e.target.value) }} defaultValue={selectedseason}>{seasonitems}</select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <select onChange={(e) => setSelectedgame(e.target.value)} defaultValue={selectedgame}>{gameitems}</select>
+                                            <button onClick={RefreshHands}>Clear Filter</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <button onClick={ScrollBack}>&lt;&lt;</button>
+                                            <select id="selhand" defaultValue={selectedhand} onChange={(e) => setSelectedhand(e.target.value)}>{handitems}</select>
+                                            <button onClick={ScrollFwd}>&gt;&gt;</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
                             </table>
                         </div>
                     }
@@ -269,7 +278,7 @@ export default function Params() {
                     <div>
                         {screen === SCREEN.Table &&
                             <div>
-                                {selectedhand && <Table currenthand={selectedhand} />}
+                                {selectedhand && <Table currenthand={selectedhand} leaguemembers={leaguemembers} />}
                             </div>
                         }
                         {screen === SCREEN.ProfitSummary &&

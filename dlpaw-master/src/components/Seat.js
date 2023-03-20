@@ -1,13 +1,17 @@
 import Enumerable from 'linq';
 import React, { useEffect, useState } from 'react';
 
-export default function Seat({hand, seatid}){
+export default function Seat({hand, seatid, leaguemembers}){
 
   //console.log("SEAT seatid: " + props.seatid + "hand:" + props.hand);
 
   var s = Enumerable.from(hand.seats)
       .where(x => x.id == "seat" + (seatid))
       .toArray()[0];
+
+  let pinfo = Enumerable.from(leaguemembers)
+      .where(p => p.mavens_login == s.player)
+      .toArray();
   
     if(s == null){
       return (  <table className={`seat${seatid} pokertableopenseat`}>
@@ -41,17 +45,17 @@ export default function Seat({hand, seatid}){
 
     return (
       <table className={isButton()}>
-        {/* <tr>
-          <td>{s.id}</td>
-        </tr> */}
         <tr>
-          <td>{s.player}</td>
+          <td><img className='playerimg' height={20} width={20} src={pinfo[0].url}/></td>
         </tr>
         <tr>
-          <td>{s.chipstack.toLocaleString()}</td>
+          <td><span className='substreet'>{s.player}</span></td>
         </tr>
         <tr>
-          <td className={isProfit()}>{p.profit.toLocaleString()}</td>
+          <td><span className='substreet'>{s.chipstack.toLocaleString()}</span></td>
+        </tr>
+        <tr>
+          <td className={isProfit()}><span className='substreet'>{p.profit.toLocaleString()}</span></td>
         </tr>
         <tr>
           <td>

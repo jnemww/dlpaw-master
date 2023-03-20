@@ -2,20 +2,20 @@ import Enumerable from 'linq';
 import React, { useEffect, useState } from 'react';
 import Seat from './Seat';
 
-export default function Table({currenthand}){
+export default function Table({ currenthand, leaguemembers }) {
 
     let o = {};
-    if(currenthand !== undefined){
+    if (currenthand !== undefined) {
         o = JSON.parse(currenthand);
     }
 
-    function getActions(o){
+    function getActions(o) {
         var list = [];
-        if(o?.streets == undefined) return "";
+        if (o?.streets == undefined) return "";
 
         o?.streets?.forEach(s => {
-            if(s.cards_dealt !== null && s.cards_dealt !== undefined)
-                var c = s?.cards_dealt?.replace("[","")?.replace("]","")?.split(" ");
+            if (s.cards_dealt !== null && s.cards_dealt !== undefined)
+                var c = s?.cards_dealt?.replace("[", "")?.replace("]", "")?.split(" ");
             else
                 var c = [];
 
@@ -25,19 +25,19 @@ export default function Table({currenthand}){
                         <span className='street'>{s.name}</span>&nbsp;
                         {
                             c.map((x) => {
-                                return (<img className='actionscard' src={"./images/c" + x.toLowerCase() + ".png"}/>)
+                                return (<img className='actionscard' src={"./images/c" + x.toLowerCase() + ".png"} />)
 
 
                             })
                         }
                     </div>
                     <div>
-                        <span className='substreet'>POT: {s.runningpot} {(s.name != "PREFLOP")?", +" + s.pot:""}</span>
+                        <span className='substreet'>POT: {s.runningpot} {(s.name != "PREFLOP") ? ", +" + s.pot : ""}</span>
                     </div>
                 </div>
-            );  
+            );
 
-            if(s?.handequities?.length>0){
+            if (s?.handequities?.length > 0) {
                 list.push(<div><span className='equitiestitle'>{s.name} ODDS: </span></div>);
                 s.handequities.forEach(e => {
                     list.push(
@@ -46,13 +46,13 @@ export default function Table({currenthand}){
                 })
             }
 
-            if(s?.actions?.length>0){
-                list.push(<div><span className='equitiestitle'>{s.name} ACTION: </span></div>);                
+            if (s?.actions?.length > 0) {
+                list.push(<div><span className='equitiestitle'>{s.name} ACTION: </span></div>);
                 s.actions.forEach(a => {
-                    var amt ="";
-                    if(a.amount != 0) amt = a.amount;
+                    var amt = "";
+                    if (a.amount != 0) amt = a.amount;
                     list.push(
-                      <div><span className='actions'>{a.player + " " + a.action + " " + amt}</span></div>
+                        <div><span className='actions'>{a.player + " " + a.action + " " + amt}</span></div>
                     );
                 })
             }
@@ -61,75 +61,77 @@ export default function Table({currenthand}){
         return list;
     }
 
-    return(
+    return (
         <table className='pokertable'>
-            <tr>
-                <td colSpan="3">
-                    <table className='pokertableboarddesc'>
-                        <tr><td>Hand: {o.handID + ", Blinds: (" + o.blind_small + "/" + o.blind_big + "/" + o.ante + ")"}</td></tr>
-                    </table>
-                </td>
-            </tr>
-            <tr>
-                <td colSpan={3}>
-                    <table className='centercontent'>
-                        <tr>
-                            <td>
-                            {
-                                o?.summary?.board  && 
-                                <table className='pokertableboard'>
-                                    <tr>
-                                        <td>
-                                            {
-                                                o?.summary?.board.split(" ").map((x) => (<img className='boardcard' src={"./images/c" + x.toLowerCase() + ".png"}/>))
-                                            }
-                                        </td>
-                                    </tr>
-                                </table>
-                            }
-                            </td>
-                            <td>
-                            {
-                                o?.summary?.rabbit  && 
-                                <table className='pokertablerabbit'>
-                                    <tr>
-                                        <td>
-                                            {
-                                                o?.summary?.rabbit.split(" ").map((x) => (<img className='rabbitcard' src={"./images/c" + x.toLowerCase() + ".png"}/>))
-                                            }
-                                        </td>
-                                    </tr>
-                                </table>
-                            }
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-            <tr>
-                <td><Seat hand={o} seatid={9} class=""/></td>
-                <td rowSpan="4">
-                    <div className='pokertable'>{getActions(o)}</div>
-                </td>
-                <td><Seat hand={o} seatid={1} /></td>
-            </tr>
-            <tr>
-                <td><Seat hand={o} seatid={8} /></td>
-                <td><Seat hand={o} seatid={2} /></td>
-            </tr>
-            <tr>
-                <td><Seat hand={o} seatid={7} /></td>
-                <td><Seat hand={o} seatid={3} /></td>
-            </tr>
-            <tr>
-                <td><Seat hand={o} seatid={6} /></td>
-                <td><Seat hand={o} seatid={4} /></td>
-            </tr>
-            <tr>
-                <td colSpan={3}>
-                    <Seat hand={o} seatid={5} />
-                </td>
-            </tr>
+            <tbody>
+                <tr>
+                    <td colSpan="3">
+                        <table className='pokertableboarddesc'>
+                            <tr><td>Hand: {o.handID + ", Blinds: (" + o.blind_small + "/" + o.blind_big + "/" + o.ante + ")"}</td></tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td colSpan={3}>
+                        <table className='centercontent'>
+                            <tr>
+                                <td>
+                                    {
+                                        o?.summary?.board &&
+                                        <table className='pokertableboard'>
+                                            <tr>
+                                                <td>
+                                                    {
+                                                        o?.summary?.board.split(" ").map((x) => (<img className='boardcard' src={"./images/c" + x.toLowerCase() + ".png"} />))
+                                                    }
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    }
+                                </td>
+                                <td>
+                                    {
+                                        o?.summary?.rabbit &&
+                                        <table className='pokertablerabbit'>
+                                            <tr>
+                                                <td>
+                                                    {
+                                                        o?.summary?.rabbit.split(" ").map((x) => (<img className='rabbitcard' src={"./images/c" + x.toLowerCase() + ".png"} />))
+                                                    }
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    }
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td><Seat hand={o} seatid={9} leaguemembers={leaguemembers} /></td>
+                    <td rowSpan="4">
+                        <div className='pokertable'>{getActions(o)}</div>
+                    </td>
+                    <td><Seat hand={o} seatid={1} leaguemembers={leaguemembers} /></td>
+                </tr>
+                <tr>
+                    <td><Seat hand={o} seatid={8} leaguemembers={leaguemembers} /></td>
+                    <td><Seat hand={o} seatid={2} leaguemembers={leaguemembers} /></td>
+                </tr>
+                <tr>
+                    <td><Seat hand={o} seatid={7} leaguemembers={leaguemembers} /></td>
+                    <td><Seat hand={o} seatid={3} leaguemembers={leaguemembers} /></td>
+                </tr>
+                <tr>
+                    <td><Seat hand={o} seatid={6} leaguemembers={leaguemembers} /></td>
+                    <td><Seat hand={o} seatid={4} leaguemembers={leaguemembers} /></td>
+                </tr>
+                <tr>
+                    <td colSpan={3}>
+                        <Seat hand={o} seatid={5} leaguemembers={leaguemembers} />
+                    </td>
+                </tr>
+            </tbody>
         </table>
     );
 }

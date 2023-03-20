@@ -43,7 +43,7 @@ export default function GameScheduler({ username, usertoken, setProcessing }) {
     function getWeeks() {
         let list = [];
         let dtnext = new Date(new Date().toLocaleDateString());
-        if (dtnext.getDay() > 0) 
+        if (dtnext.getDay() > 0)
             dtnext.setDate(dtnext.getDate() - dtnext.getDay());
 
         list.push(<option>Select Week</option>);
@@ -110,7 +110,7 @@ export default function GameScheduler({ username, usertoken, setProcessing }) {
             .replace(leaguetkn, league)
             .replace(dtkn, schedule.StartofWeek)
             .replaceAll(" ", sf);
-        var f = await fetch(url, //"https://us-central1-donkleaguedataservices.cloudfunctions.net/userfunctions/schedules/Donk%20League/" + schedule.StartofWeek, 
+        var f = await fetch(url,
             {
                 headers: { 'Authorization': 'Bearer ' + token }
             })
@@ -180,88 +180,85 @@ export default function GameScheduler({ username, usertoken, setProcessing }) {
                         <br />
                         <br />
                         <table className='gamescheduler'>
-                            <tr>
-                                <td className='items' align='center' colSpan={3}>Week of :
-                                    <select onChange={(e) => handleChange(e.target.value, 1, UPDATE_TYPE.StartofWeek)}>
-                                        {getWeeks()}
-                                    </select>
-                                </td>
-                                <td></td>
-                            </tr>
-                            {[...Array(7)].map((x, i) => {
-                                return (<tr key={i}>
-                                    <td className='items'>
-                                        {schedule.Days[i].Day}
-                                    </td>
-                                    <td>
-                                        <select key={i} onChange={(e) => handleChange(e.target.value, i, UPDATE_TYPE.Availability)}>
-                                            <option>No</option>
-                                            <option>Yes</option>
+                            <tbody>
+                                <tr>
+                                    <td className='items' align='center' colSpan={3}>Week of :
+                                        <select onChange={(e) => handleChange(e.target.value, 1, UPDATE_TYPE.StartofWeek)}>
+                                            {getWeeks()}
                                         </select>
                                     </td>
-
-                                    <td>
-                                        <select key={i} onChange={(e) => handleChange(e.target.value, i, UPDATE_TYPE.StartTime)}>
-                                            <option value="0" selected>Flexible</option>
-                                            <option value="11">11pm</option>
-                                            <option value="10">10pm</option>
-                                            <option value="9" >9pm</option>
-                                            <option value="8">8pm</option>
-                                            <option value="7">7pm</option>
-                                            <option value="6">6pm</option>
-                                            <option value="5">5pm</option>
-                                        </select>
+                                    <td></td>
+                                </tr>
+                                {[...Array(7)].map((x, i) => {
+                                    return (<tr key={i}>
+                                        <td className='items'>
+                                            {schedule.Days[i].Day}
+                                        </td>
+                                        <td>
+                                            <select key={i} onChange={(e) => handleChange(e.target.value, i, UPDATE_TYPE.Availability)}>
+                                                <option>No</option>
+                                                <option>Yes</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select key={i} defaultValue={0} onChange={(e) => handleChange(e.target.value, i, UPDATE_TYPE.StartTime)}>
+                                                <option value="0">Flexible</option>
+                                                <option value="11">11pm</option>
+                                                <option value="10">10pm</option>
+                                                <option value="9" >9pm</option>
+                                                <option value="8">8pm</option>
+                                                <option value="7">7pm</option>
+                                                <option value="6">6pm</option>
+                                                <option value="5">5pm</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    );
+                                }
+                                )}
+                                <tr>
+                                    <td align='center' colSpan={3}>
+                                        <button onClick={saveSchedule}>Save Schedule</button>
                                     </td>
                                 </tr>
-                                );
-                            }
-                            )}
-                            <tr>
-                                <td align='center' colSpan={3}>
-                                    <button onClick={saveSchedule}>Save Schedule</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colSpan={3}></td>
-                            </tr>
-                            <tr>
-                                <td colSpan={3}></td>
-                            </tr>
-                            <tr>
-                                <td align='center' colSpan={3}>
-                                    <button onClick={getSchedule}>View Schedule</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colSpan={3}>
-                                    <div>
-                                        {schedulereport &&
-                                            <DataTable tbodyData={schedulereport}
-                                                rowclasses={["datatablegrey", "datatablewhite"]}
-                                                classes={["text", "numeric", "numeric", "numeric", "numeric"]}
-                                                functions={[getScheduleDetails, , , ,]}
-                                            />
-                                        }
-                                    </div>
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td colSpan={3}>
-                                    <div>
-                                        {scheduledetails &&
-                                            <DataTable tbodyData={scheduledetails}
-                                                rowclasses={["datatablegrey", "datatablewhite"]}
-                                                classes={["text", "numeric", "numeric"]}
-                                                functions={[, ,]}
-                                            />
-                                        }
-                                    </div>
-                                </td>
-                            </tr>
-
-
-
+                                <tr>
+                                    <td colSpan={3}></td>
+                                </tr>
+                                <tr>
+                                    <td colSpan={3}></td>
+                                </tr>
+                                <tr>
+                                    <td align='center' colSpan={3}>
+                                        <button onClick={getSchedule}>View Schedule</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colSpan={3}>
+                                        <div>
+                                            {schedulereport &&
+                                                <DataTable tbodyData={schedulereport}
+                                                    rowclasses={["datatablegrey", "datatablewhite"]}
+                                                    classes={["text", "numeric", "numeric", "numeric", "numeric"]}
+                                                    functions={[getScheduleDetails, , , ,]}
+                                                />
+                                            }
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colSpan={3}>
+                                        <div>
+                                            {scheduledetails &&
+                                                <DataTable tbodyData={scheduledetails}
+                                                    rowclasses={["datatablegrey", "datatablewhite"]}
+                                                    classes={["text", "numeric", "numeric"]}
+                                                    functions={[, ,]}
+                                                />
+                                            }
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
                         </table>
                     </div>
                 </div>

@@ -520,3 +520,9 @@ dialog.spinner{
   border: none;
   enable-background: false;
 }
+img.playerimg{
+  height: 25px;
+  width: 25px;
+  float: right;
+  overflow: hidden;
+}

@@ -21,7 +21,7 @@ return (<table className="pokertableboard">
                 </thead>
                 <tbody> {tbodyData.map((row, index1) => {
                         return  <tr key={index1} className={rowclasses[index1%2]}> {theadData(tbodyData).map((key, index2) => {
-                                    return <td onClick={()=>functions[index2](row[key])} key={row[key] + index2} className={classes[index2]}>{row[key]}</td> })}
+                                    return <td onClick={()=>functions[index2](row[key])} key={row[key] + "_" + index2} className={classes[index2]}>{row[key]}</td> })}
                                 </tr>;
                             })
                         }

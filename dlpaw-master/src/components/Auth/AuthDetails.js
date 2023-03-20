@@ -20,7 +20,7 @@ export default function AuthDetails({ setUser }) {
                     .then((url) => {
                         setProfileimg(url);
                         nuser.photourl = url;
-                        console.log("profile url is: ", url);
+                        //console.log("profile url is: ", url);
                     })
 
                 setAuthuser(user);
