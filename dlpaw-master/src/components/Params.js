@@ -5,11 +5,13 @@ import Standings from './Standings';
 import PlayFrequencies from './PlayFrequencies';
 import HandQuery from './HandQuery';
 import Table from './Table';
-import { SCREEN } from '../enums'
+import { SCREEN, menu } from '../enums'
 import { LoadingSpinner } from "./Spinner2";
 import GameScheduler from './GameScheduler';
 import SignIn from './Auth/SignIn';
 import AuthDetails from './Auth/AuthDetails';
+import Dropdown from 'react-dropdown';
+import 'react-dropdown/style.css';
 
 export default function Params() {
     const [user, setUser] = useState(null);
@@ -40,11 +42,12 @@ export default function Params() {
     const seasontkn = pe.REACT_APP_SEASON_TOKEN;
     const gametkn = pe.REACT_APP_GAME_TOKEN;
     const sf = pe.REACT_APP_SPACE_FILLER;
+    const options = menu;
+    const defaultOption = options[0];
 
-    // useEffect(() => {
-    //     console.log("leaguemembers in params.js =>", leaguemembers);
-    //     //console.log("player images in params.js =>", playerimages);
-    // }, [leaguemembers]);
+    useEffect(() => {
+        console.log("Screeen => ", screen);
+    }, [screen]);
 
     //load seasons
     useEffect(() => {
@@ -188,6 +191,12 @@ export default function Params() {
         setSelectedhand(document.getElementById('selhand').value);
     }
 
+    function printmenuitem(e){
+        setScreen(e.value);
+        console.log(e);
+        return 0;
+    }
+
     return (
         <div>
             {!user &&
@@ -198,7 +207,20 @@ export default function Params() {
             }
             {user &&
                 <div>
-                    <div>
+                    <table className='menu'>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <Dropdown options={options} onChange={(e) => {printmenuitem(e)}} value={defaultOption} placeholder="Select an option"/>
+                                </td>
+                                <td>
+                                    <span className='navpath'>{screen} {selectedseason && `/ Season: ${selectedseason}`} {selectedgame && `/ Game: ${selectedgame}`}</span>
+                                </td>
+                                <td rowSpan={2} align="right"><AuthDetails setUser={setUser} /></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    {/* <div>
                         <table className='menu'>
                             <tbody>
                                 <tr>
@@ -213,12 +235,8 @@ export default function Params() {
                                     <td className='rightborder' onClick={() => setScreen(SCREEN.ProfitSummary)}>Profit Summary</td>
                                 </tr>
                             </tbody>
-
-                            {/* <tr>
-                                <td colSpan={4}>{token}</td>
-                            </tr> */}
-                        </table>
-                    </div>
+                         </table>
+                    </div> */}
                     {(screen === SCREEN.Frequency ||
                         screen === SCREEN.Table ||
                         screen === SCREEN.ProfitSummary ||
@@ -228,11 +246,11 @@ export default function Params() {
                         <div>
                             <table className='pokertableboard'>
                                 <tbody>
-                                    <tr>
+                                    {/* <tr>
                                         <td>
                                             {screen}: {selectedseason}, Game: {selectedgame}
                                         </td>
-                                    </tr>
+                                    </tr> */}
                                     <tr>
                                         <td>
                                             <select onChange={(e) => { setSelectedseason(e.target.value) }} defaultValue={selectedseason}>{seasonitems}</select>

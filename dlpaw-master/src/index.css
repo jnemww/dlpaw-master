@@ -70,7 +70,7 @@ div.pokertable{
   border-color: brown;
   border: 2px solid;
   text-align: left;
-  height: 100%;
+  height: 450px;
   width: 100%;
   overflow-y:auto;
   /* scrollbar-width: none; */
@@ -103,7 +103,7 @@ table.pokertable{
   background-position-y: center;
   background-blend-mode: lighten;
   background-repeat: no-repeat; */
-  border: 1px solid;
+  /* border: 1px solid; */
   text-align: center;
   height: 100px;
   width: 100%;
@@ -195,7 +195,7 @@ table.seat9{
 }
 table.pokertableseat{
   width: 90px;
-  height: 132px;
+  height: 110px;
   border: 2px;
   border-start-start-radius: 10px 10px;
   border-start-end-radius: 10px 10px;
@@ -203,17 +203,16 @@ table.pokertableseat{
   border-end-start-radius: 10px 10px;
   border-color: brown;
   border-style: solid;
+  background-color: white;
   text-align: center;
   padding: 2px;
-  width: 75;
-  height: 20;
   font-size: 12pt;
   font-family: serif;
   margin: 0 auto;
 }
 table.pokertableseatbutton{
   width: 90px;
-  height: 132px;
+  height: 110px;
   border: 2px;
   border-start-start-radius: 10px 10px;
   border-start-end-radius: 10px 10px;
@@ -224,8 +223,6 @@ table.pokertableseatbutton{
   border-style: solid;
   text-align: center;
   padding: 2px;
-  width: 75;
-  height: 20;
   font-size: 12pt;
   font-family: serif;
   margin: 0 auto;
@@ -233,7 +230,7 @@ table.pokertableseatbutton{
 }
 table.pokertableopenseat{
   width: 90px;
-  height: 132px;
+  height: 110px;
   border: 2px;
   border-start-start-radius: 10px 10px;
   border-start-end-radius: 10px 10px;
@@ -244,8 +241,6 @@ table.pokertableopenseat{
   border-style: solid;
   text-align: center;
   padding: 2px;
-  width: 75;
-  height: 20;
   font-size: 12pt;
   font-family: serif;
   margin: 0 auto;
@@ -262,7 +257,7 @@ table.menu{
   border-start-end-radius: 5px 5px;
   border-end-end-radius: 5px 5px;
   border-end-start-radius: 5px 5px;
-  margin: 0 auto;
+  margin: 5px auto;
 }
 td.items{
   border: 1px solid;
@@ -295,7 +290,7 @@ table.pokertableboard{
   border-style: solid;
   padding: 5px;
   height: 20;
-  margin: 0 auto;
+  margin: 2px auto;
 }
 table.pokertableboarddesc{
   background-color: bisque;
@@ -412,6 +407,15 @@ span.actionstitle{
   font-size: 12pt;
   font-family: serif;
 }
+span.navpath{
+  text-align: left;
+  color: darkblue;
+  background-color: white;
+  font-weight: bold;
+  font-size: 12pt;
+  text-decoration: underline;
+  font-family: serif;
+}
 span.actions{
   text-align: left;
   color: white;
@@ -445,27 +449,27 @@ td.seat{
 td.profitpositive{
   background-color:lightgreen;
   border-color: green;
-  border: 2px;
-  border-start-start-radius: 10px 10px;
-  border-start-end-radius: 10px 10px;
-  border-end-end-radius: 10px 10px;
-  border-end-start-radius: 10px 10px;
+  border: 1px;
+  border-start-start-radius: 5px 5px;
+  border-start-end-radius: 5px 5px;
+  border-end-end-radius: 5px 5px;
+  border-end-start-radius: 5px 5px;
   border-style: solid;
-  padding: 5px;
+  padding: 1px;
   margin: 0 auto;
 }
 
 td.profitnegative{
   background-color:lightcoral;
   border-color: red;
-  border: 2px;
-  border-start-start-radius: 10px 10px;
-  border-start-end-radius: 10px 10px;
-  border-end-end-radius: 10px 10px;
-  border-end-start-radius: 10px 10px;
+  border: 1px;
+  border-start-start-radius: 5px 5px;
+  border-start-end-radius: 5px 5px;
+  border-end-end-radius: 5px 5px;
+  border-end-start-radius: 5px 5px;
   border-style: solid;
-  padding: 5px;
-  margin: 0 auto;
+  padding: 1px;
+  margin: 1px auto;
 }
 tr.datatablegrey{
   background-color: lightgrey;
@@ -521,8 +525,82 @@ dialog.spinner{
   enable-background: false;
 }
 img.playerimg{
-  height: 25px;
-  width: 25px;
-  float: right;
+  height: 35px;
+  width: 35px;
+  /* float: right; */
   overflow: hidden;
+}
+span.playername{
+  writing-mode:vertical-lr;text-orientation: mixed;
+}
+
+
+/* ovelap images */
+/* Image Container */
+td.container{
+  position: relative;
+  width: 50px;
+  height: 50px;
+}
+img.top{
+  position: absolute;
+  z-index: 1;
+  /* width: 100%; */
+  top: -10px;
+  left: 2px;
+}
+img.bottom{
+  position: absolute;
+  z-index: 2;    /* Place this image in front of the img1 */
+  /* width: 100%; */
+  top: 15px;
+  left: 15px;
+}
+
+/*************** menu  **************/
+.dropbtn {
+  background-color: #4CAF50;
+  color: white;
+  padding: 16px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+}
+/* The container <div> - needed to position the dropdown content */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+/* Links inside the dropdown */
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+/* Change color of dropdown links on hover */
+.dropdown-content a:hover {background-color: #f1f1f1
+}
+/* Show the dropdown menu on hover */
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+/* Change the background color of the dropdown button when the dropdown content is shown */
+.dropdown:hover .dropbtn {
+  background-color: #3e8e41;
+}
+th.tableheader{
+  background-color: blue;
+  color: white;
+  font-weight: bold;
+  font-size: 14pt;
 }

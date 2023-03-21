@@ -1,5 +1,3 @@
-import Enumerable from 'linq';
-import React, { useEffect, useState } from 'react';
 import Seat from './Seat';
 
 export default function Table({ currenthand, leaguemembers }) {
@@ -14,10 +12,9 @@ export default function Table({ currenthand, leaguemembers }) {
         if (o?.streets == undefined) return "";
 
         o?.streets?.forEach(s => {
+            let c = [];
             if (s.cards_dealt !== null && s.cards_dealt !== undefined)
-                var c = s?.cards_dealt?.replace("[", "")?.replace("]", "")?.split(" ");
-            else
-                var c = [];
+                c = s?.cards_dealt?.replace("[", "")?.replace("]", "")?.split(" ");
 
             list.push(
                 <div>

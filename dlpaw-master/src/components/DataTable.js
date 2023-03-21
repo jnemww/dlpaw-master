@@ -1,6 +1,6 @@
 import {useEffect} from "react";
 
-export default function DataTable({ tbodyData, classes, functions, rowclasses }) { 
+export default function DataTable({ tbodyData, classes, functions, rowclasses, tableheader="tableheader" }) { 
     useEffect(() => {
         return () => {
             // Anything in here is fired on component unmount.
@@ -16,7 +16,7 @@ export default function DataTable({ tbodyData, classes, functions, rowclasses })
 return (<table className="pokertableboard">
                 <thead>
                     <tr>
-                        {theadData(tbodyData).map(heading => { return <th key={heading}>{heading}</th> })} 
+                        {theadData(tbodyData).map(heading => { return <th className={tableheader} key={heading}>{heading}</th> })} 
                     </tr>
                 </thead>
                 <tbody> {tbodyData.map((row, index1) => {
