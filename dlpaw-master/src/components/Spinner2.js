@@ -3,9 +3,9 @@ import styled, { keyframes } from "styled-components";
 //import logo from "./favicon.ico";
 import "../App.css";
 
-export const LoadingSpinner = ({url}) => {
+export const LoadingSpinner = ({url="./favicon.ico"}) => {
   return (
-    <dialog open={true} className={"spinner"}><Rotate><img src={url==""?"./favicon.ico":url} className="App-logo spinner" /></Rotate></dialog>
+    <dialog open={true} className={"spinner"}><Rotate><img src={url} className="App-logo spinner" /></Rotate></dialog>
   );
 };
 // Create the keyframes

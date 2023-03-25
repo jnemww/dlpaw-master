@@ -1,4 +1,4 @@
-//import Enumerable from 'linq';
+import Enumerable from 'linq';
 import React, { useEffect, useState } from 'react';
 import ProfitSummary from './ProfitSummary';
 import Standings from './Standings';
@@ -44,9 +44,14 @@ export default function Params() {
     const sf = pe.REACT_APP_SPACE_FILLER;
     const options = menu;
     const defaultOption = options[0];
+    const [screenstack, setScreenstack] = useState([]);
 
     useEffect(() => {
-        console.log("Screeen => ", screen);
+        let s = screenstack;
+        s.push(screen);
+        setScreenstack(s);
+        console.log("Screen => ", screen);
+        console.dir(screenstack);
     }, [screen]);
 
     //load seasons
@@ -103,9 +108,13 @@ export default function Params() {
 
             let list = [];
             list.push(<option value="">Select a Game</option>)
-            data.forEach(s => {
-                list.push(<option value={s.id}>{s.id}</option>)
-            });
+            Enumerable.from(data)
+                .orderBy(x => x.id.length)
+                .thenBy(x => x.id)
+                .toArray()
+                .forEach(s => {
+                    list.push(<option value={s.id}>{s.id}</option>)
+                });
             setGameitems(list);
             setProcessing(false);
         })();
@@ -191,7 +200,7 @@ export default function Params() {
         setSelectedhand(document.getElementById('selhand').value);
     }
 
-    function printmenuitem(e){
+    function printmenuitem(e) {
         setScreen(e.value);
         console.log(e);
         return 0;
@@ -201,8 +210,8 @@ export default function Params() {
         <div>
             {!user &&
                 <div>
-                    <SignIn setToken={setToken} setLeaguemembers={setLeaguemembers} />
-                    <AuthDetails setUser={setUser} />
+                    <SignIn setToken={setToken} setUser={setUser} setLeaguemembers={setLeaguemembers} />
+                    {/* <AuthDetails setUser={setUser} /> */}
                 </div>
             }
             {user &&
@@ -211,32 +220,15 @@ export default function Params() {
                         <tbody>
                             <tr>
                                 <td>
-                                    <Dropdown options={options} onChange={(e) => {printmenuitem(e)}} value={defaultOption} placeholder="Select an option"/>
+                                    <Dropdown options={options} onChange={(e) => { printmenuitem(e) }} value={defaultOption} placeholder="Select an option" />
                                 </td>
                                 <td>
                                     <span className='navpath'>{screen} {selectedseason && `/ Season: ${selectedseason}`} {selectedgame && `/ Game: ${selectedgame}`}</span>
                                 </td>
-                                <td rowSpan={2} align="right"><AuthDetails setUser={setUser} /></td>
+                                <td rowSpan={2} align="right"><AuthDetails setUser={setUser} userimageref={leaguemembers.find(p => p.email == user).url} /></td>
                             </tr>
                         </tbody>
                     </table>
-                    {/* <div>
-                        <table className='menu'>
-                            <tbody>
-                                <tr>
-                                    <td className='rightborder' onClick={() => setScreen(SCREEN.Table)}>Game Review</td>
-                                    <td className='rightborder' onClick={() => setScreen(SCREEN.Standings)}>Standings</td>
-                                    <td className='rightborder' onClick={() => setScreen(SCREEN.Frequency)}>Frequencies</td>
-                                    <td className='rightborder' rowSpan={2}><AuthDetails setUser={setUser} /></td>
-                                </tr>
-                                <tr>
-                                    <td className='rightborder' onClick={() => setScreen(SCREEN.HandQuery)}>Find Hands</td>
-                                    <td className='rightborder' onClick={() => setScreen(SCREEN.GameScheduler)}>Schedule</td>
-                                    <td className='rightborder' onClick={() => setScreen(SCREEN.ProfitSummary)}>Profit Summary</td>
-                                </tr>
-                            </tbody>
-                         </table>
-                    </div> */}
                     {(screen === SCREEN.Frequency ||
                         screen === SCREEN.Table ||
                         screen === SCREEN.ProfitSummary ||
@@ -244,6 +236,7 @@ export default function Params() {
                         screen === SCREEN.Standings ||
                         screen === SCREEN.HandQuery) &&
                         <div>
+                            {(screenstack.length > 2) && <img onClick={() => setScreen(screenstack[screenstack.length - 2])} height={20} src='./images/back.png' />}
                             <table className='pokertableboard'>
                                 <tbody>
                                     {/* <tr>
@@ -276,35 +269,22 @@ export default function Params() {
                     {user &&
                         processing &&
                         <div style={{ textAlign: "center" }}>
-                            <LoadingSpinner url={user.photourl} />
-                            {/* <table className='spinner'>
-                                <tr>
-                                    <td>
-                                        <LoadingSpinner />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <span className='processing'>Processing...</span>
-                                    </td>
-                                </tr>
-                            </table> */}
-
-
+                            <LoadingSpinner url={leaguemembers.find(p => p.email == user).url} />
                         </div>
                     }
                     <div>
                         {screen === SCREEN.Table &&
                             <div>
+                                {/* {(screenstack[screenstack.length - 1] === SCREEN.ProfitSummary ||
+                                    screenstack[screenstack.length - 1] === SCREEN.HandQuery)
+                                && <button onClick={() => setScreen(screenstack[screenstack.length - 1])}>Back</button>} */}
                                 {selectedhand && <Table currenthand={selectedhand} leaguemembers={leaguemembers} />}
                             </div>
                         }
                         {screen === SCREEN.ProfitSummary &&
                             selectedgamedata &&
                             <div>
-                                Click on hand type description to drill into individual hands for the group.
                                 <ProfitSummary gamedata={selectedgamedata} status={setProcessing} setQueryhanditems={setQueryhanditems} />
-                                {/* {queryhanditems && <Table currenthand={selectedhand} />} */}
                             </div>
                         }
                         {screen === SCREEN.Standings &&
@@ -325,7 +305,7 @@ export default function Params() {
                         }
                         {screen === SCREEN.GameScheduler &&
                             <div>
-                                <GameScheduler username={user.username} usertoken={token} setProcessing={setProcessing} />
+                                <GameScheduler username={user} usertoken={token} setProcessing={setProcessing} />
                             </div>
                         }
                     </div>

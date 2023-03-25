@@ -4,11 +4,13 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { collection, getDocs, getFirestore } from "firebase/firestore";
 import { listAll, ref, getDownloadURL } from "firebase/storage";
 
-export default function SignIn({ setToken, setLeaguemembers }) {
+export default function SignIn({ setToken, setUser, setLeaguemembers }) {
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
+    const [loginerror, setLoginerror] = useState();
 
     useEffect(() => {
+        //setToken(null);
 
         return (() => {
             if (!auth) return;
@@ -77,21 +79,14 @@ export default function SignIn({ setToken, setLeaguemembers }) {
         e.preventDefault();
         signInWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
-
                 userCredential.user.getIdToken()
                     .then(t => {
-                        setToken(t);
-                        //console.log("user email(0) => ", email, t);
+                        if (t == null || t == undefined) {
+                            setLoginerror("Could not obtain login token. Refresh browser and try again.");
+                            return;
+                        }
 
-
-
-
-
-
-
-
-
-
+                        console.log("user email, token => ", email, t);
                         let imgrefs = [];
                         let imgs = [];
                         let players = [];
@@ -141,19 +136,11 @@ export default function SignIn({ setToken, setLeaguemembers }) {
                                                     //console.log("profile url is: ", url);
                                                 })
                                             setLeaguemembers(players);
+                                            setToken(t);
+                                            setUser(email);
                                         })
                                     });
                             });
-
-
-
-
-
-
-
-
-
-
                     });
                 // // const d = async () => {
                 // const d = () => {
@@ -170,6 +157,7 @@ export default function SignIn({ setToken, setLeaguemembers }) {
 
                 //return users.doc(userCredential.user.uid).set({email: email});
             }).catch((error) => {
+                setLoginerror(error);
                 console.log(error);
             })
     }
@@ -200,6 +188,13 @@ export default function SignIn({ setToken, setLeaguemembers }) {
                         <tr>
                             <td>
                                 <button type="submit">Log In</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                {loginerror &&
+                                    <div>Login Error: {loginerror}</div>
+                                }
                             </td>
                         </tr>
                     </tbody>

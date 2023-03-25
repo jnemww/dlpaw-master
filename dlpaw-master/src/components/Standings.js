@@ -83,6 +83,8 @@ export default function Standings({games, season, status}){
                                     Finish : x.Finish,
                                     Points : x.Points
                     }))
+                    .orderBy(x => x.Game.length )
+                    .thenBy(x => x.Game)
                     .toArray();
                 setStandingsdetails(details);
                 

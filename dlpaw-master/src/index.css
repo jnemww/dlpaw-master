@@ -283,6 +283,7 @@ table.gamescheduler{
 table.pokertableboard{
   height: 75;
   border: 2px;
+  background-color: white;
   border-start-start-radius: 5px 5px;
   border-start-end-radius: 5px 5px;
   border-end-end-radius: 5px 5px;
@@ -290,6 +291,7 @@ table.pokertableboard{
   border-style: solid;
   padding: 5px;
   height: 20;
+  opacity: .8;
   margin: 2px auto;
 }
 table.pokertableboarddesc{
@@ -392,6 +394,14 @@ span.street{
   font-weight: bold;
   font-size: 12pt;
   text-decoration: underline;
+  font-family: serif;
+}
+span.params{
+  text-align: left;
+  background-color: white;
+  color: darkblue;
+  font-weight: bold;
+  font-size: 12pt;
   font-family: serif;
 }
 span.substreet{
@@ -523,6 +533,7 @@ dialog.spinner{
   background-color: transparent;
   border: none;
   enable-background: false;
+  z-index: 100;
 }
 img.playerimg{
   height: 35px;
@@ -603,4 +614,10 @@ th.tableheader{
   color: white;
   font-weight: bold;
   font-size: 14pt;
+}
+td.underline{
+  border-bottom: 2px solid blue;
+  /* border-style: solid;
+  border-width: 1px;
+  border-color: blue; */
 }

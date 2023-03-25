@@ -7,7 +7,7 @@ export default function Table({ currenthand, leaguemembers }) {
         o = JSON.parse(currenthand);
     }
 
-    function getActions(o) {
+    function getActions(o, leaguemembers) {
         var list = [];
         if (o?.streets == undefined) return "";
 
@@ -37,8 +37,11 @@ export default function Table({ currenthand, leaguemembers }) {
             if (s?.handequities?.length > 0) {
                 list.push(<div><span className='equitiestitle'>{s.name} ODDS: </span></div>);
                 s.handequities.forEach(e => {
+                    let playername = leaguemembers.find(({ mavens_login }) => mavens_login === e.player).nickname.toLowerCase();
+                    console.dir("playername", playername);
+                    console.dir(leaguemembers);
                     list.push(
-                        <div><span className='equities'>{e.player + " W: " + e.win + ", T: " + e.tie}</span></div>
+                        <div><span className='equities'>{playername+ " W: " + e.win + ", T: " + e.tie}</span></div>
                     );
                 })
             }
@@ -48,8 +51,9 @@ export default function Table({ currenthand, leaguemembers }) {
                 s.actions.forEach(a => {
                     var amt = "";
                     if (a.amount != 0) amt = a.amount;
+                    let playername = leaguemembers.find(({ mavens_login }) => mavens_login === a.player).nickname.toLowerCase()
                     list.push(
-                        <div><span className='actions'>{a.player + " " + a.action + " " + amt}</span></div>
+                        <div><span className='actions'>{playername + " " + a.action + " " + amt}</span></div>
                     );
                 })
             }
@@ -107,7 +111,7 @@ export default function Table({ currenthand, leaguemembers }) {
                 <tr>
                     <td><Seat hand={o} seatid={9} leaguemembers={leaguemembers} /></td>
                     <td rowSpan="4">
-                        <div className='pokertable'>{getActions(o)}</div>
+                        <div className='pokertable'>{getActions(o, leaguemembers)}</div>
                     </td>
                     <td><Seat hand={o} seatid={1} leaguemembers={leaguemembers} /></td>
                 </tr>
