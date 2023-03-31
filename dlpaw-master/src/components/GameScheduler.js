@@ -4,7 +4,7 @@ import DataTable from './DataTable';
 import { days, defaultschedule, UPDATE_TYPE } from "../enums";
 import { LoadingSpinner } from "./Spinner";
 
-export default function GameScheduler({ username, usertoken, setProcessing }) {
+export default function GameScheduler({ username, usertoken, setProcessing, leaguemembers }) {
     //const [user, setUser] = useState(username);
     const [token, setToken] = useState(usertoken);
     //const [processing, setProcessing] = useState(false);
@@ -148,7 +148,7 @@ export default function GameScheduler({ username, usertoken, setProcessing }) {
             .selectMany(x => Enumerable.from(x.Days), (player, day) => ({ player, day }))
             .where(d => d.day.Day == day)
             .select(z => ({
-                Player: z.player.Player,
+                Player: leaguemembers.find(({ email }) => email === z.player.Player).nickname.toLowerCase(),//z.player.Player,
                 Day: z.day.Day.substring(0, 3),
                 Available: z.day.Play == 1 ? "Yes" : "No",
                 Start: z.day.Play == 1 ? z.day.StartTime : ""
@@ -179,10 +179,10 @@ export default function GameScheduler({ username, usertoken, setProcessing }) {
                     <div>
                         <br />
                         <br />
-                        <table className='gamescheduler'>
+                        <table className='pokertableboard'>
                             <tbody>
                                 <tr>
-                                    <td className='items' align='center' colSpan={3}>Week of :
+                                    <td className='items' align='center' colSpan={3}>Week of :&nbsp;
                                         <select onChange={(e) => handleChange(e.target.value, 1, UPDATE_TYPE.StartofWeek)}>
                                             {getWeeks()}
                                         </select>

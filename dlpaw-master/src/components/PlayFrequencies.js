@@ -2,7 +2,7 @@ import Enumerable from 'linq';
 import DataTable from './DataTable';
 import React, { useEffect, useState, useFetch } from 'react';
 
-export default function PlayFrequencies({gamedata, status}){
+export default function PlayFrequencies({gamedata, status, leaguemembers}){
     const [results, setResults] = useState();
 
     useEffect(()=>{ 
@@ -34,7 +34,7 @@ export default function PlayFrequencies({gamedata, status}){
             .join(o1, a => a.Player, b => b.Player, (a, b) =>
                 ({
                     Street : a.Street,
-                    Player : a.Player,
+                    Player : leaguemembers.find(r => r.mavens_login == a.Player).nickname.toLowerCase(),
                     StreetSeen : a.Count,
                     HandsSeen : b.HandsPlayed,
                     PctSeen : (a.Count / b.HandsPlayed).toLocaleString(),

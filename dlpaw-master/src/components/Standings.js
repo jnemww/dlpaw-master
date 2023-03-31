@@ -2,7 +2,7 @@ import Enumerable from 'linq';
 import DataTable from './DataTable';
 import React, { useEffect, useState, useFetch, useSyncExternalStore } from 'react';
 
-export default function Standings({games, season, status}){
+export default function Standings({games, season, status, leaguemembers}){
     const [standings, setStandings] = useState();
     const [standingsdetails, setStandingsdetails] = useState();
     const [selectedstandingsdetails, setSelectedstandingsdetails] = useState();
@@ -79,7 +79,7 @@ export default function Standings({games, season, status}){
         
                 let details = Enumerable.from(p0)
                     .select(x => ({ Game : x.Game,
-                                    Player : x.Player,
+                                    Player : leaguemembers.find(r => r.mavens_login == x.Player).nickname.toLowerCase(),
                                     Finish : x.Finish,
                                     Points : x.Points
                     }))
@@ -103,13 +103,14 @@ export default function Standings({games, season, status}){
                     let d = Enumerable.from(p0).where(z => z.Player == p.player).select(x => ({ Player : x.Player, Game : x.Game, Points : x.Points, Finish : x.Finish })).toArray();
         
                     let pl = p.player;
+                    let pc = leaguemembers.find(r => r.mavens_login == p.player).nickname.toLowerCase();
                     let tp = Enumerable.from(d).sum(x => x.Points);
                     let pf = players.findIndex(s => p.player == s.player) +1;
                     let pb = tp - Enumerable.from(players).max(z => z.pts);
                     let f = Enumerable.from(d).where(z => z.Finish == 1).count();
                     let s = Enumerable.from(d).where(z => z.Finish == 2).count();
                     let t = Enumerable.from(d).where(z => z.Finish == 3).count();
-                    r.push({"Player": pl, "Pts": tp.toLocaleString(), "Place": pf, "Back": pb.toLocaleString(), Gold: f, Silver: s, Bronze: t});
+                    r.push({"Player": pc, "Pts": tp.toLocaleString(), "Place": pf, "Back": pb.toLocaleString(), Gold: f, Silver: s, Bronze: t});
                 });
                 
                 setStandings(r);

@@ -3,14 +3,16 @@ import DataTable from './DataTable';
 import { isObjectEmpty } from '../HelperFunctions';
 import React, { useEffect, useState } from 'react';
 
-export default function HandQuery({ gamedata, setQueryhanditems }) {
+export default function HandQuery({ gamedata, setQueryhanditems, leaguemembers }) {
     const [hands, setHands] = useState(gamedata?.hands);
     const [playeritems, setPlayeritems] = useState();
     const [selectedplayer, setSelectedplayer] = useState();
     const [selectedcard1, setSelectedcard1] = useState();
     const [selectedcard2, setSelectedcard2] = useState();
-    const [potsize, setPotsize] = useState("Enter min pot size");
+    const [potsize, setPotsize] = useState("Min pot size or max equity");
     const [results, setResults] = useState();
+    const [resultsmsg, setResultsmsg] = useState();
+    const noresults = "***No hands found.***";
 
     useEffect(() => {
         let list = [];
@@ -23,7 +25,7 @@ export default function HandQuery({ gamedata, setQueryhanditems }) {
             //     return a.localeCompare(b, undefined, {sensitivity: 'base'});
             //   })
             .forEach(s => {
-                list.push(<option value={s}>{s}</option>)
+                list.push(<option value={s}>{leaguemembers.find(r => r.mavens_login == s).nickname.toLowerCase()}</option>)
             });
         setPlayeritems(list);
         setQueryhanditems(undefined)
@@ -34,7 +36,7 @@ export default function HandQuery({ gamedata, setQueryhanditems }) {
 
     }, [gamedata]);
 
-    function Query() {
+    function Holecards() {
         const pattern_test1 = "C1[schd] C2[schd]".replace("C1", selectedcard1).replace("C2", selectedcard2);
         const pattern_test2 = "C1[schd] C2[schd]".replace("C1", selectedcard2).replace("C2", selectedcard1);
         const re1 = new RegExp(pattern_test1);
@@ -62,10 +64,12 @@ export default function HandQuery({ gamedata, setQueryhanditems }) {
                 .select(x => ({ HandID: x.handID }))
                 .toArray();
             setResults(res);
+            setResultsmsg(undefined);
         }
         else {
             setResults(undefined);
             setQueryhanditems(undefined);
+            setResultsmsg(noresults);
         }
     }
 
@@ -91,10 +95,12 @@ export default function HandQuery({ gamedata, setQueryhanditems }) {
                 .select(x => ({ HandID: x.handID }))
                 .toArray();
             setResults(res);
+            setResultsmsg(undefined);
         }
         else {
             setResults(undefined);
             setQueryhanditems(undefined);
+            setResultsmsg(noresults);
         }
     }
 
@@ -116,20 +122,89 @@ export default function HandQuery({ gamedata, setQueryhanditems }) {
                 .select(x => ({ HandID: x.handID }))
                 .toArray();
             setResults(res);
+            setResultsmsg(undefined);
         }
         else {
             setResults(undefined);
             setQueryhanditems(undefined);
+            setResultsmsg(noresults);
         }
 
     }
 
-    /*
-    BAD BEAT
-    m_hands.Where(p => !(p.streets[0].handequities is null)
-            && p.streets[0].handequities.Any(s => s.player == player && s.win < equity)
-            && p.summary.playerinfo.Any(x => x.player == player && x.profit > 0)).ToList();
-    */
+    function BadBeats() {
+        var res = [];
+
+        if(potsize == undefined || !parseInt(potsize)){
+            setResultsmsg("Enter a maximum equity value.(1 >= i < 100)");
+            return;
+        }
+
+        if(selectedplayer == undefined){
+            setResultsmsg("Select a player.");
+            return;
+        }
+
+        var o1 = Enumerable.from(hands)
+            .where(p => Enumerable.from(p.streets).count() > 0)
+            .where(p => !(p.streets[0].handequities == null)
+                && Enumerable.from(p.streets[0].handequities).any(s => (s.player == selectedplayer || selectedplayer == undefined) && s.win < potsize)
+                && Enumerable.from(p.summary.playerinfo).any(x => (x.player == selectedplayer || selectedplayer == undefined) && x.profit > 0))
+            .toArray();
+
+        var o2 = Enumerable.from(hands)
+            .where(p => Enumerable.from(p.streets).count() > 1)
+            .where(p => !(p.streets[1].handequities == null)
+                && Enumerable.from(p.streets[1].handequities).any(s => (s.player == selectedplayer || selectedplayer == undefined) && s.win < potsize)
+                && Enumerable.from(p.summary.playerinfo).any(x => (x.player == selectedplayer || selectedplayer == undefined) && x.profit > 0))
+            .toArray();
+
+        var o3 = Enumerable.from(hands)
+            .where(p => Enumerable.from(p.streets).count() > 2)
+            .where(p => !(p.streets[2].handequities == null)
+                && Enumerable.from(p.streets[2].handequities).any(s => (s.player == selectedplayer || selectedplayer == undefined) && s.win < potsize)
+                && Enumerable.from(p.summary.playerinfo).any(x => (x.player == selectedplayer || selectedplayer == undefined) && x.profit > 0))
+            .toArray();
+
+        try {
+            o1.forEach((h) => {
+                if (res.find(p => p.handID == h.handID) == undefined) {
+                    res.push(h);
+                }
+            })
+            o2.forEach(h => {
+                if (res.find(p => p.handID == h.handID) == undefined) {
+                    res.push(h);
+                }
+            })
+            o3.forEach(h => {
+                if (res.find(p => p.handID == h.handID) == undefined) {
+                    res.push(h);
+                }
+            })
+            //res = o1.concat(o2.concat(o3));
+        } catch (error) {
+            console.log(error);
+        }
+
+        if (res?.length > 0) {
+            setQueryhanditems(res);
+            res = Enumerable.from(res)
+                .select(x => ({ HandID: x.handID }))
+                .toArray();
+            setResults(res);
+            setResultsmsg(undefined);
+        }
+        else {
+            setResults(undefined);
+            setQueryhanditems(undefined);
+            setResultsmsg(noresults);
+        }
+    }
+    function ClearValue(){
+        document.getElementById('quantity').value = '';
+    }
+
     return (
         <div>
             <div>
@@ -191,7 +266,7 @@ export default function HandQuery({ gamedata, setQueryhanditems }) {
                         <tr>
                             <td colSpan={2}>
                                 <span className='params'>C&nbsp;</span>
-                                <input value={potsize} onChange={e => { setPotsize(Number(e.target.value)) }} />
+                                <input id="quantity" value={potsize} onFocus={ClearValue} onChange={e => { setPotsize(Number(e.target.value)) }} />
                             </td>
                         </tr>
                         <tr>
@@ -204,7 +279,7 @@ export default function HandQuery({ gamedata, setQueryhanditems }) {
                             <td colSpan={2}><span className='params'>=&gt;select (A) and (B), or (B)</span></td>
                         </tr>
                         <tr>
-                            <td colSpan={2}><button onClick={Query}>Search</button></td>
+                            <td colSpan={2}><button onClick={Holecards}>Search</button></td>
                         </tr>
                         <tr>
                             <td colSpan={2} className='underline'></td>
@@ -229,6 +304,30 @@ export default function HandQuery({ gamedata, setQueryhanditems }) {
                         </tr>
                         <tr>
                             <td colSpan={2}><button onClick={BigPots}>Search</button></td>
+                        </tr>
+                        <tr>
+                            <td colSpan={2} className='underline'></td>
+                        </tr>
+                        <tr>
+                            <td colSpan={2}><span className='params'>Search Improbable Odds :</span></td>
+                        </tr>
+                        <tr>
+                            <td colSpan={2}><span className='params'>=&gt;select (A) and (C)</span></td>
+                        </tr>
+                        <tr>
+                            <td colSpan={2}><button onClick={BadBeats}>Search</button></td>
+                        </tr>
+                        <tr>
+                            <td colSpan={2} className='underline'></td>
+                        </tr>
+                        <tr>
+                            <td colSpan={2}>
+                                <div>
+                                    {resultsmsg &&
+                                        <div><span className='resultsmsg'>{resultsmsg}</span></div>
+                                    }
+                                </div>
+                            </td>
                         </tr>
                     </table>
                 </div>

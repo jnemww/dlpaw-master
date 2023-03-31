@@ -404,6 +404,14 @@ span.params{
   font-size: 12pt;
   font-family: serif;
 }
+span.resultsmsg{
+  text-align: left;
+  background-color: white;
+  color: red;
+  font-weight: bold;
+  font-size: 18pt;
+  font-family: serif;
+}
 span.substreet{
   text-align: left;
   color: darkblue;
@@ -567,6 +575,15 @@ img.bottom{
   top: 15px;
   left: 15px;
 }
+img.check{
+  position: relative;
+  z-index: 2;    /* Place this image in front of the img1 */
+  /* width: 100%; */
+  top: 1px;
+  left: 15px;
+  width: 20px;
+  height: 20px;
+}
 
 /*************** menu  **************/
 .dropbtn {
@@ -620,4 +637,55 @@ td.underline{
   /* border-style: solid;
   border-width: 1px;
   border-color: blue; */
+}
+span.evpositive{
+  background-color:lightgreen;
+  border-color: green;
+  border: 1px;
+  border-start-start-radius: 5px 5px;
+  border-start-end-radius: 5px 5px;
+  border-end-end-radius: 5px 5px;
+  border-end-start-radius: 5px 5px;
+  border-style: solid;
+  padding: 1px;
+  text-align: left;
+  color: black;
+  font-size: 11pt;
+  font-family: serif;
+  font-weight: bold;
+  margin: 40px;
+ }
+
+span.evnegative{
+  background-color:lightcoral;
+  border-color: red;
+  border: 1px;
+  border-start-start-radius: 5px 5px;
+  border-start-end-radius: 5px 5px;
+  border-end-end-radius: 5px 5px;
+  border-end-start-radius: 5px 5px;
+  border-style: solid;
+  padding: 1px;
+  text-align: left;
+  color: black;
+  font-size: 11pt;
+  font-family: serif;
+  margin: 40px;
+  font-weight: bold;
+}
+
+span.evzero{
+  border: 1px;
+  border-start-start-radius: 5px 5px;
+  border-start-end-radius: 5px 5px;
+  border-end-end-radius: 5px 5px;
+  border-end-start-radius: 5px 5px;
+  border-style: solid;
+  padding: 1px;
+  text-align: left;
+  color: black;
+  font-size: 11pt;
+  font-family: serif;
+  margin: 40px;
+  font-weight: bold;
 }

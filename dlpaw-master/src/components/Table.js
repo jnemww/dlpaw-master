@@ -1,10 +1,20 @@
 import Seat from './Seat';
+import Enumerable from 'linq';
 
 export default function Table({ currenthand, leaguemembers }) {
 
     let o = {};
     if (currenthand !== undefined) {
         o = JSON.parse(currenthand);
+    }
+
+    function isEVPos(amt) {
+        if (amt === 0)
+            return "evzero";
+        else if (amt < 0)
+            return "evnegative";
+        else
+            return "evpositive";
     }
 
     function getActions(o, leaguemembers) {
@@ -38,10 +48,13 @@ export default function Table({ currenthand, leaguemembers }) {
                 list.push(<div><span className='equitiestitle'>{s.name} ODDS: </span></div>);
                 s.handequities.forEach(e => {
                     let playername = leaguemembers.find(({ mavens_login }) => mavens_login === e.player).nickname.toLowerCase();
-                    console.dir("playername", playername);
-                    console.dir(leaguemembers);
+                    //console.dir("playername", playername);
+                    //console.dir(leaguemembers);
                     list.push(
-                        <div><span className='equities'>{playername+ " W: " + e.win + ", T: " + e.tie}</span></div>
+                        <div>
+                            <span className='equities'>{playername + " W: " + e.win + ", T: " + e.tie}</span>&nbsp;
+                            {(Enumerable.from(s.handequities).where(p => p.player == e.player)?.toArray()[0]?.win ==100) && <img className='check' src="./images/redcheck3.png"/>}
+                        </div>
                     );
                 })
             }
@@ -53,7 +66,24 @@ export default function Table({ currenthand, leaguemembers }) {
                     if (a.amount != 0) amt = a.amount;
                     let playername = leaguemembers.find(({ mavens_login }) => mavens_login === a.player).nickname.toLowerCase()
                     list.push(
-                        <div><span className='actions'>{playername + " " + a.action + " " + amt}</span></div>
+                        <div>
+                            {(a.action.includes("posts") || a.action.includes("folds") || a.action.includes("refunded")) &&
+                                <span className='actions'>{`${playername} ${a.action} ${amt}`}</span>
+                            }
+                            {(a.action.includes("posts")==false) && 
+                                (a.action.includes("folds")==false) &&
+                                (a.action.includes("refunded")==false) &&
+                                <><span className='actions'>{`${playername} ${a.action} ${amt} into ${a?.running_amount-a.amount}`}</span>
+                                {/* <span>`find win ${Enumerable.from(s.handequities).where(p => p.player == a.player)?.toArray()[0]?.win}`</span> */}
+                                </>
+                            }
+                            {((s.handequities != null) &&
+                                (amt > 0) && 
+                                (a.action.includes("post") == false) &&
+                                (a.action.includes("refunded") == false)) &&
+                                <div><span className={isEVPos(a?.ev_total)}>{`+${a?.ev_winning} / -${a?.ev_losing}, n:${a?.ev_total}`}</span></div>
+                            }
+                        </div>
                     );
                 })
             }

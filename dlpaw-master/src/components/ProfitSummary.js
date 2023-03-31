@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import DataTable from './DataTable';
 const handsorttypes = ["Folded on PreFlop", "Folded on Flop", "Folded on Turn", "Folded on River", "Won without Showdown", "High Card", "Pair", "Two Pair", "Three of a Kind", "Straight", "Flush", "Full House", "Four of a Kind", "Straight Flush", "Royal Flush"];
 
-export default function ProfitSummary({ gamedata, status, setQueryhanditems }) {
+export default function ProfitSummary({ gamedata, status, setQueryhanditems, leaguemembers }) {
     const [selectedplayer, setSelectedplayer] = useState();
     const [hands, setHands] = useState(gamedata);
     const [results, setResults] = useState();
@@ -18,7 +18,7 @@ export default function ProfitSummary({ gamedata, status, setQueryhanditems }) {
             .select(x => x.player)
             .toArray()
             .forEach(s => {
-                list.push(<option value={s}>{s}</option>)
+                list.push(<option value={s}>{leaguemembers.find(r => r.mavens_login == s).nickname.toLowerCase()}</option>)
             });
         setPlayeritems(list);
         setHands(gamedata);

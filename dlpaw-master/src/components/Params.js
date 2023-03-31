@@ -284,28 +284,28 @@ export default function Params() {
                         {screen === SCREEN.ProfitSummary &&
                             selectedgamedata &&
                             <div>
-                                <ProfitSummary gamedata={selectedgamedata} status={setProcessing} setQueryhanditems={setQueryhanditems} />
+                                <ProfitSummary gamedata={selectedgamedata} status={setProcessing} setQueryhanditems={setQueryhanditems} leaguemembers={leaguemembers} />
                             </div>
                         }
                         {screen === SCREEN.Standings &&
                             <div>
                                 <button onClick={getSeasonGameData}>Get Standings</button> Click on player for individual results.
-                                {seasongamedata && <Standings games={seasongamedata} season={selectedseason} status={setProcessing} />}
+                                {seasongamedata && <Standings games={seasongamedata} season={selectedseason} status={setProcessing} leaguemembers={leaguemembers} />}
                             </div>
                         }
                         {screen === SCREEN.Frequency &&
                             <div>
-                                {selectedgamedata && <PlayFrequencies gamedata={selectedgamedata} status={setProcessing} />}
+                                {selectedgamedata && <PlayFrequencies gamedata={selectedgamedata} status={setProcessing} leaguemembers={leaguemembers} />}
                             </div>
                         }
                         {screen === SCREEN.HandQuery &&
                             <div>
-                                {selectedgamedata && <HandQuery gamedata={selectedgamedata} setQueryhanditems={setQueryhanditems} />}
+                                {selectedgamedata && <HandQuery gamedata={selectedgamedata} setQueryhanditems={setQueryhanditems} leaguemembers={leaguemembers} />}
                             </div>
                         }
                         {screen === SCREEN.GameScheduler &&
                             <div>
-                                <GameScheduler username={user} usertoken={token} setProcessing={setProcessing} />
+                                <GameScheduler username={user} usertoken={token} setProcessing={setProcessing} leaguemembers={leaguemembers} />
                             </div>
                         }
                     </div>
