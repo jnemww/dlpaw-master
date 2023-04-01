@@ -12,6 +12,7 @@ import SignIn from './Auth/SignIn';
 import AuthDetails from './Auth/AuthDetails';
 import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
+import ChipCountGraph from './ChipCountGraph';
 
 export default function Params() {
     const [user, setUser] = useState(null);
@@ -234,7 +235,8 @@ export default function Params() {
                         screen === SCREEN.ProfitSummary ||
                         screen === SCREEN.Games ||
                         screen === SCREEN.Standings ||
-                        screen === SCREEN.HandQuery) &&
+                        screen === SCREEN.HandQuery ||
+                        screen === SCREEN.ChipCountChart) &&
                         <div>
                             {(screenstack.length > 2) && <img onClick={() => setScreen(screenstack[screenstack.length - 2])} height={20} src='./images/back.png' />}
                             <table className='pokertableboard'>
@@ -289,8 +291,7 @@ export default function Params() {
                         }
                         {screen === SCREEN.Standings &&
                             <div>
-                                <button onClick={getSeasonGameData}>Get Standings</button> Click on player for individual results.
-                                {seasongamedata && <Standings games={seasongamedata} season={selectedseason} status={setProcessing} leaguemembers={leaguemembers} />}
+                                {selectedseason && <Standings games={seasongamedata} season={selectedseason} status={setProcessing} leaguemembers={leaguemembers} getSeasonGameData={getSeasonGameData} />}
                             </div>
                         }
                         {screen === SCREEN.Frequency &&
@@ -306,6 +307,11 @@ export default function Params() {
                         {screen === SCREEN.GameScheduler &&
                             <div>
                                 <GameScheduler username={user} usertoken={token} setProcessing={setProcessing} leaguemembers={leaguemembers} />
+                            </div>
+                        }
+                        {screen === SCREEN.ChipCountChart &&
+                            <div>
+                                {selectedgamedata &&<ChipCountGraph selectedseason={selectedseason} selectedgame={selectedgame} gamedata={selectedgamedata} status={setProcessing} leaguemembers={leaguemembers} />}
                             </div>
                         }
                     </div>

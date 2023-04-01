@@ -12,31 +12,38 @@ export default function ProfitSummary({ gamedata, status, setQueryhanditems, lea
 
     useEffect(() => {
         if (gamedata === undefined) return;
+
+        let src = Enumerable.from(gamedata.hands[0].seats)
+            .select(x => ({player: x.player, nickname: leaguemembers.find(r => r.mavens_login == x.player).nickname.toLowerCase()}))
+            .orderBy(x => x.nickname)
+            .toArray();
+
         let list = [];
         list.push(<option value="">Select Player</option>)
-        Enumerable.from(gamedata.hands[0].seats)
-            .orderBy(x => x.player.toLowerCase())
-            .select(x => x.player)
-            .toArray()
-            .forEach(s => {
-                list.push(<option value={s}>{leaguemembers.find(r => r.mavens_login == s).nickname.toLowerCase()}</option>)
-            });
+        src.forEach(s => {
+            list.push(<option value={s.player}>{s.nickname}</option>)
+        });
+        setSelectedplayer("");
+        setResultdetails(undefined);
+        setResults(undefined);
         setPlayeritems(list);
         setHands(gamedata);
-    }, []);
+    }, [gamedata]);
 
     useEffect(() => {
-        GetProfitSummary();
+        selectedplayer != "" &&
+            selectedplayer &&
+            GetProfitSummary();
     }, [selectedplayer]);//, hands
 
     function GetProfitSummary() {
         if (hands == null) return (<div>Please load a game and try again.</div>);
-        if (selectedplayer == null) return (<div>Please select a player and try again.</div>);
+        if (selectedplayer == undefined || selectedplayer == "") return (<div>Please select a player and try again.</div>);
 
         status(true);
 
         let ps = Enumerable.from(hands.hands)
-            .selectMany(h => Enumerable.from(h.streets).where(z => z.handequities != null), (h, s) => ({ handID: h.handID, street : s }))
+            .selectMany(h => Enumerable.from(h.streets).where(z => z.handequities != null), (h, s) => ({ handID: h.handID, street: s }))
             .groupBy(g => g.handID)
             .select(e => ({ handID: e.first().handID, name: e.first().street.name, street: e.last().street }))
             .selectMany(a => Enumerable.from(a.street.handequities), (h, s) => ({ handID: h.handID, name: h.name, s: s }))
@@ -44,30 +51,30 @@ export default function ProfitSummary({ gamedata, status, setQueryhanditems, lea
 
         let res = Enumerable.from(hands.hands)
             .where(c => Enumerable.from(c.summary.playerinfo).any(s => s.player == selectedplayer))
-            .selectMany(p => Enumerable.from(p.summary.playerinfo), (h, pi) => ({ handID: h.handID, playerinfo : pi }))
+            .selectMany(p => Enumerable.from(p.summary.playerinfo), (h, pi) => ({ handID: h.handID, playerinfo: pi }))
             .select(np =>
-                ({
-                    handID: np.handID,
-                    player: np.playerinfo.player,
-                    showdownhanddetails: np.playerinfo.showdownhanddetails,
-                    showdownhandtype: (Enumerable.from(ps).where(t => t.handID == np.handID && t.s.player == np.playerinfo.player && np.playerinfo.showdownhandtype == "Won without Showdown").count() > 0) ? (Enumerable.from(ps).where(t => t.handID == np.handID && t.s.player == np.playerinfo.player && np.playerinfo.showdownhandtype == "Won without Showdown").select(t => t.s.handrankdesc).first().toString()) : np.playerinfo.showdownhandtype,
-                    profit: np.playerinfo.profit,
-                    sort: handsorttypes.indexOf((Enumerable.from(ps).where(t => t.handID == np.handID && t.s.player == np.playerinfo.player && np.playerinfo.showdownhandtype == "Won without Showdown").count() > 0) ? (Enumerable.from(ps).where(t => t.handID == np.handID && t.s.player == np.playerinfo.player && np.playerinfo.showdownhandtype == "Won without Showdown").select(t => t.s.handrankdesc).first().toString()) : np.playerinfo.showdownhandtype)
-                }))
+            ({
+                handID: np.handID,
+                player: np.playerinfo.player,
+                showdownhanddetails: np.playerinfo.showdownhanddetails,
+                showdownhandtype: (Enumerable.from(ps).where(t => t.handID == np.handID && t.s.player == np.playerinfo.player && np.playerinfo.showdownhandtype == "Won without Showdown").count() > 0) ? (Enumerable.from(ps).where(t => t.handID == np.handID && t.s.player == np.playerinfo.player && np.playerinfo.showdownhandtype == "Won without Showdown").select(t => t.s.handrankdesc).first().toString()) : np.playerinfo.showdownhandtype,
+                profit: np.playerinfo.profit,
+                sort: handsorttypes.indexOf((Enumerable.from(ps).where(t => t.handID == np.handID && t.s.player == np.playerinfo.player && np.playerinfo.showdownhandtype == "Won without Showdown").count() > 0) ? (Enumerable.from(ps).where(t => t.handID == np.handID && t.s.player == np.playerinfo.player && np.playerinfo.showdownhandtype == "Won without Showdown").select(t => t.s.handrankdesc).first().toString()) : np.playerinfo.showdownhandtype)
+            }))
             .where(p => p.player == selectedplayer)
             .toArray();
-        
+
         setResultdetails(res);
 
         var r = Enumerable.from(res)
             .groupBy(l => l.showdownhandtype)
             .orderBy(r => r.first().sort)
             .select(cl =>
-                ({
-                    HandType: cl.first().showdownhandtype,
-                    Count: cl.count(),
-                    Profit: cl.sum(c => c.profit)
-                }))
+            ({
+                HandType: cl.first().showdownhandtype,
+                Count: cl.count(),
+                Profit: cl.sum(c => c.profit)
+            }))
             .toArray();
 
         // let r = Enumerable.from(hands.hands)
@@ -106,9 +113,9 @@ export default function ProfitSummary({ gamedata, status, setQueryhanditems, lea
         status(true);
 
         let res = Enumerable.from(hands.hands)
-        .where(c => Enumerable.from(resultdetails).any(h => h.handID == c.handID &&
-            h.showdownhandtype == handtype))
-        .toArray();
+            .where(c => Enumerable.from(resultdetails).any(h => h.handID == c.handID &&
+                h.showdownhandtype == handtype))
+            .toArray();
 
         if (res?.length > 0) {
             setQueryhanditems(res);
@@ -138,7 +145,7 @@ export default function ProfitSummary({ gamedata, status, setQueryhanditems, lea
                 <tr>
                     <td>
                         <div>Click on hand type description to drill into individual hands for the group.</div>
-                        <select onChange={(e) => setSelectedplayer(e.target.value)}>
+                        <select onChange={(e) => setSelectedplayer(e.target.value)} value={selectedplayer}>
                             {playeritems}
                         </select>
                     </td>

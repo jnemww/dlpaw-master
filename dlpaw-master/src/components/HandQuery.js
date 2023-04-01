@@ -18,14 +18,11 @@ export default function HandQuery({ gamedata, setQueryhanditems, leaguemembers }
         let list = [];
         list.push(<option value="">Select Player</option>)
         Enumerable.from(gamedata.hands[0].seats)
-            .orderBy(x => x.player.toLowerCase())
-            .select(x => x.player)
+            .select(x => ({player: x.player, nickname: leaguemembers.find(r => r.mavens_login == x.player).nickname.toLowerCase()}))
+            .orderBy(x => x.nickname)
             .toArray()
-            // .sort((a, b) => {
-            //     return a.localeCompare(b, undefined, {sensitivity: 'base'});
-            //   })
             .forEach(s => {
-                list.push(<option value={s}>{leaguemembers.find(r => r.mavens_login == s).nickname.toLowerCase()}</option>)
+                list.push(<option value={s.player}>{s.nickname}</option>)
             });
         setPlayeritems(list);
         setQueryhanditems(undefined)

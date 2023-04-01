@@ -5,7 +5,8 @@ export const SCREEN = {
     ProfitSummary: "Profit Summary",
     Standings: "Standings",
     HandQuery: "Query",
-    GameScheduler: "Schedule"
+    GameScheduler: "Schedule",
+    ChipCountChart: "Chipcount Chart"
 };
 
 export const defaultschedule = {
@@ -32,7 +33,8 @@ export const menu = [
     {
      type: 'group', name: 'Analysis', items: [
         { value: SCREEN.ProfitSummary, label: 'Profit Summary', className: 'myOptionClassName' },
-        { value: SCREEN.Frequency, label: 'Play Frequencies', className: 'myOptionClassName' }
+        { value: SCREEN.Frequency, label: 'Play Frequencies', className: 'myOptionClassName' },
+        { value: SCREEN.ChipCountChart, label: 'Chipcount Chart', className: 'myOptionClassName' }
      ]},
     {
     type: 'group', name: 'More...', items: [

@@ -689,3 +689,8 @@ span.evzero{
   margin: 40px;
   font-weight: bold;
 }
+div.chart{
+  height: 500px;
+  width: 1000px;
+  color: ;
+}
