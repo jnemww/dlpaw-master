@@ -202,7 +202,15 @@ export default function Params() {
     }
 
     function printmenuitem(e) {
+        setGameitems(undefined);
+        setOrighanditems(undefined);
+        setHanditems(undefined);
+        setQueryhanditems(undefined);
+        setSelectedseason(undefined);
+        setSelectedgame(undefined);
+        setSelectedhand(undefined);
         setScreen(e.value);
+        document.getElementById('selseason').selectedIndex = 0;
         console.log(e);
         return 0;
     }
@@ -248,7 +256,7 @@ export default function Params() {
                                     </tr> */}
                                     <tr>
                                         <td>
-                                            <select onChange={(e) => { setSelectedseason(e.target.value) }} defaultValue={selectedseason}>{seasonitems}</select>
+                                            <select id="selseason" onChange={(e) => { setSelectedseason(e.target.value) }} defaultValue={selectedseason}>{seasonitems}</select>
                                         </td>
                                     </tr>
                                     <tr>
