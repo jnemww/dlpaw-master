@@ -311,7 +311,13 @@ export default function Params() {
                         }
                         {screen === SCREEN.ChipCountChart &&
                             <div>
-                                {selectedgamedata &&<ChipCountGraph selectedseason={selectedseason} selectedgame={selectedgame} gamedata={selectedgamedata} status={setProcessing} leaguemembers={leaguemembers} />}
+                                {selectedgamedata &&<ChipCountGraph selectedseason={selectedseason} 
+                                                        selectedgame={selectedgame} 
+                                                        gamedata={selectedgamedata} 
+                                                        status={setProcessing} 
+                                                        leaguemembers={leaguemembers}
+                                                        setQueryhanditems={setQueryhanditems}
+                                                        setScreen={setScreen} />}
                             </div>
                         }
                     </div>

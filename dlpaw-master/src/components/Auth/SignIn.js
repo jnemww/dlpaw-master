@@ -164,7 +164,8 @@ export default function SignIn({ setToken, setUser, setLeaguemembers }) {
 
     return (
         <div className="sign-in-container">
-            <form onSubmit={signIn}>
+            {/* <form onSubmit={signIn}> */}
+            <form>
                 <table className="login">
                     <tbody>
                         <tr>
@@ -187,7 +188,8 @@ export default function SignIn({ setToken, setUser, setLeaguemembers }) {
                         </tr>
                         <tr>
                             <td>
-                                <button type="submit">Log In</button>
+                                {/* <button type="submit">Log In</button> */}
+                                <button onClick={signIn}>Log In</button>
                             </td>
                         </tr>
                         <tr>

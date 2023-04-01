@@ -1,13 +1,14 @@
 import Enumerable from 'linq';
 import DataTable from './DataTable';
 import React, { useEffect, useState } from 'react';
+import { SCREEN } from '../enums'
 
 import Chart from "chart.js/auto";
 import { CategoryScale } from "chart.js";
 import PieChart from './charts/PieChart';
 import LineChart from './charts/LineChart';
 
-export default function ChipCountGraph({ gamedata, status, leaguemembers, selectedseason, selectedgame }) {
+export default function ChipCountGraph({ gamedata, status, leaguemembers, selectedseason, selectedgame, setScreen, setQueryhanditems }) {
     const [chartData, setChartData] = useState();
     const [season, setSeason] = useState(selectedseason);
     const [game, setGame] = useState(selectedgame);
@@ -82,13 +83,26 @@ export default function ChipCountGraph({ gamedata, status, leaguemembers, select
         // })();
     }, [gamedata]);
 
+    function NavigateToHand(handID){
+        //set queryhanditems and set screen to table
+        console.log(`HandID returned is ${handID}`)
+        let res = Enumerable.from(gamedata.hands)
+            .where(h => h.handID == handID)
+            .toArray();
+
+        if (res?.length > 0) {
+            setQueryhanditems(res);
+            setScreen(SCREEN.Table);
+        }
+    }
+
     return (
         <table className='pokertableboard'>
             <tr>
                 <td>
                     <div className="chart">
                         {chartData &&
-                            <LineChart chartData={chartData} title={`Chip Count Progressions: ${selectedseason}${selectedgame}`} />
+                            <LineChart chartData={chartData} title={`Chip Count Progressions: ${selectedseason}${selectedgame}`} OnClickFunction={NavigateToHand} />
                         }
                         {/* <PieChart chartData={chartData} /> */}
                         {error &&
