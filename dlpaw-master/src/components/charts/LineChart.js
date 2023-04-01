@@ -11,7 +11,7 @@ function LineChart({ chartData, title, OnClickFunction }) {
       const dsIdxNum = e[0].datasetIndex;
       const dataPt = e[0].index;
       console.log(e, dsIdxNum, dataPt, "label:", chartData.labels[dataPt]);
-      OnClickFunction(chartData.labels[dataPt]);
+      if(OnClickFunction) OnClickFunction(chartData.labels[dataPt]);
     }
       
     
