@@ -10,6 +10,10 @@ export default function Standings({ games, season, status, leaguemembers, getSea
     const [points, setPoints] = useState();
     const [error, setError] = useState();
 
+    // useEffect(() => {
+    //     getSeasonGameData();
+    // }, [games]);
+
     useEffect(() => {
         setSelectedplayer(undefined);
         setSelectedstandingsdetails(undefined);

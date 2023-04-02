@@ -56,7 +56,7 @@ export default function ChipCountGraph({ gamedata, status, leaguemembers, select
                     .toArray();
                 let r = d.map((data) => data.chipstack);
 
-                if(r.length){
+                if (r.length) {
                     let s = {
                         label: (p.nickname),
                         data: (r),
@@ -83,7 +83,7 @@ export default function ChipCountGraph({ gamedata, status, leaguemembers, select
         // })();
     }, [gamedata]);
 
-    function NavigateToHand(handID){
+    function NavigateToHand(handID) {
         //set queryhanditems and set screen to table
         console.log(`HandID returned is ${handID}`)
         let res = Enumerable.from(gamedata.hands)
@@ -97,21 +97,27 @@ export default function ChipCountGraph({ gamedata, status, leaguemembers, select
     }
 
     return (
-        <table className='pokertableboard'>
-            <tr>
-                <td>
-                    <div className="chart">
-                        {chartData &&
-                            <LineChart chartData={chartData} title={`Chip Count Progressions: ${selectedseason}${selectedgame}`} OnClickFunction={NavigateToHand} />
-                        }
-                        {/* <PieChart chartData={chartData} /> */}
-                        {error &&
-                            <div>Error: {error}</div>
-                        }
-                    </div>
-                </td>
-            </tr>
-        </table>
+        <>
+            {
+                selectedgame && 
+                <table className='pokertableboard'>
+                    <tr>
+                        <td>
+                            <div className="chart">
+                                {chartData &&
+                                    <LineChart chartData={chartData} title={`Chip Count Progressions: ${selectedseason}${selectedgame}`} OnClickFunction={NavigateToHand} />
+                                }
+                                {/* <PieChart chartData={chartData} /> */}
+                                {error &&
+                                    <div>Error: {error}</div>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            }
+        </>
+
     );
 }
 

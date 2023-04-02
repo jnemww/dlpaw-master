@@ -23,23 +23,29 @@ export const defaultschedule = {
         ]
 }
 
+export const PARAMETERS = {
+  SEASON : "SEASON",
+  GAME : "GAME",
+  HAND : "HAND"
+};
+
 export const menu = [
     { label: 'Donk League' },
     {
      type: 'group', name: 'Play Review', items: [
-       { value: SCREEN.Table, label: 'By Game', className: 'myOptionClassName' },
-       { value: SCREEN.HandQuery, label: 'Hand Search', className: 'myOptionClassName' }
+       { value: SCREEN.Table, label: 'By Game', className: 'myOptionClassName', params: [PARAMETERS.SEASON, PARAMETERS.GAME, PARAMETERS.HAND]},
+       { value: SCREEN.HandQuery, label: 'Hand Search', className: 'myOptionClassName', params: [PARAMETERS.SEASON, PARAMETERS.GAME]}
      ]},
     {
      type: 'group', name: 'Analysis', items: [
-        { value: SCREEN.ProfitSummary, label: 'Profit Summary', className: 'myOptionClassName' },
-        { value: SCREEN.Frequency, label: 'Play Frequencies', className: 'myOptionClassName' },
-        { value: SCREEN.ChipCountChart, label: 'Chipcount Chart', className: 'myOptionClassName' }
+        { value: SCREEN.ProfitSummary, label: 'Profit Summary', className: 'myOptionClassName', params: [PARAMETERS.SEASON, PARAMETERS.GAME]},
+        { value: SCREEN.Frequency, label: 'Play Frequencies', className: 'myOptionClassName', params: [PARAMETERS.SEASON, PARAMETERS.GAME]},
+        { value: SCREEN.ChipCountChart, label: 'Chipcount Chart', className: 'myOptionClassName', params: [PARAMETERS.SEASON, PARAMETERS.GAME]}
      ]},
     {
     type: 'group', name: 'More...', items: [
-        { value: SCREEN.GameScheduler, label: 'Game Scheduling', className: 'myOptionClassName' },
-        { value: SCREEN.Standings, label: 'League Standings', className: 'myOptionClassName' }
+        { value: SCREEN.GameScheduler, label: 'Game Scheduling', className: 'myOptionClassName'},
+        { value: SCREEN.Standings, label: 'League Standings', className: 'myOptionClassName', params: [PARAMETERS.SEASON]}
     ]}
   ];
 
