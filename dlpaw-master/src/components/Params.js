@@ -33,8 +33,6 @@ export default function Params() {
     const [selectedseason, setSelectedseason] = useState(null);
     const [selectedgamedata, setSelectedgamedata] = useState(null);
     const [selectedhand, setSelectedhand] = useState(null);
-
-    //loaded game data
     const [seasongamedata, setSeasongamedata] = useState(null);
 
     //app data
