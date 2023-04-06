@@ -53,8 +53,8 @@ export default function PlayFrequenciesChart({ gamedata, selectedseason, selecte
                     let sx = {
                         label: (p),
                         data: (r),
-                        backgroundColor: ["fuchsia", "coral","blue", "midnightblue", "skyblue", "seagreen","orange", "chartreuse", "aqua", "blueviolet"],
-                        borderColor: ["black"],
+                        backgroundColor: COLORS,
+                        borderColor: COLORS,
                         borderWidth: 2
                     }
                     i += 1;

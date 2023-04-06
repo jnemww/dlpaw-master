@@ -47,7 +47,7 @@ export default function ProfitSummaryChart({ gamedata, selectedseason, selectedg
                         label: (selectedplayer),
                         data: (r),
                         backgroundColor: COLORS,
-                        borderColor: ["black"],
+                        borderColor: COLORS,
                         borderWidth: 2
                     }
                     i += 1;

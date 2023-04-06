@@ -48,8 +48,8 @@ export default function ChipCountChart({ gamedata, status, leaguemembers, select
                     let s = {
                         label: (p.nickname),
                         data: (r),
-                        backgroundColor: ["rgba(75,192,192,1)", "#ecf0f1", "#50AF95", "#f3ba2f", "#2a71d0"],
-                        borderColor: (COLORS[i]),
+                        backgroundColor: COLORS[i],
+                        borderColor: COLORS[i],
                         borderWidth: 2
                     }
                     i += 1;
