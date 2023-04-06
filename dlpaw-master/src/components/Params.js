@@ -379,6 +379,8 @@ export default function Params() {
                                 <ProfitSummary
                                     gamedata={selectedgamedata}
                                     status={setProcessing}
+                                    selectedseason={selectedseason}
+                                    selectedgame={selectedgame}
                                     setQueryhanditems={setQueryhanditems}
                                     leaguemembers={leaguemembers} />
                             </div>

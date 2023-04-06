@@ -17,21 +17,31 @@ function BarChart({ chartData, title, showLegend = false, OnClickFunction }) {
   }
 
   const [data, setData] = useState({
-    labels: ["P1","P2","P3"],
+    labels: ["P1", "P2", "P3"],
     datasets: [{
-      label:"Test",
-      data: [16, 10, 5],
+      label:"Test 1",
+      data: [16, 0, 0],
       borderColor: "black",
-      backgroundColor: ["aqua","red", "green"],
+      backgroundColor: ["aqua"],
       borderWidth: 1
-    },
+    }
+    ,
     {
-      label:"Test",
-      data: [16, 10, 5],
+      label:"Test 2",
+      data: [0, 5, 0],
       borderColor: "black",
-      backgroundColor: ["aqua","red", "green"],
+      backgroundColor: ["red"],
       borderWidth: 1
-    }]
+    }
+    ,
+    {
+      label:"Test 3",
+      data: [0, 0, 5],
+      borderColor: "black",
+      backgroundColor: ["green"],
+      borderWidth: 1
+    }
+  ]
   });
 
   return (
