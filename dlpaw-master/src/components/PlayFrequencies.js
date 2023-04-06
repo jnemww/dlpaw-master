@@ -1,9 +1,12 @@
 import Enumerable from 'linq';
 import DataTable from './DataTable';
-import React, { useEffect, useState, useFetch } from 'react';
+import React, { useEffect, useState} from 'react';
+import PlayFrequenciesChart from './PlayFrequenciesChart';
 
-export default function PlayFrequencies({gamedata, status, leaguemembers}){
+export default function PlayFrequencies({gamedata, selectedseason, selectedgame, status, leaguemembers}){
     const [results, setResults] = useState();
+    const [resultstable, setResultstable] = useState();
+    const [viewgraph, setViewgraph] = useState(false);
 
     useEffect(()=>{ 
         if(gamedata == undefined) return;
@@ -50,19 +53,61 @@ export default function PlayFrequencies({gamedata, status, leaguemembers}){
                                 "Hands Played": x.HandsSeen, 
                                 "%": (x.PctSeen * 100).toLocaleString()}))
                 .toArray();
+
+                var r1 = Enumerable.from(r)
+                .groupBy(g => g.Player)
+                .select(h => ({ Player: h.first().Player, HandsSeen : h.first()["Hands Played"] }))
+                .join(Enumerable.from(r).where(s => s.Street == "FLOP").toArray(), a => a.Player, b => b.Player, (a, b) => ({Player: a.Player, FlopCount : b.Visited, HandsSeen: a.HandsSeen }))
+                .join(Enumerable.from(r).where(s => s.Street == "TURN").toArray(), a => a.Player, b => b.Player, (a, b) => ({Player: a.Player, FlopCount: a.FlopCount, TurnCount : b.Visited, HandsSeen: a.HandsSeen }))
+                .join(Enumerable.from(r).where(s => s.Street == "RIVER").toArray(), a => a.Player, b => b.Player, (a, b) => ({Player: a.Player, FlopCount: a.FlopCount, TurnCount: a.TurnCount, RiverCount: b.Visited, HandsSeen: a.HandsSeen }))
+                .select(r =>    ({	Player: r.Player,
+                                    "Hands" : r.HandsSeen,
+                                    "Flops" : r.FlopCount,
+                                    "Turns" : r.TurnCount,
+                                    "Rivers" : r.RiverCount,
+                                    "% F": ((r.FlopCount / r.HandsSeen) * 100).toFixed(2), 
+                                    "% T": ((r.TurnCount / r.HandsSeen) * 100).toFixed(2),
+                                    "% R": ((r.RiverCount / r.HandsSeen) * 100).toFixed(2),
+                                    "P(F→T)": ((r.TurnCount / r.FlopCount) * 100).toFixed(2),
+                                    "P(T→R)": ((r.RiverCount / r.TurnCount) * 100).toFixed(2)}))
+                .toArray();
         
         setResults(r);
+        setResultstable(r1);
         status(false);
     },[gamedata]);
 
+    function ChangeView(){
+        setViewgraph(!viewgraph);
+    }
+
 return(
     <div>
-        {   results && 
-            <DataTable  tbodyData={results} 
-                        classes={["text", "text", "numeric", "numeric", "numeric"]}
-                        rowclasses={["datatablegrey","datatablewhite"]}
-                        functions={[,,,,]}
-                />
+        {   !viewgraph &&
+            results && 
+            (
+                <>
+                    <img className='chartthumbnail' src={"./images/chart2.png"} onClick={ChangeView}/>
+                    <DataTable  tbodyData={resultstable} 
+                            classes={["text", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric"]}
+                            rowclasses={["datatablegrey","datatablewhite"]}
+                            functions={[,,,,,,,,]}
+                    />
+                </>
+            )
+        }
+        {   viewgraph &&
+            results && 
+            (
+                <>
+                    <img className='chartthumbnail' src={"./images/table.png"} onClick={ChangeView}/>
+                    <PlayFrequenciesChart
+                        leaguemembers={leaguemembers}
+                        selectedseason={selectedseason}
+                        selectedgame={selectedgame}
+                        gamedata={results} />
+                </>
+            )
         }
     </div>
 );

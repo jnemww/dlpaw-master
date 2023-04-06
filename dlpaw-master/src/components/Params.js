@@ -12,7 +12,7 @@ import SignIn from './Auth/SignIn';
 import AuthDetails from './Auth/AuthDetails';
 import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
-import ChipCountGraph from './ChipCountGraph';
+import ChipCountChart from './ChipCountChart';
 
 export default function Params() {
     //user data
@@ -398,6 +398,8 @@ export default function Params() {
                             <div>
                                 {selectedgamedata &&
                                     <PlayFrequencies
+                                        selectedseason={selectedseason}
+                                        selectedgame={selectedgame}
                                         gamedata={selectedgamedata}
                                         status={setProcessing}
                                         leaguemembers={leaguemembers} />}
@@ -424,7 +426,7 @@ export default function Params() {
                         {screen === SCREEN.ChipCountChart &&
                             <div>
                                 {selectedgamedata &&
-                                    <ChipCountGraph
+                                    <ChipCountChart
                                         selectedseason={selectedseason}
                                         selectedgame={selectedgame}
                                         gamedata={selectedgamedata}

@@ -1,24 +1,12 @@
 import Enumerable from 'linq';
 import DataTable from './DataTable';
 import React, { useEffect, useState } from 'react';
-import { SCREEN } from '../enums'
-
-import Chart from "chart.js/auto";
-import { CategoryScale } from "chart.js";
-import PieChart from './charts/PieChart';
+import { SCREEN, COLORS } from '../enums'
 import LineChart from './charts/LineChart';
 
-export default function ChipCountGraph({ gamedata, status, leaguemembers, selectedseason, selectedgame, setScreen, setQueryhanditems }) {
+export default function ChipCountChart({ gamedata, status, leaguemembers, selectedseason, selectedgame, setScreen, setQueryhanditems }) {
     const [chartData, setChartData] = useState();
-    const [season, setSeason] = useState(selectedseason);
-    const [game, setGame] = useState(selectedgame);
-    const [selectedplayer, setSelectedplayer] = useState();
-    const [hands, setHands] = useState(gamedata);
-    const [results, setResults] = useState();
-    const [resultdetails, setResultdetails] = useState();
-    const [playeritems, setPlayeritems] = useState();
     const [error, setError] = useState();
-    const colors = ["red", "blue", "green", "purple", "black", "aqua", "pink", "fuchsia", "gold", "greenyellow"];
     const data = {
         labels: [],
         datasets: []
@@ -61,7 +49,7 @@ export default function ChipCountGraph({ gamedata, status, leaguemembers, select
                         label: (p.nickname),
                         data: (r),
                         backgroundColor: ["rgba(75,192,192,1)", "#ecf0f1", "#50AF95", "#f3ba2f", "#2a71d0"],
-                        borderColor: (colors[i]),
+                        borderColor: (COLORS[i]),
                         borderWidth: 2
                     }
                     i += 1;
@@ -105,7 +93,10 @@ export default function ChipCountGraph({ gamedata, status, leaguemembers, select
                         <td>
                             <div className="chart">
                                 {chartData &&
-                                    <LineChart chartData={chartData} title={`Chip Count Progressions: ${selectedseason}${selectedgame}`} OnClickFunction={NavigateToHand} />
+                                    <LineChart chartData={chartData} 
+                                        title={`Chip Count Progressions: ${selectedseason}${selectedgame}`} 
+                                        OnClickFunction={NavigateToHand}
+                                        showLegend={true} />
                                 }
                                 {/* <PieChart chartData={chartData} /> */}
                                 {error &&

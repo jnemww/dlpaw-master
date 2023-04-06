@@ -52,3 +52,5 @@ export const menu = [
 export const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
 export const UPDATE_TYPE = {Availability: "A", StartofWeek: "D", StartTime: "T"};
+
+export const COLORS = ["red", "blue", "green", "purple", "black", "aqua", "pink", "fuchsia", "gold", "greenyellow"];

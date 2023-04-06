@@ -60,6 +60,17 @@ export default function GameScheduler({ username, usertoken, setProcessing, leag
         return list;
     }
 
+    function getDate(i, sdate){
+        const y = sdate.substring(0,4);
+        const m = sdate.substring(4,6);
+        const d = sdate.substring(6,8);
+        const sd = m + "-" + d + "-" + y;
+        const dt = new Date((new Date(sd)).toLocaleDateString());
+        dt.setDate(dt.getDate() + i);
+        const s = dt.toLocaleDateString()
+        return s.substring(0, s.length-5);
+    }
+
     async function saveSchedule() {
         //console.log("user auth attempt: " + localuser)
         setProcessing(true);
@@ -183,7 +194,7 @@ export default function GameScheduler({ username, usertoken, setProcessing, leag
                             <tbody>
                                 <tr>
                                     <td className='items' align='center' colSpan={3}>Week of :&nbsp;
-                                        <select onChange={(e) => handleChange(e.target.value, 1, UPDATE_TYPE.StartofWeek)}>
+                                        <select id="selecteddate" onChange={(e) => handleChange(e.target.value, 1, UPDATE_TYPE.StartofWeek)}>
                                             {getWeeks()}
                                         </select>
                                     </td>
@@ -193,6 +204,9 @@ export default function GameScheduler({ username, usertoken, setProcessing, leag
                                     return (<tr key={i}>
                                         <td className='items'>
                                             {schedule.Days[i].Day}
+                                            {schedule.StartofWeek != null &&
+                                                (<span>, {getDate(i, schedule.StartofWeek)}</span>)
+                                            }
                                         </td>
                                         <td>
                                             <select key={i} onChange={(e) => handleChange(e.target.value, i, UPDATE_TYPE.Availability)}>

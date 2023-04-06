@@ -86,7 +86,7 @@ export default function SignIn({ setToken, setUser, setLeaguemembers }) {
                             return;
                         }
 
-                        console.log("user email, token => ", email, t);
+                        //console.log("user email, token => ", email, t);
                         let imgrefs = [];
                         let imgs = [];
                         let players = [];
