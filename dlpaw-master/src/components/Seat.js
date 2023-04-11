@@ -51,8 +51,8 @@ export default function Seat({ hand, seatid, leaguemembers }) {
         <td rowSpan={3}><span className='playername substreet'>{pinfo[0].nickname.toLowerCase()}</span></td>
         <td><img className='playerimg' src={pinfo[0].url} /></td>
         <td className='container'>
-          <img className='top holecard' src={"./images/c" + p.holecards.split(" ")[0].toLowerCase() + ".png"} />
-          <img className='bottom holecard' src={"./images/c" + p.holecards.split(" ")[1].toLowerCase() + ".png"} />
+          <img className='top holecard' src={"./images/c" + p?.holecards?.split(" ")[0]?.toLowerCase() + ".png"} />
+          <img className='bottom holecard' src={"./images/c" + p?.holecards?.split(" ")[1]?.toLowerCase() + ".png"} />
         </td>
       </tr>
       <tr>
