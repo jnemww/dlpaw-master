@@ -61,14 +61,19 @@ export default function GameScheduler({ username, usertoken, setProcessing, leag
     }
 
     function getDate(i, sdate){
-        const y = sdate.substring(0,4);
-        const m = sdate.substring(4,6);
-        const d = sdate.substring(6,8);
-        const sd = m + "-" + d + "-" + y;
-        const dt = new Date((new Date(sd)).toLocaleDateString());
-        dt.setDate(dt.getDate() + i);
-        const s = dt.toLocaleDateString()
-        return s.substring(0, s.length-5);
+        try{
+            const y = sdate.substring(0,4);
+            const m = sdate.substring(4,6);
+            const d = sdate.substring(6,8);
+            const sd = m + "/" + d + "/" + y;
+            const dt = new Date((new Date(sd)).toLocaleDateString());
+            dt.setDate(dt.getDate() + i);
+            const s = dt.toDateString();//.toLocaleDateString()
+            return s.substring(0, s.length-5);
+        }
+        catch(error){
+            return error.message;
+        }
     }
 
     async function saveSchedule() {
@@ -203,9 +208,9 @@ export default function GameScheduler({ username, usertoken, setProcessing, leag
                                 {[...Array(7)].map((x, i) => {
                                     return (<tr key={i}>
                                         <td className='items'>
-                                            {schedule.Days[i].Day}
+                                            {/* {schedule.Days[i].Day} */}
                                             {schedule.StartofWeek != null &&
-                                                (<span>, {getDate(i, schedule.StartofWeek)}</span>)
+                                                (<span>{getDate(i, schedule.StartofWeek)}</span>)
                                             }
                                         </td>
                                         <td>
