@@ -84,7 +84,7 @@ export default function Params() {
             setProcessing(true);
             let url = seasonslisturl
                 .replace(leaguetkn, league)
-                .replaceAll(" ", sf);;
+                .replaceAll(" ", sf);
             var res = await fetch(url, {
                 headers: { 'Authorization': 'Bearer ' + token }
             });
@@ -364,9 +364,6 @@ export default function Params() {
                     <div>
                         {screen === SCREEN.Table &&
                             <div>
-                                {/* {(screenstack[screenstack.length - 1] === SCREEN.ProfitSummary ||
-                                    screenstack[screenstack.length - 1] === SCREEN.HandQuery)
-                                && <button onClick={() => setScreen(screenstack[screenstack.length - 1])}>Back</button>} */}
                                 {selectedhand &&
                                     <Table
                                         currenthand={selectedhand}
@@ -389,11 +386,10 @@ export default function Params() {
                             <div>
                                 {selectedseason &&
                                     <Standings
-                                        games={seasongamedata}
+                                        token = {token}
+                                        league={league}
                                         season={selectedseason}
-                                        status={setProcessing}
-                                        leaguemembers={leaguemembers}
-                                        getSeasonGameData={getSeasonGameData} />}
+                                        status={setProcessing} />}
                             </div>
                         }
                         {screen === SCREEN.Frequency &&

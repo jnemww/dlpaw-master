@@ -1,6 +1,6 @@
 import {useEffect} from "react";
 
-export default function DataTable({ tbodyData, classes, functions, rowclasses, tableheader="tableheader" }) { 
+export default function DataTable({ tbodyData, classes, functions, rowclasses, tableheader="tableheader", columns = [] }) { 
     useEffect(() => {
         return () => {
             // Anything in here is fired on component unmount.
@@ -9,7 +9,11 @@ export default function DataTable({ tbodyData, classes, functions, rowclasses, t
     }, []);
 
     function theadData(tbodyData){
-        let r = Object.keys(tbodyData[0]);
+        let r = {};
+        if(columns.length==0)
+            r = Object.keys(tbodyData[0]);
+        else
+            r = columns;
         return r;
     }
 
