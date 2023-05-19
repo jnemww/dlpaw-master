@@ -2,7 +2,6 @@ import Enumerable from 'linq';
 import React, { useEffect, useState, useFetch, useSyncExternalStore } from 'react';
 import DataTable from './DataTable';
 import { days, defaultschedule, UPDATE_TYPE } from "../enums";
-import { LoadingSpinner } from "./Spinner";
 
 export default function GameScheduler({ username, usertoken, setProcessing, leaguemembers }) {
     //const [user, setUser] = useState(username);

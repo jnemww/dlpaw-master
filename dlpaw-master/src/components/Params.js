@@ -1,18 +1,21 @@
-import Enumerable from 'linq';
 import React, { useEffect, useState } from 'react';
 import ProfitSummary from './ProfitSummary';
 import Standings from './Standings';
 import PlayFrequencies from './PlayFrequencies';
+import SMSOptions from './SMSOptions';
+import BettingStats from './BettingStats';
 import HandQuery from './HandQuery';
+import ChipCountChart from './ChipCountChart';
+import OddsCalculator from './OddsCalculator';
 import Table from './Table';
-import { SCREEN, PARAMETERS, menu } from '../enums'
 import { LoadingSpinner } from "./Spinner2";
 import GameScheduler from './GameScheduler';
 import SignIn from './Auth/SignIn';
 import AuthDetails from './Auth/AuthDetails';
 import Dropdown from 'react-dropdown';
+import { SCREEN, PARAMETERS, menu } from '../enums'
 import 'react-dropdown/style.css';
-import ChipCountChart from './ChipCountChart';
+import Enumerable from 'linq';
 
 export default function Params() {
     //user data
@@ -238,6 +241,23 @@ export default function Params() {
         }
     }
 
+    function hasParameters(screen) {
+        try {
+            if(screen == null || screen == undefined) return false;
+
+            let p = Enumerable.from(options)
+                .selectMany(o => o.items)
+                .where(itm => itm.value == screen && 
+                    Enumerable.from(itm.params).count()>0)
+                .toArray();
+
+            if(p.length > 0) return true;
+        }
+        catch (error) {
+            return false;
+        }
+    }
+
     function changeScreen(e) {
         ResetParameters();
         setScreen(e.value);
@@ -309,13 +329,7 @@ export default function Params() {
                             </tr>
                         </tbody>
                     </table>
-                    {(screen === SCREEN.Frequency ||
-                        screen === SCREEN.Table ||
-                        screen === SCREEN.ProfitSummary ||
-                        screen === SCREEN.Games ||
-                        screen === SCREEN.Standings ||
-                        screen === SCREEN.HandQuery ||
-                        screen === SCREEN.ChipCountChart) &&
+                    {hasParameters(screen) &&
                         <div>
                             {(screenstack.length > 2) && <img onClick={() => setScreen(screenstack[screenstack.length - 2])} height={20} src='./images/back.png' />}
                             <table className='pokertableboard'>
@@ -432,6 +446,34 @@ export default function Params() {
                                         leaguemembers={leaguemembers}
                                         setQueryhanditems={setQueryhanditems}
                                         setScreen={setScreen} />}
+                            </div>
+                        }
+                        {screen === SCREEN.OddsCalculator &&
+                            <div>
+                                <OddsCalculator
+                                    username={user}
+                                    usertoken={token}
+                                    setProcessing={setProcessing}
+                                    leaguemembers={leaguemembers} />
+                            </div>
+                        }
+                        {screen === SCREEN.SMSOptions &&
+                            <div>
+                                <SMSOptions
+                                    username={user}
+                                    usertoken={token}
+                                    setProcessing={setProcessing}
+                                    leaguemembers={leaguemembers} />
+                            </div>
+                        }
+                        {screen === SCREEN.BettingStats &&
+                            <div>
+                                {selectedseason &&
+                                    <BettingStats
+                                        token = {token}
+                                        league={league}
+                                        season={selectedseason}
+                                        status={setProcessing} />}
                             </div>
                         }
                     </div>
