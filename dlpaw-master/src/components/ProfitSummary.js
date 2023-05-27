@@ -43,7 +43,7 @@ export default function ProfitSummary({ gamedata, status, selectedseason, select
         if (hands == null) return (<div>Please load a game and try again.</div>);
         if (selectedplayer == undefined || selectedplayer == "") return (<div>Please select a player and try again.</div>);
 
-        status(true);
+        status.addToQueue();
 
         let ps = Enumerable.from(hands.hands)
             .selectMany(h => Enumerable.from(h.streets).where(z => z.handequities != null), (h, s) => ({ handID: h.handID, street: s }))
@@ -81,14 +81,14 @@ export default function ProfitSummary({ gamedata, status, selectedseason, select
             .toArray();
 
         setResults(r);
-        status(false);
+        status.removeFromQueue();
     }
 
     function GetProfitSummaryHandDetails(handtype) {
         if (hands == null) return (<div>Please load a game and try again.</div>);
         if (selectedplayer == null) return (<div>Please select a player and try again.</div>);
 
-        status(true);
+        status.addToQueue();
 
         let res = Enumerable.from(hands.hands)
             .where(c => Enumerable.from(resultdetails).any(h => h.handID == c.handID &&
@@ -101,7 +101,7 @@ export default function ProfitSummary({ gamedata, status, selectedseason, select
         else {
             setQueryhanditems(null);
         }
-        status(false);
+        status.removeFromQueue();
     }
 
     function FormatOutput() {

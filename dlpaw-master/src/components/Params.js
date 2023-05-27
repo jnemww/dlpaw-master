@@ -4,6 +4,7 @@ import Standings from './Standings';
 import PlayFrequencies from './PlayFrequencies';
 import SMSOptions from './SMSOptions';
 import BettingStats from './BettingStats';
+//import BettingStats from './sampletable';
 import HandQuery from './HandQuery';
 import ChipCountChart from './ChipCountChart';
 import OddsCalculator from './OddsCalculator';
@@ -37,10 +38,12 @@ export default function Params() {
     const [selectedgamedata, setSelectedgamedata] = useState(null);
     const [selectedhand, setSelectedhand] = useState(null);
     const [seasongamedata, setSeasongamedata] = useState(null);
+    const [processingqueue, setProcessingqueue] = useState([]);
+    //const processingqueue = [];
 
     //app data
     const [screen, setScreen] = useState(null);
-    const [processing, setProcessing] = useState(false);
+    const [processing, setProcessing] = useState();
     const pe = process.env;
     const league = pe.REACT_APP_LEAGUE;
     const seasonslisturl = pe.REACT_APP_SERVICE_URL + pe.REACT_APP_DS_URL_SEASONS_LIST;
@@ -84,7 +87,7 @@ export default function Params() {
         console.log("Mounting seasons...");
 
         (async () => {
-            setProcessing(true);
+            addToQueue();
             let url = seasonslisturl
                 .replace(leaguetkn, league)
                 .replaceAll(" ", sf);
@@ -92,16 +95,14 @@ export default function Params() {
                 headers: { 'Authorization': 'Bearer ' + token }
             });
             var data = await res.json();
-            //setSeasons(data);
 
             let list = [];
             list.push(<option value={null}>Select a Season</option>)
             data.forEach(s => {
-                //let selected = (s.id == selectedseason)?"selected":"";
                 list.push(<option value={s.id}>{s.id}</option>)
             });
             setSeasonitems(list);
-            setProcessing(false);
+            removeFromQueue();
         })();
 
         setHanditems(null);
@@ -120,7 +121,7 @@ export default function Params() {
             if (selectedseason == null ||
                 league == null ||
                 token == null) return;
-            setProcessing(true);
+            addToQueue();
             let url = gameslisturl.replace(leaguetkn, league)
                 .replace(seasontkn, selectedseason);
             let res = await fetch(url, {
@@ -138,7 +139,7 @@ export default function Params() {
                     list.push(<option value={s.id}>{s.id}</option>)
                 });
             setGameitems(list);
-            setProcessing(false);
+            removeFromQueue();
         })();
 
         setQueryhanditems(null);
@@ -155,7 +156,7 @@ export default function Params() {
         }
 
         (async () => {
-            setProcessing(true);
+            addToQueue();
             let url = snglgamesurl.replace(leaguetkn, league)
                 .replace(seasontkn, selectedseason)
                 .replace(gametkn, selectedgame);
@@ -172,7 +173,7 @@ export default function Params() {
             });
             setHanditems(list);
             setOrighanditems(list);
-            setProcessing(false);
+            removeFromQueue();
         })();
     }, [selectedgame]);
 
@@ -190,6 +191,40 @@ export default function Params() {
         setScreen(SCREEN.Table);
     }, [queryhanditems]);
 
+function addToQueue(){
+    setProcessingqueue((previous) => {
+        const queue = [...previous];//previous.slice();
+        queue.push({});
+        return queue;
+    })
+}
+
+function removeFromQueue(){
+    setProcessingqueue((previous) => {
+        const queue = [...previous];//previous.slice();
+        queue.pop({});
+        return queue;
+    })
+}
+
+    // useEffect(() => {
+    //     setProcessingqueue(previous => {
+    //         const queue = [...previous];//previous.slice();
+    //         if(processing){
+    //             queue.push({});
+    //         } else {
+    //             queue.pop();
+    //         }
+    //         return queue;
+    //     });
+    //     console.log("use processing => ", processingqueue.length);
+    // }, [processing]);
+
+    useEffect(() => {
+        console.log("use processin queue => ", processingqueue.length);
+        //getProcessingQueueLength()
+    }, [processingqueue]);
+
     function RefreshHands() {
         setHanditems(orighanditems);
     }
@@ -197,7 +232,7 @@ export default function Params() {
     function getSeasonGameData() {
         if (selectedseason !== null) {
             (async () => {
-                setProcessing(true);
+                addToQueue();
                 let url = allgamesurl.replace(leaguetkn, league)
                     .replace(seasontkn, selectedseason);
                 let res = await fetch(url, {
@@ -206,7 +241,7 @@ export default function Params() {
                 let list = await res.json();
 
                 setSeasongamedata(list);
-                setProcessing(false);
+                removeFromQueue();
             })();
         }
     }
@@ -305,6 +340,10 @@ export default function Params() {
         console.log("Params reset.");
     }
 
+    function getProcessingQueueLength(){
+        console.log("processin queue => ", processingqueue.length, "retval => ", processingqueue.length>0?true:false);
+        return processingqueue.length>0?true:false;
+    }
     return (
         <div>
             {!user &&
@@ -369,8 +408,8 @@ export default function Params() {
                             </table>
                         </div>
                     }
-                    {user &&
-                        processing &&
+                    {
+                        processingqueue.length>0 &&
                         <div style={{ textAlign: "center" }}>
                             <LoadingSpinner url={leaguemembers.find(p => p.email == user).url} />
                         </div>
@@ -389,7 +428,7 @@ export default function Params() {
                             <div>
                                 <ProfitSummary
                                     gamedata={selectedgamedata}
-                                    status={setProcessing}
+                                    status={{addToQueue, removeFromQueue}}
                                     selectedseason={selectedseason}
                                     selectedgame={selectedgame}
                                     setQueryhanditems={setQueryhanditems}
@@ -403,7 +442,8 @@ export default function Params() {
                                         token = {token}
                                         league={league}
                                         season={selectedseason}
-                                        status={setProcessing} />}
+                                        status={{addToQueue, removeFromQueue}} />
+                                }
                             </div>
                         }
                         {screen === SCREEN.Frequency &&
@@ -413,7 +453,7 @@ export default function Params() {
                                         selectedseason={selectedseason}
                                         selectedgame={selectedgame}
                                         gamedata={selectedgamedata}
-                                        status={setProcessing}
+                                        status={{addToQueue, removeFromQueue}}
                                         leaguemembers={leaguemembers} />}
                             </div>
                         }
@@ -431,7 +471,7 @@ export default function Params() {
                                 <GameScheduler
                                     username={user}
                                     usertoken={token}
-                                    setProcessing={setProcessing}
+                                    status={{addToQueue, removeFromQueue}}
                                     leaguemembers={leaguemembers} />
                             </div>
                         }
@@ -442,7 +482,7 @@ export default function Params() {
                                         selectedseason={selectedseason}
                                         selectedgame={selectedgame}
                                         gamedata={selectedgamedata}
-                                        status={setProcessing}
+                                        status={{addToQueue, removeFromQueue}}
                                         leaguemembers={leaguemembers}
                                         setQueryhanditems={setQueryhanditems}
                                         setScreen={setScreen} />}
@@ -453,7 +493,7 @@ export default function Params() {
                                 <OddsCalculator
                                     username={user}
                                     usertoken={token}
-                                    setProcessing={setProcessing}
+                                    status={{addToQueue, removeFromQueue}}
                                     leaguemembers={leaguemembers} />
                             </div>
                         }
@@ -462,7 +502,7 @@ export default function Params() {
                                 <SMSOptions
                                     username={user}
                                     usertoken={token}
-                                    setProcessing={setProcessing}
+                                    status={{addToQueue, removeFromQueue}}
                                     leaguemembers={leaguemembers} />
                             </div>
                         }
@@ -473,7 +513,8 @@ export default function Params() {
                                         token = {token}
                                         league={league}
                                         season={selectedseason}
-                                        status={setProcessing} />}
+                                        status={{addToQueue, removeFromQueue}} />
+                                }
                             </div>
                         }
                     </div>

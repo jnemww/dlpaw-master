@@ -741,6 +741,18 @@ button.oddscard{
   padding: 2px;
   margin: 3px;
 }
+img.bettingcard{
+  height: 20px;
+  width: 15px;
+  background-color: transparent;
+  border: 1px solid;
+  border-start-start-radius: 3px 3px;
+  border-start-end-radius: 3px 3px;
+  border-end-end-radius: 3px 3px;
+  border-end-start-radius: 3px 3px;
+  padding: 2px;
+  margin: 1px;
+}
 button.disabled{
   opacity: .65;
   border: 2px green;

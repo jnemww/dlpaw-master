@@ -22,7 +22,7 @@ export default function Standings({ token, league, season, status }) {
 
     async function getStandings(){
         try{
-            status(true);
+            status.addToQueue();
             let url = standingsurl
                 .replace(leaguetkn, league)
                 .replaceAll(" ", sf)
@@ -33,10 +33,10 @@ export default function Standings({ token, league, season, status }) {
             games = await res.json();
             setStandings(games.Results.Summary);
             setStandingsdetails(games.Results.Details);
-            status(false);
         } catch(err) {
             setError(err);
-            return;
+        } finally {
+            status.removeFromQueue();
         }
     }
 

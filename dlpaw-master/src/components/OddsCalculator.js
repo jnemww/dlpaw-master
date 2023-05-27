@@ -2,7 +2,7 @@ import Enumerable from 'linq';
 import React, { useEffect, useState } from 'react';
 import DataTable from './DataTable';
 
-export default function OddsCalculator({ username, usertoken, setProcessing, leaguemembers }) {
+export default function OddsCalculator({ username, usertoken, status, leaguemembers }) {
     const entrytype = {Hand: "Hand", Board: "Board", BoardRemove:"BoardRemove", HandRemove: "HandRemove"};
     const [token, setToken] = useState(usertoken);
     const [deck, setDeck] = useState([]);
@@ -124,7 +124,7 @@ export default function OddsCalculator({ username, usertoken, setProcessing, lea
 
     async function getOdds() {
         try {
-            setProcessing(true);
+            status.addToQueue();
 
             if(hands.length < 4){
                 throw new Error("Must select at least 2 hands.");
@@ -167,7 +167,7 @@ export default function OddsCalculator({ username, usertoken, setProcessing, lea
             setError(error.message);
         }
         finally{
-            setProcessing(false);
+            status.removeFromQueue();
         }
     }
 

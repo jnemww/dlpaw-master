@@ -3,10 +3,9 @@ import React, { useEffect, useState, useFetch, useSyncExternalStore } from 'reac
 import DataTable from './DataTable';
 import { days, defaultschedule, UPDATE_TYPE } from "../enums";
 
-export default function GameScheduler({ username, usertoken, setProcessing, leaguemembers }) {
+export default function GameScheduler({ username, usertoken, status, leaguemembers }) {
     //const [user, setUser] = useState(username);
     const [token, setToken] = useState(usertoken);
-    //const [processing, setProcessing] = useState(false);
     const [savestatus, setSavestatus] = useState();
     const [schedules, setSchedules] = useState();
     const [schedulereport, setSchedulereport] = useState();
@@ -77,7 +76,7 @@ export default function GameScheduler({ username, usertoken, setProcessing, leag
 
     async function saveSchedule() {
         //console.log("user auth attempt: " + localuser)
-        setProcessing(true);
+        status.addToQueue();
 
         if (schedule.StartofWeek == null) {
             setSavestatus("Select a week date before saving.");
@@ -110,11 +109,11 @@ export default function GameScheduler({ username, usertoken, setProcessing, leag
                 console.log(error.toString());
             });
 
-        setProcessing(false);
+        status.removeFromQueue();
     }
 
     async function getSchedule() {
-        setProcessing(true);
+        status.addToQueue();
 
         if (schedule.StartofWeek == null) {
             setSavestatus("Select a week date before saving.");
@@ -153,7 +152,7 @@ export default function GameScheduler({ username, usertoken, setProcessing, leag
         setSchedules(f);
         setSchedulereport(r);
         console.dir(f);
-        setProcessing(false);
+        status.removeFromQueue();
     }
 
     function getScheduleDetails(day) {

@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { days, defaultschedule, UPDATE_TYPE } from "../enums";
 
-export default function SMSOptions({ username, usertoken, setProcessing, leaguemembers }) {
+export default function SMSOptions({ username, usertoken, status, leaguemembers }) {
     const [token, setToken] = useState(usertoken);
     const [savestatus, setSavestatus] = useState();
     const [schedules, setSchedules] = useState();
@@ -29,7 +29,7 @@ export default function SMSOptions({ username, usertoken, setProcessing, leaguem
 
     async function saveSchedule() {
         //console.log("user auth attempt: " + localuser)
-        setProcessing(true);
+        status.addToQueue();
 
         // var f = await fetch(postsheduleurl,
         //     {
@@ -56,44 +56,7 @@ export default function SMSOptions({ username, usertoken, setProcessing, leaguem
         //         console.log(error.toString());
         //     });
 
-        setProcessing(false);
-    }
-
-    async function getSchedule() {
-        setProcessing(true);
-
-        // let url = getsheduleurl
-        //     .replace(leaguetkn, league)
-        //     .replace(dtkn, schedule.StartofWeek)
-        //     .replaceAll(" ", sf);
-        // var f = await fetch(url,
-        //     {
-        //         headers: { 'Authorization': 'Bearer ' + token }
-        //     })
-        //     .then(res => {
-        //         if (res.status !== 200) bposterror = true;
-        //         return res.json();
-        //     })
-        //     .catch(error => {
-        //         setSavestatus(error.toString());
-        //         console.log(error.toString());
-        //     });
-
-        // let r = Enumerable.from(f)
-        //     .selectMany(d => d.Days)
-        //     .groupBy(d => d.Day)
-        //     .orderBy(o => days.indexOf(o.first().Day))
-        //     .select(z => ({
-        //         Day: z.first().Day,
-        //         Available: z.sum(s => (s.Play == 1 ? 1 : 0)),
-        //         Earliest: z.min(t => t.StartTime),
-        //         Latest: z.max(t => t.StartTime)
-        //     }))
-        //     .toArray();
-
-        // setSchedules(f);
-        // setSchedulereport(r);
-        setProcessing(false);
+        status.removeFromQueue();
     }
     
     return (

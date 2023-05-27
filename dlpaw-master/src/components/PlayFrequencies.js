@@ -11,7 +11,7 @@ export default function PlayFrequencies({ gamedata, selectedseason, selectedgame
     useEffect(() => {
         if (gamedata == undefined) return;
 
-        status(true);
+        status.addToQueue();
 
         let o1 = Enumerable.from(gamedata.hands)
             .select(s => s.summary)
@@ -78,7 +78,7 @@ export default function PlayFrequencies({ gamedata, selectedseason, selectedgame
 
         setResults(r);
         setResultstable(r1);
-        status(false);
+        status.removeFromQueue();
     }, [gamedata]);
 
     function ChangeView() {

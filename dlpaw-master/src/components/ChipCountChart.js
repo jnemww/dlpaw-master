@@ -19,7 +19,7 @@ export default function ChipCountChart({ gamedata, status, leaguemembers, select
     useEffect(() => {
         if (gamedata == undefined) return;
 
-        status(true);
+        status.addToQueue();
 
         let cd = data;
 
@@ -59,16 +59,13 @@ export default function ChipCountChart({ gamedata, status, leaguemembers, select
 
             cd.datasets = series;
             setChartData(cd);
-            status(false);
         }
         catch (err) {
             setError(err);
             return;
+        } finally {
+            status.removeFromQueue();
         };
-
-        // (async () => {
-
-        // })();
     }, [gamedata]);
 
     function NavigateToHand(handID) {
