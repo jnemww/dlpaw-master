@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   version="1.1"
+   id="svg2"
+   width="1145"
+   height="1134"
+   viewBox="0 0 1145 1134"
+   sodipodi:docname="position_names.svg"
+   inkscape:version="1.2.2 (732a01da63, 2022-12-09)"
+   inkscape:export-filename="utg3.png"
+   inkscape:export-xdpi="50.305676"
+   inkscape:export-ydpi="50.305676"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs6" />
+  <sodipodi:namedview
+     id="namedview4"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     showgrid="false"
+     inkscape:zoom="0.74937003"
+     inkscape:cx="403.6724"
+     inkscape:cy="576.48422"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <ellipse
+     style="display:inline;fill:#000000;fill-rule:evenodd;stroke-width:1.13848"
+     id="path354"
+     cx="572.5"
+     cy="567"
+     rx="547.35486"
+     ry="546" />
+  <g
+     inkscape:groupmode="layer"
+     id="layer1"
+     inkscape:label="Layer 1"
+     style="fill:#ffffff;fill-opacity:1">
+    <text
+       xml:space="preserve"
+       style="font-size:409.955px;font-family:Calibri;-inkscape-font-specification:'Calibri, Normal';fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.400986"
+       x="463.064"
+       y="532.67102"
+       id="text2843"
+       transform="scale(0.7110386,1.4063934)"
+       inkscape:label="text2843"><tspan
+         x="463.064"
+         y="532.67102"
+         style="stroke-width:0.400986"
+         id="tspan2898"
+         sodipodi:role="line">U+3</tspan></text>
+  </g>
+</svg>

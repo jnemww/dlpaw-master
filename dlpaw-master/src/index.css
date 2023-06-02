@@ -112,9 +112,119 @@ table.pokertable{
   margin: 0 auto;
 
 }
+table.bb{
+  background-image: url("../public/images/bb.png");
+  image-rendering: crisp-edges;
+  background-size: 25px 25px;
+  background-position-x: -5px;
+  background-position-y: -2px;
+  background-blend-mode: inherit;
+  background-repeat: no-repeat;
+  z-index: 1;
+}
+table.sb{
+  background-image: url("../public/images/sb.png");
+  image-rendering: crisp-edges;
+  background-size: 25px 25px;
+  background-position-x: -5px;
+  background-position-y: -2px;
+  background-blend-mode: inherit;
+  background-repeat: no-repeat;
+  z-index: 1;
+}
+table.d{
+  background-image: url("../public/images/d.png");
+  image-rendering: crisp-edges;
+  background-size: 25px 25px;
+  background-position-x: -5px;
+  background-position-y: -2px;
+  background-blend-mode: inherit;
+  background-repeat: no-repeat;
+  z-index: 1;
+}
+table.utg{
+  background-image: url("../public/images/utg.png");
+  image-rendering: crisp-edges;
+  background-size: 25px 25px;
+  background-position-x: -5px;
+  background-position-y: -2px;
+  background-blend-mode: inherit;
+  background-repeat: no-repeat;
+  z-index: 1;
+}
+table.utg1{
+  background-image: url("../public/images/utg1.png");
+  image-rendering: crisp-edges;
+  background-size: 25px 25px;
+  background-position-x: -5px;
+  background-position-y: -2px;
+  background-blend-mode: inherit;
+  background-repeat: no-repeat;
+  z-index: 1;
+}
+table.utg2{
+  background-image: url("../public/images/utg2.png");
+  image-rendering: crisp-edges;
+  background-size: 25px 25px;
+  background-position-x: -5px;
+  background-position-y: -2px;
+  background-blend-mode: inherit;
+  background-repeat: no-repeat;
+  z-index: 1;
+}
+table.utg3{
+  background-image: url("../public/images/utg3.png");
+  image-rendering: crisp-edges;
+  background-size: 25px 25px;
+  background-position-x: -5px;
+  background-position-y: -2px;
+  background-blend-mode: inherit;
+  background-repeat: no-repeat;
+  z-index: 1;
+}
+table.utg4{
+  background-image: url("../public/images/utg4.png");
+  image-rendering: crisp-edges;
+  background-size: 25px 25px;
+  background-position-x: -5px;
+  background-position-y: -2px;
+  background-blend-mode: inherit;
+  background-repeat: no-repeat;
+  z-index: 1;
+}
+table.lj{
+  background-image: url("../public/images/lj.png");
+  image-rendering: crisp-edges;
+  background-size: 25px 25px;
+  background-position-x: -5px;
+  background-position-y: -2px;
+  background-blend-mode: inherit;
+  background-repeat: no-repeat;
+  z-index: 1;
+}
+table.hj{
+  background-image: url("../public/images/hj.png");
+  image-rendering: crisp-edges;
+  background-size: 25px 25px;
+  background-position-x: -5px;
+  background-position-y: -2px;
+  background-blend-mode: inherit;
+  background-repeat: no-repeat;
+  z-index: 1;
+}
+table.co{
+  background-image: url("../public/images/co.png");
+  image-rendering: crisp-edges;
+  background-size: 25px 25px;
+  background-position-x: -5px;
+  background-position-y: -2px;
+  background-blend-mode: inherit;
+  background-repeat: no-repeat;
+  z-index: 1;
+}
 table.seat1{
   background-image: url("../public/images/seat1.png");
-  background-size: 20px 20px;
+  background-size: 25px 25px;
   background-position-x: -5px;
   background-position-y: -2px;
   background-blend-mode: inherit;
@@ -123,7 +233,7 @@ table.seat1{
 }
 table.seat2{
   background-image: url("../public/images/seat2.png");
-  background-size: 20px 20px;
+  background-size: 25px 25px;
   background-position-x: -5px;
   background-position-y: -2px;
   background-blend-mode: inherit;
@@ -132,7 +242,7 @@ table.seat2{
 }
 table.seat3{
   background-image: url("../public/images/seat3.png");
-  background-size: 20px 20px;
+  background-size: 25px 25px;
   background-position-x: -5px;
   background-position-y: -2px;
   background-blend-mode: inherit;
@@ -141,7 +251,7 @@ table.seat3{
 }
 table.seat4{
   background-image: url("../public/images/seat4.png");
-  background-size: 20px 20px;
+  background-size: 25px 25px;
   background-position-x: -5px;
   background-position-y: -2px;
   background-blend-mode: inherit;
@@ -150,7 +260,7 @@ table.seat4{
 }
 table.seat5{
   background-image: url("../public/images/seat5.png");
-  background-size: 20px 20px;
+  background-size: 25px 25px;
   background-position-x: -5px;
   background-position-y: -2px;
   background-blend-mode: inherit;
@@ -159,7 +269,7 @@ table.seat5{
 }
 table.seat6{
   background-image: url("../public/images/seat6.png");
-  background-size: 20px 20px;
+  background-size: 25px 25px;
   background-position-x: -5px;
   background-position-y: -2px;
   background-blend-mode: inherit;
@@ -168,7 +278,7 @@ table.seat6{
 }
 table.seat7{
   background-image: url("../public/images/seat7.png");
-  background-size: 20px 20px;
+  background-size: 25px 25px;
   background-position-x: -5px;
   background-position-y: -2px;
   background-blend-mode: inherit;
@@ -177,7 +287,7 @@ table.seat7{
 }
 table.seat8{
   background-image: url("../public/images/seat8.png");
-  background-size: 20px 20px;
+  background-size: 25px 25px;
   background-position-x: -5px;
   background-position-y: -2px;
   background-blend-mode: inherit;
@@ -186,7 +296,7 @@ table.seat8{
 }
 table.seat9{
   background-image: url("../public/images/seat9.png");
-  background-size: 20px 20px;
+  background-size: 25px 25px;
   background-position-x: -5px;
   background-position-y: -2px;
   background-blend-mode: inherit;

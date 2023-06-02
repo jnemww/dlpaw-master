@@ -1,5 +1,6 @@
 import Seat from './Seat';
 import Enumerable from 'linq';
+import { SEATS } from '../enums';
 
 export default function Table({ currenthand, leaguemembers }) {
 
@@ -91,6 +92,30 @@ export default function Table({ currenthand, leaguemembers }) {
 
         return list;
     }
+
+    // function labelSeats(hand) {
+    //     let results = [];
+    //     let labels = SEATS.ids;
+    
+    //     let players = Enumerable.from(hand.seats)
+    //         .toArray();
+    
+    //     let button = players.find(p => p.isbutton == 1);
+    //     let bi = players.indexOf(button);
+    //     let pc = players.length;
+    //     let positions = Array(pc);
+    //     let configs = SEATS.configs.find(c => c.players == pc).ids;
+    
+    //     for (let n = 0; n < positions.length; n++) {
+    //         let idx = n - bi;
+    //         if (idx < 0) idx += pc;
+    //         positions[n] = { ...labels[configs[idx]], player: players[n].player, seatid: players[n].id };
+    //     }
+    
+    //     return positions;
+    // }
+
+    // const positions = labelSeats(currenthand);
 
     return (
         <table className='pokertable'>

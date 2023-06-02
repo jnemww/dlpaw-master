@@ -1,10 +1,8 @@
 import Enumerable from 'linq';
 import React, { useEffect, useState } from 'react';
+import { SEATS } from '../enums';
 
 export default function Seat({ hand, seatid, leaguemembers }) {
-
-  //console.log("SEAT seatid: " + props.seatid + "hand:" + props.hand);
-
   var s = Enumerable.from(hand.seats)
     .where(x => x.id == "seat" + (seatid))
     .toArray()[0];
@@ -30,10 +28,12 @@ export default function Seat({ hand, seatid, leaguemembers }) {
     .toArray()[0];
 
   function isButton() {
+    let sl = labelSeats(hand);
+
     if (s.isbutton)
-      return "pokertableseatbutton seat" + seatid;
+      return `pokertableseatbutton ${sl.find(s => s.seatid == `seat${seatid}`).id.toLowerCase()}`;//`pokertableseatbutton seat${seatid}`;
     else
-      return "pokertableseat seat" + seatid;
+      return `pokertableseat ${sl.find(s => s.seatid == `seat${seatid}`).id.toLowerCase()}`;//`pokertableseat seat${seatid}`;
   }
 
   function isProfit() {
@@ -44,6 +44,28 @@ export default function Seat({ hand, seatid, leaguemembers }) {
     else
       return "profitpositive";
   }
+
+  function labelSeats(hand) {
+    let results = [];
+    let labels = SEATS.ids;
+
+    let players = Enumerable.from(hand.seats)
+        .toArray();
+
+    let button = players.find(p => p.isbutton == 1);
+    let bi = players.indexOf(button);
+    let pc = players.length;
+    let positions = Array(pc);
+    let configs = SEATS.configs.find(c => c.players == pc).ids;
+
+    for (let n = 0; n < positions.length; n++) {
+        let idx = n - bi;
+        if (idx < 0) idx += pc;
+        positions[n] = { ...labels[configs[idx]], player: players[n].player, seatid: players[n].id };
+    }
+
+    return positions;
+}
 
   return (
     <table className={isButton()}>

@@ -1,7 +1,7 @@
 import Enumerable from 'linq';
 import DataTable from './DataTable';
 import React, { useEffect, useState } from 'react';
-import { SEATS } from '../enums'
+import { SEATS } from '../enums';
 import GroupedTable from './GroupedTable';
 
 export default function BettingStats({ token, league, season, status }) {
@@ -279,7 +279,9 @@ export default function BettingStats({ token, league, season, status }) {
                 const result = await calcStats(games);
                 if(result.Success){
                     setThrbsumry(result.selectedbetssummary);
-                    setThrbdetails(result.threebdetail);
+                    if(result.threebdetail.length > 0){
+                        setThrbdetails(result.threebdetail);
+                    }
                 } else {
                     setError(result.Message)
                 }
@@ -307,7 +309,9 @@ export default function BettingStats({ token, league, season, status }) {
         let d = Enumerable.from(thrbdetails)
             .where(x => x.player == selectedplayer)
             .toArray();
-        setSelthrbdetails(d);
+        if(d.length > 0){
+            setSelthrbdetails(d);
+        }
         //status.removeFromQueue();
 
         // let n = Enumerable.from(nemesis)
@@ -794,6 +798,16 @@ export default function BettingStats({ token, league, season, status }) {
                 //                         .select(r => r.sum(s => s.handsseen)).first()
                 //                 }))
                 //     .toArray();
+
+                if(selbetsumry.length == 0){
+                    selbetsumry.push({Results: "None."
+                    // ,
+                    //     "Bets": "",
+                    //     "Oppty's": 0,
+                    //     "Bet %": 0,
+                    //     "Dealt": 0
+                    });
+                }
                 const result = {Success: true,
                                 selectedbetssummary: selbetsumry,
                                 threebdetail: selbetsdetail};
