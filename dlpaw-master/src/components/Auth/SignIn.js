@@ -101,7 +101,7 @@ export default function SignIn({ setToken, setUser, setLeaguemembers }) {
                                 res.forEach((doc) => {
                                     // doc.data() is never undefined for query doc snapshots
                                     //console.log("user collection => ", doc.id, " => ", doc.data());
-                                    players.push(doc.data());
+                                    players.push({id: doc.id, ...doc.data()});
                                 });
                             })
                             .catch((error) => {

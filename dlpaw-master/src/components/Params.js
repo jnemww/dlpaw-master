@@ -3,6 +3,7 @@ import ProfitSummary from './ProfitSummary';
 import Standings from './Standings';
 import PlayFrequencies from './PlayFrequencies';
 import SMSOptions from './SMSOptions';
+import SeriesOdds from './SeriesOdds';
 import BettingStats from './BettingStats';
 //import BettingStats from './sampletable';
 import HandQuery from './HandQuery';
@@ -14,11 +15,16 @@ import GameScheduler from './GameScheduler';
 import SignIn from './Auth/SignIn';
 import AuthDetails from './Auth/AuthDetails';
 import Dropdown from 'react-dropdown';
+import { storageAvailable } from '../HelperFunctions';
 import { SCREEN, PARAMETERS, menu } from '../enums'
 import 'react-dropdown/style.css';
 import Enumerable from 'linq';
 
+export const GameDataContext = React.createContext();
+
 export default function Params() {
+    const [gameData, setGameData] = useState({seasons: [{game: "G1", hands:[1,2,3]}]});
+
     //user data
     const [leaguemembers, setLeaguemembers] = useState(null);
     const [user, setUser] = useState(null);
@@ -42,6 +48,7 @@ export default function Params() {
     //const processingqueue = [];
 
     //app data
+    const [isLocalStorage, setIsLocalStorage] = useState(false);
     const [screen, setScreen] = useState(null);
     const [processing, setProcessing] = useState();
     const pe = process.env;
@@ -70,6 +77,20 @@ export default function Params() {
         setSelectedhand,
         setSelectedgamedata
     ];
+
+    useEffect(() => {
+        const storage = storageAvailable("localStorage");
+        if (storage) {
+            console.log("storage: yes");
+            const mystoragevalue = localStorage.getItem("MyObject");
+            if(mystoragevalue == undefined){
+                localStorage.setItem("MyObject", JSON.stringify({MyObject: {key: "Data", value: "hhhhheeee"}}));
+            }
+          } else {
+            console.log("storage: no");
+          }
+        setIsLocalStorage(storage);
+    },[])
 
     useEffect(() => {
         let s = screenstack;
@@ -191,21 +212,21 @@ export default function Params() {
         setScreen(SCREEN.Table);
     }, [queryhanditems]);
 
-function addToQueue(){
-    setProcessingqueue((previous) => {
-        const queue = [...previous];//previous.slice();
-        queue.push({});
-        return queue;
-    })
-}
+    function addToQueue(){
+        setProcessingqueue((previous) => {
+            const queue = [...previous];//previous.slice();
+            queue.push({});
+            return queue;
+        })
+    }
 
-function removeFromQueue(){
-    setProcessingqueue((previous) => {
-        const queue = [...previous];//previous.slice();
-        queue.pop({});
-        return queue;
-    })
-}
+    function removeFromQueue(){
+        setProcessingqueue((previous) => {
+            const queue = [...previous];//previous.slice();
+            queue.pop({});
+            return queue;
+        })
+    }
 
     // useEffect(() => {
     //     setProcessingqueue(previous => {
@@ -229,22 +250,22 @@ function removeFromQueue(){
         setHanditems(orighanditems);
     }
 
-    function getSeasonGameData() {
-        if (selectedseason !== null) {
-            (async () => {
-                addToQueue();
-                let url = allgamesurl.replace(leaguetkn, league)
-                    .replace(seasontkn, selectedseason);
-                let res = await fetch(url, {
-                    headers: { 'Authorization': 'Bearer ' + token }
-                });
-                let list = await res.json();
+    // function getSeasonGameData() {
+    //     if (selectedseason !== null) {
+    //         (async () => {
+    //             addToQueue();
+    //             let url = allgamesurl.replace(leaguetkn, league)
+    //                 .replace(seasontkn, selectedseason);
+    //             let res = await fetch(url, {
+    //                 headers: { 'Authorization': 'Bearer ' + token }
+    //             });
+    //             let list = await res.json();
 
-                setSeasongamedata(list);
-                removeFromQueue();
-            })();
-        }
-    }
+    //             setSeasongamedata(list);
+    //             removeFromQueue();
+    //         })();
+    //     }
+    // }
 
     function ScrollBack() {
         if (document.getElementById('selhand').selectedIndex > 1)
@@ -340,188 +361,204 @@ function removeFromQueue(){
         console.log("Params reset.");
     }
 
-    function getProcessingQueueLength(){
-        console.log("processin queue => ", processingqueue.length, "retval => ", processingqueue.length>0?true:false);
-        return processingqueue.length>0?true:false;
-    }
+    // function getProcessingQueueLength(){
+    //     console.log("processin queue => ", processingqueue.length, "retval => ", processingqueue.length>0?true:false);
+    //     return processingqueue.length>0?true:false;
+    // }
     return (
-        <div>
-            {!user &&
-                <div>
-                    <SignIn setToken={setToken} setUser={setUser} setLeaguemembers={setLeaguemembers} />
-                    {/* <AuthDetails setUser={setUser} /> */}
-                </div>
-            }
-            {user &&
-                <div>
-                    <table className='menu'>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <Dropdown options={options} onChange={(e) => { changeScreen(e) }} value={defaultOption} placeholder="Select an option" />
-                                    {/* <Dropdown options={options} onChange={(e) => { printmenuitem(e, options, paramvisibiity) }} value={defaultOption} placeholder="Select an option" /> */}
-                                </td>
-                                <td>
-                                    <span className='navpath'>{screen} {selectedseason && `/ Season: ${selectedseason}`} {selectedgame && `/ Game: ${selectedgame}`}</span>
-                                </td>
-                                <td rowSpan={2} align="right"><AuthDetails setUser={setUser} userimageref={leaguemembers.find(p => p.email == user).url} /></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    {hasParameters(screen) &&
-                        <div>
-                            {(screenstack.length > 2) && <img onClick={() => setScreen(screenstack[screenstack.length - 2])} height={20} src='./images/back.png' />}
-                            <table className='pokertableboard'>
-                                <tbody>
-                                    {/* <tr>
-                                        <td>
-                                            {screen}: {selectedseason}, Game: {selectedgame}
-                                        </td>
-                                    </tr> */}
-                                    {isVisible(PARAMETERS.SEASON, screen) &&
-                                        <tr>
-                                            <td>
-                                                <select id="selseason" onChange={(e) => { setSelectedseason(e.target.value) }} defaultValue={selectedseason}>{seasonitems}</select>
-                                            </td>
-                                        </tr>
-                                    }
-
-                                    {isVisible(PARAMETERS.GAME, screen) &&
-                                        <tr>
-                                            <td>
-                                                <select onChange={(e) => setSelectedgame(e.target.value)} defaultValue={selectedgame}>{gameitems}</select>
-                                                <button onClick={RefreshHands}>Clear Filter</button>
-                                            </td>
-                                        </tr>
-                                    }
-
-                                    {isVisible(PARAMETERS.HAND, screen) &&
-                                        <tr>
-                                            <td>
-                                                <button onClick={ScrollBack}>&lt;&lt;</button>
-                                                <select id="selhand" defaultValue={selectedhand} onChange={(e) => setSelectedhand(e.target.value)}>{handitems}</select>
-                                                <button onClick={ScrollFwd}>&gt;&gt;</button>
-                                            </td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
-                    }
-                    {
-                        processingqueue.length>0 &&
-                        <div style={{ textAlign: "center" }}>
-                            <LoadingSpinner url={leaguemembers.find(p => p.email == user).url} />
-                        </div>
-                    }
+        <GameDataContext.Provider value={gameData}>
+            <div>
+                {!user &&
                     <div>
-                        {screen === SCREEN.Table &&
-                            <div>
-                                {selectedhand &&
-                                    <Table
-                                        currenthand={selectedhand}
-                                        leaguemembers={leaguemembers} />}
-                            </div>
-                        }
-                        {screen === SCREEN.ProfitSummary &&
-                            selectedgamedata &&
-                            <div>
-                                <ProfitSummary
-                                    gamedata={selectedgamedata}
-                                    status={{addToQueue, removeFromQueue}}
-                                    selectedseason={selectedseason}
-                                    selectedgame={selectedgame}
-                                    setQueryhanditems={setQueryhanditems}
-                                    leaguemembers={leaguemembers} />
-                            </div>
-                        }
-                        {screen === SCREEN.Standings &&
-                            <div>
-                                {selectedseason &&
-                                    <Standings
-                                        token = {token}
-                                        league={league}
-                                        season={selectedseason}
-                                        status={{addToQueue, removeFromQueue}} />
-                                }
-                            </div>
-                        }
-                        {screen === SCREEN.Frequency &&
-                            <div>
-                                {selectedgamedata &&
-                                    <PlayFrequencies
-                                        selectedseason={selectedseason}
-                                        selectedgame={selectedgame}
-                                        gamedata={selectedgamedata}
-                                        status={{addToQueue, removeFromQueue}}
-                                        leaguemembers={leaguemembers} />}
-                            </div>
-                        }
-                        {screen === SCREEN.HandQuery &&
-                            <div>
-                                {selectedgamedata &&
-                                    <HandQuery
-                                        gamedata={selectedgamedata}
-                                        setQueryhanditems={setQueryhanditems}
-                                        leaguemembers={leaguemembers} />}
-                            </div>
-                        }
-                        {screen === SCREEN.GameScheduler &&
-                            <div>
-                                <GameScheduler
-                                    username={user}
-                                    usertoken={token}
-                                    status={{addToQueue, removeFromQueue}}
-                                    leaguemembers={leaguemembers} />
-                            </div>
-                        }
-                        {screen === SCREEN.ChipCountChart &&
-                            <div>
-                                {selectedgamedata &&
-                                    <ChipCountChart
-                                        selectedseason={selectedseason}
-                                        selectedgame={selectedgame}
-                                        gamedata={selectedgamedata}
-                                        status={{addToQueue, removeFromQueue}}
-                                        leaguemembers={leaguemembers}
-                                        setQueryhanditems={setQueryhanditems}
-                                        setScreen={setScreen} />}
-                            </div>
-                        }
-                        {screen === SCREEN.OddsCalculator &&
-                            <div>
-                                <OddsCalculator
-                                    username={user}
-                                    usertoken={token}
-                                    status={{addToQueue, removeFromQueue}}
-                                    leaguemembers={leaguemembers} />
-                            </div>
-                        }
-                        {screen === SCREEN.SMSOptions &&
-                            <div>
-                                <SMSOptions
-                                    username={user}
-                                    usertoken={token}
-                                    status={{addToQueue, removeFromQueue}}
-                                    leaguemembers={leaguemembers} />
-                            </div>
-                        }
-                        {screen === SCREEN.BettingStats &&
-                            <div>
-                                {selectedseason &&
-                                    <BettingStats
-                                        token = {token}
-                                        league={league}
-                                        season={selectedseason}
-                                        status={{addToQueue, removeFromQueue}} />
-                                }
-                            </div>
-                        }
+                        <SignIn setToken={setToken} setUser={setUser} setLeaguemembers={setLeaguemembers} />
+                        {/* <AuthDetails setUser={setUser} /> */}
                     </div>
-                </div>
-            }
+                }
+                {user &&
+                    <div>
+                        <table className='menu'>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <Dropdown options={options} onChange={(e) => { changeScreen(e) }} value={defaultOption} placeholder="Select an option" />
+                                        {/* <Dropdown options={options} onChange={(e) => { printmenuitem(e, options, paramvisibiity) }} value={defaultOption} placeholder="Select an option" /> */}
+                                    </td>
+                                    <td>
+                                        <span className='navpath'>{screen} {selectedseason && `/ Season: ${selectedseason}`} {selectedgame && `/ Game: ${selectedgame}`}</span>
+                                    </td>
+                                    <td rowSpan={2} align="right"><AuthDetails setUser={setUser} userimageref={leaguemembers.find(p => p.email == user).url} /></td>
+                                </tr>
+                                {/* <tr><td>Local Storage : {`${isLocalStorage}`}</td></tr>
+                                <tr><td>{`${JSON.parse(localStorage.getItem("MyObject")).MyObject.value}`}</td></tr> */}
+                            </tbody>
+                        </table>
+                        {hasParameters(screen) &&
+                            <div>
+                                {(screenstack.length > 2) && <img onClick={() => setScreen(screenstack[screenstack.length - 2])} height={20} src='./images/back.png' />}
+                                <table className='pokertableboard'>
+                                    <tbody>
+                                        {/* <tr>
+                                            <td>
+                                                {screen}: {selectedseason}, Game: {selectedgame}
+                                            </td>
+                                        </tr> */}
+                                        {isVisible(PARAMETERS.SEASON, screen) &&
+                                            <tr>
+                                                <td>
+                                                    <select id="selseason" onChange={(e) => { setSelectedseason(e.target.value) }} defaultValue={selectedseason}>{seasonitems}</select>
+                                                </td>
+                                            </tr>
+                                        }
+
+                                        {isVisible(PARAMETERS.GAME, screen) &&
+                                            <tr>
+                                                <td>
+                                                    <select onChange={(e) => setSelectedgame(e.target.value)} defaultValue={selectedgame}>{gameitems}</select>
+                                                    <button onClick={RefreshHands}>Clear Filter</button>
+                                                </td>
+                                            </tr>
+                                        }
+
+                                        {isVisible(PARAMETERS.HAND, screen) &&
+                                            <tr>
+                                                <td>
+                                                    <button onClick={ScrollBack}>&lt;&lt;</button>
+                                                    <select id="selhand" defaultValue={selectedhand} onChange={(e) => setSelectedhand(e.target.value)}>{handitems}</select>
+                                                    <button onClick={ScrollFwd}>&gt;&gt;</button>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+                        {
+                            processingqueue.length>0 &&
+                            <div style={{ textAlign: "center" }}>
+                                <LoadingSpinner url={leaguemembers.find(p => p.email == user).url} />
+                            </div>
+                        }
+                        <div>
+                            {screen === SCREEN.Table &&
+                                <div>
+                                    {selectedhand &&
+                                        <Table
+                                            currenthand={selectedhand}
+                                            leaguemembers={leaguemembers} />}
+                                </div>
+                            }
+                            {screen === SCREEN.ProfitSummary &&
+                                selectedgamedata &&
+                                <div>
+                                    <ProfitSummary
+                                        gamedata={selectedgamedata}
+                                        status={{addToQueue, removeFromQueue}}
+                                        selectedseason={selectedseason}
+                                        selectedgame={selectedgame}
+                                        setQueryhanditems={setQueryhanditems}
+                                        leaguemembers={leaguemembers} />
+                                </div>
+                            }
+                            {screen === SCREEN.Standings &&
+                                <div>
+                                    {selectedseason &&
+                                        <Standings
+                                            token = {token}
+                                            league={league}
+                                            season={selectedseason}
+                                            status={{addToQueue, removeFromQueue}} />
+                                    }
+                                </div>
+                            }
+                            {screen === SCREEN.Frequency &&
+                                <div>
+                                    {selectedgamedata &&
+                                        <PlayFrequencies
+                                            selectedseason={selectedseason}
+                                            selectedgame={selectedgame}
+                                            gamedata={selectedgamedata}
+                                            status={{addToQueue, removeFromQueue}}
+                                            leaguemembers={leaguemembers} />}
+                                </div>
+                            }
+                            {screen === SCREEN.HandQuery &&
+                                <div>
+                                    {selectedgamedata &&
+                                        <HandQuery
+                                            gamedata={selectedgamedata}
+                                            setQueryhanditems={setQueryhanditems}
+                                            leaguemembers={leaguemembers} />}
+                                </div>
+                            }
+                            {screen === SCREEN.GameScheduler &&
+                                <div>
+                                    <GameScheduler
+                                        username={user}
+                                        usertoken={token}
+                                        status={{addToQueue, removeFromQueue}}
+                                        leaguemembers={leaguemembers} />
+                                </div>
+                            }
+                            {screen === SCREEN.ChipCountChart &&
+                                <div>
+                                    {selectedgamedata &&
+                                        <ChipCountChart
+                                            selectedseason={selectedseason}
+                                            selectedgame={selectedgame}
+                                            gamedata={selectedgamedata}
+                                            status={{addToQueue, removeFromQueue}}
+                                            leaguemembers={leaguemembers}
+                                            setQueryhanditems={setQueryhanditems}
+                                            setScreen={setScreen} />}
+                                </div>
+                            }
+                            {screen === SCREEN.OddsCalculator &&
+                                <div>
+                                    <OddsCalculator
+                                        username={user}
+                                        usertoken={token}
+                                        status={{addToQueue, removeFromQueue}}
+                                        leaguemembers={leaguemembers} />
+                                </div>
+                            }
+                            {screen === SCREEN.SMSOptions &&
+                                <div>
+                                    <SMSOptions
+                                        username={user}
+                                        usertoken={token}
+                                        status={{addToQueue, removeFromQueue}}
+                                        leaguemembers={leaguemembers} />
+                                </div>
+                            }
+                            {screen === SCREEN.BettingStats &&
+                                <div>
+                                    {selectedseason &&
+                                        <BettingStats
+                                            token = {token}
+                                            league={league}
+                                            season={selectedseason}
+                                            status={{addToQueue, removeFromQueue}} />
+                                    }
+                                </div>
+                            }
+                            {screen === SCREEN.SeriesOdds &&
+                                <div>
+                                    {selectedseason &&
+                                        <SeriesOdds
+                                            token = {token}
+                                            league={league}
+                                            season={selectedseason}
+                                            leaguemembers={leaguemembers}
+                                            status={{addToQueue, removeFromQueue}} />
+                                    }
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
 
 
-        </div>
+            </div>
+        </GameDataContext.Provider>
     );
 }

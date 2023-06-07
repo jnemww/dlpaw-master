@@ -9,7 +9,8 @@ export const SCREEN = {
     ChipCountChart: "Chipcount Chart",
     SMSOptions: "SMS Messaging",
     OddsCalculator: "Odds Calculator",
-    BettingStats: "Betting Statstics"
+    BettingStats: "Betting Statstics",
+    SeriesOdds: "Series Odds"
 };
 
 export const defaultschedule = {
@@ -44,7 +45,8 @@ export const menu = [
         { value: SCREEN.ProfitSummary, label: 'Profit Summary', className: 'myOptionClassName', params: [PARAMETERS.SEASON, PARAMETERS.GAME]},
         { value: SCREEN.Frequency, label: 'Play Frequencies', className: 'myOptionClassName', params: [PARAMETERS.SEASON, PARAMETERS.GAME]},
         { value: SCREEN.ChipCountChart, label: 'Chipcount Chart', className: 'myOptionClassName', params: [PARAMETERS.SEASON, PARAMETERS.GAME]},
-        { value: SCREEN.BettingStats, label: 'Betting Statistics', className: 'myOptionClassName', params: [PARAMETERS.SEASON]}
+        { value: SCREEN.BettingStats, label: 'Betting Statistics', className: 'myOptionClassName', params: [PARAMETERS.SEASON]},
+        { value: SCREEN.SeriesOdds, label: 'Series Completion Odds', className: 'myOptionClassName', params: [PARAMETERS.SEASON]}
      ]},
     {
     type: 'group', name: 'More...', items: [

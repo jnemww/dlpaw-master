@@ -1,10 +1,13 @@
 import Enumerable from 'linq';
 import DataTable from './DataTable';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { SEATS } from '../enums';
 import GroupedTable from './GroupedTable';
+import {GameDataContext} from './Params'
 
 export default function BettingStats({ token, league, season, status }) {
+    const gameData = useContext(GameDataContext);
+
     const pe = process.env;
     const gamessurl = pe.REACT_APP_SERVICE_URL + pe.REACT_APP_ALL_GAMES_URL;
     const leaguetkn = pe.REACT_APP_LEAGUE_TOKEN;

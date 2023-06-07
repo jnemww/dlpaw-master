@@ -9,9 +9,9 @@
    viewBox="0 0 1145 1134"
    sodipodi:docname="position_names.svg"
    inkscape:version="1.2.2 (732a01da63, 2022-12-09)"
-   inkscape:export-filename="utg3.png"
-   inkscape:export-xdpi="50.305676"
-   inkscape:export-ydpi="50.305676"
+   inkscape:export-filename="utg4.png"
+   inkscape:export-xdpi="2.0960698"
+   inkscape:export-ydpi="2.0960698"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -29,8 +29,8 @@
      inkscape:deskcolor="#d1d1d1"
      showgrid="false"
      inkscape:zoom="0.74937003"
-     inkscape:cx="403.6724"
-     inkscape:cy="576.48422"
+     inkscape:cx="573.14809"
+     inkscape:cy="524.44051"
      inkscape:window-width="1920"
      inkscape:window-height="1017"
      inkscape:window-x="-8"
@@ -51,16 +51,15 @@
      style="fill:#ffffff;fill-opacity:1">
     <text
        xml:space="preserve"
-       style="font-size:409.955px;font-family:Calibri;-inkscape-font-specification:'Calibri, Normal';fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.400986"
-       x="463.064"
-       y="532.67102"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:929.481px;font-family:Calibri;-inkscape-font-specification:'Calibri, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.909145"
+       x="230.36858"
+       y="757.59833"
        id="text2843"
-       transform="scale(0.7110386,1.4063934)"
+       transform="scale(0.81826913,1.2220918)"
        inkscape:label="text2843"><tspan
-         x="463.064"
-         y="532.67102"
-         style="stroke-width:0.400986"
-         id="tspan2898"
-         sodipodi:role="line">U+3</tspan></text>
+         sodipodi:role="line"
+         id="tspan3030"
+         x="230.36858"
+         y="757.59833">+4</tspan></text>
   </g>
 </svg>
