@@ -2,6 +2,8 @@
 import React, { useState, useEffect } from "react";
 import Enumerable from 'linq';
 import GroupedTable from './GroupedTable';
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import 'react-tabs/style/react-tabs.css';
 
 export default function SeriesOdds({ token, league, season, leaguemembers, status }) {
     const [standings, setStandings] = useState();
@@ -362,7 +364,7 @@ export default function SeriesOdds({ token, league, season, leaguemembers, statu
             pinfo.push({shortcode: char, player: leaguemembers.find(f => f.id == playerIDs[n])});
         }
         setPlayerIDs(pinfo);
-        setSelectedPlace(pinfo.length);
+        //setSelectedPlace(pinfo.length);
     }
 
     function permute(nums) {
@@ -459,24 +461,24 @@ export default function SeriesOdds({ token, league, season, leaguemembers, statu
         console.log("Scoring permutations complete.");
     }
 
-    function addPathsFilter(player, place) {
-        if(player == "" || player == undefined) return;
+    function addPathsFilter() {
+        if(selectedPlayer == "" || selectedPlayer == undefined) return;
         const filters = pathFilters.slice();
-        filters.push({ player: player, place: place });
-        if(filters.length == playerIDs.length) return;
+        if(filters && filters.length == playerIDs.length) return;
+        const place = playerIDs.length - filters.length;
+        filters.push({ player: selectedPlayer, place: place });
         setPathFilters(filters);
-        setSelectedPlayer(player);
-        setSelectedPlace(playerIDs.length - filters.length);
         document.getElementById('selectPlayer').selectedIndex = 0;
-        console.log("player/place:", player, place);
+        setSelectedPlace(place);
     }
 
     async function resetOriginalPaths(){
         try {
             status.addToQueue();
             setPathFilters([]);
-            await getPlayerTrackingInfo();
-            
+            //setSelectedPlace(playerIDs.length);
+            //await getPlayerTrackingInfo();
+
         } catch (error) {
             setError(error.message);
         } finally {
@@ -494,58 +496,9 @@ export default function SeriesOdds({ token, league, season, leaguemembers, statu
     return (
         <div>
             {outcomes &&
-                <table>
+                <table className='pokertableboard'>
                     <tr>
                         <td>
-                            <select id="selectPlayer" name="selectPlayer" defaultValue={{ label: "Select Player", value: "" }} onChange={(e) => setSelectedPlayer(e.currentTarget.value)}>
-                                <option value={""}>Select Player</option>
-                                {   playerIDs &&
-                                    Enumerable.from(playerIDs)
-                                     .where(f => pathFilters.length == 0 ||
-                                        ( pathFilters.length > 0 &&
-                                        !(Enumerable.from(pathFilters).any(p => p.player == f.shortcode))))
-                                    .toArray()
-                                    .map(o => {
-                                        return (
-                                            <option value={`${o.shortcode}`}>{`(${o.shortcode}) ${o.player.nickname}`}</option>
-                                        )
-                                    })
-                                }
-                            </select>
-                            <input disabled={true} width={50} value={`${selectedPlace}`} />
-                            {/* <select onChange={(e) => setSelectedPlace(parseInt(e.currentTarget.value))}>
-                                <option></option>
-                                {   playerIDs &&
-                                    playerIDs.map((o, i) => {
-                                        return (
-                                            <option value={i+1}>{i+1}</option>
-                                        )
-                                    })
-                                }
-                            </select> */}
-                            <button onClick={() => addPathsFilter(selectedPlayer, selectedPlace)}>Add Finish</button>
-                            <button onClick={async () => await resetOriginalPaths()}>Remove Finishes</button>
-                            <select onChange={(e) => setTrackedPlayer(e.currentTarget.value)}>
-                                <option></option>
-                                {   playerIDs &&
-                                    playerIDs.map(o => {
-                                        return (
-                                            <option value={`${o.shortcode}`}>{`(${o.shortcode}) ${o.player.nickname}`}</option>
-                                        )
-                                    })
-                                }
-                            </select>
-                            <select onChange={(e) => setTrackedPlace(parseInt(e.currentTarget.value))}>
-                                <option></option>
-                                {   playerIDs &&
-                                    playerIDs.map((o, i) => {
-                                        return (
-                                            <option value={i+1}>{i+1}</option>
-                                        )
-                                    })
-                                }
-                            </select>
-                            <button onClick={() => getPlayerTrackingInfo()}>Track Results</button>
                         </td>
                     </tr>
                     <tr>
@@ -554,42 +507,94 @@ export default function SeriesOdds({ token, league, season, leaguemembers, statu
                     </tr>
                     <tr>
                         <td>
-                            <table align="top">
+                            <table>
                                 <tr>
-                                    <td align="top">
-                                        
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td align="top">
+                                    <td style={{"vertical-align": "top"}}>
                                         {outcomes &&
                                             <GroupedTable columns={mycolumns1} data={outcomes} />
                                         }
                                     </td>
-                                    <td align="top">
+                                    <td style={{"vertical-align": "top"}}>
                                         <table className='pokertableboard'>
                                             <tr>
-                                                <td>Finished</td>
+                                                <td colSpan={2}>
+                                                    <select id="selectPlayer" name="selectPlayer" defaultValue={{ label: "Select Player", value: "" }} onChange={(e) => setSelectedPlayer(e.currentTarget.value)}>
+                                                        <option value={""}>Select Player</option>
+                                                        {   playerIDs &&
+                                                            Enumerable.from(playerIDs)
+                                                            .where(f => pathFilters.length == 0 ||
+                                                                ( pathFilters.length > 0 &&
+                                                                !(Enumerable.from(pathFilters).any(p => p.player == f.shortcode))))
+                                                            .toArray()
+                                                            .map(o => {
+                                                                return (
+                                                                    <option value={`${o.shortcode}`}>{`(${o.shortcode}) ${o.player.nickname}`}</option>
+                                                                )
+                                                            })
+                                                        }
+                                                    </select>
+                                                    {/* <input disabled={true} width={50} value={`${selectedPlace}`} /> */}
+                                                    {/* <select onChange={(e) => setSelectedPlace(parseInt(e.currentTarget.value))}>
+                                                        <option></option>
+                                                        {   playerIDs &&
+                                                            playerIDs.map((o, i) => {
+                                                                return (
+                                                                    <option value={i+1}>{i+1}</option>
+                                                                )
+                                                            })
+                                                        }
+                                                    </select> */}
+                                                    <button onClick={() => addPathsFilter()}>Add Finish</button>
+                                                    <button onClick={async () => await resetOriginalPaths()}>Remove Finishes</button>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colSpan={2}>Finished</td>
                                             </tr>
                                             <tr>
                                                 <td>Player</td>
                                                 <td>Place</td>
                                             </tr>
-                                                {
-                                                    pathFilters.map(o => {
-                                                        return (
-                                                            <tr> {/* onClick={() => addPathsFilter(o.player, o.place)}> */}
-                                                                <td>{`${playerIDs.find(id => id.shortcode == o.player).player.nickname}`}</td>
-                                                                <td>{`${o.place}`}</td>
-                                                            </tr>
-                                                        )
-                                                        console.log(o);
-                                                    })
-                                                }
+                                            {
+                                                pathFilters.map(o => {
+                                                    return (
+                                                        <tr> {/* onClick={() => addPathsFilter(o.player, o.place)}> */}
+                                                            <td>{`${playerIDs.find(id => id.shortcode == o.player).player.nickname}`}</td>
+                                                            <td>{`${o.place}`}</td>
+                                                        </tr>
+                                                    )
+                                                    console.log(o);
+                                                })
+                                            }
                                         </table>
                                     </td>
-                                    <td align="top">
+                                    <td style={{"vertical-align": "top"}}>
                                         <table className='pokertableboard'>
+                                            <tr>
+                                                <td colSpan={3}>
+                                                    <select onChange={(e) => setTrackedPlayer(e.currentTarget.value)}>
+                                                        <option></option>
+                                                        {   playerIDs &&
+                                                            playerIDs.map(o => {
+                                                                return (
+                                                                    <option value={`${o.shortcode}`}>{`(${o.shortcode}) ${o.player.nickname}`}</option>
+                                                                )
+                                                            })
+                                                        }
+                                                    </select>
+                                                    <select onChange={(e) => setTrackedPlace(parseInt(e.currentTarget.value))}>
+                                                        <option></option>
+                                                        {   playerIDs &&
+                                                            playerIDs.map((o, i) => {
+                                                                return (
+                                                                    <option value={i+1}>{i+1}</option>
+                                                                )
+                                                            })
+                                                        }
+                                                    </select>
+                                                    <button onClick={() => getPlayerTrackingInfo()}>Track Results</button>
+                                                </td>
+                                            </tr>
                                             <tr>
                                                 <td colSpan={3}>Series Finish Tracking for </td>
                                             </tr>
@@ -624,20 +629,6 @@ export default function SeriesOdds({ token, league, season, leaguemembers, statu
                             </table>
                         </td>
                     </tr>
-                    {/* <tr><td>Details</td></tr>
-                    {
-                        outcomeDetails.map(o => {
-                            return (
-                                <tr>
-                                    <td>{`${o.id}`}</td>
-                                    <td>{`${o.player}`}</td>
-                                    <td>{`${o.place}`}</td>
-                                    <td>{`${o.order}`}</td>
-                                </tr>
-                            )
-                            console.log(o);
-                        })
-                    } */}
                 </table>
             }
             {error &&
