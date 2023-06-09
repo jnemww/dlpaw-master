@@ -104,6 +104,14 @@ export default function SeriesOdds({ token, league, season, leaguemembers, statu
                     canGroupBy: false
                 },
                 {
+                    Header: 'Current Points',
+                    accessor: 'currentpts',
+                    aggregate: 'max',
+                    Aggregated: ({ value }) => <div style={{ textAlign: "right" }}>{parseFloat(value).toFixed(2)}</div>,
+                    Cell: ({value}) => <div style={{ textAlign: "right" }}>{parseFloat(value).toFixed(2)}</div>,
+                    canGroupBy: false
+                },
+                {
                     Header: 'Max Points',
                     accessor: 'maxpts',
                     aggregate: 'max',
@@ -264,45 +272,9 @@ export default function SeriesOdds({ token, league, season, leaguemembers, statu
                 paths.push(finishes);
             });
 
-            // if(pathFilters.length == 0){
-            //     paths = Enumerable.from(paths0)
-            //         .orderByDescending(o => o.points)
-            //         .groupBy(x => x.id)
-            //         .selectMany((h, i) =>
-            //             h.select((x, j) => ({ id: x.id, player: x.player, points: x.points, place: (j + 1), game_place: x.game_place, order: x.order })))
-            //         .orderBy(o => o.id)
-            //         .thenBy(o => o.place)
-            //         .toArray();                
-            // } else {
-            //     paths = Enumerable.from(paths0)
-            //         .join(Enumerable.from(f0),
-            //             a => a.id,
-            //             b => b.id,
-            //             (a, b) => ({ ...a, ...b}))
-            //         //.where(f => pathFilters.length == 0 || (Enumerable.from(f0).any(r => r.id == f.id)))
-            //         .orderByDescending(o => o.points)
-            //         .groupBy(x => x.id)
-            //         .selectMany((h, i) =>
-            //             h.select((x, j) => ({ id: x.id, player: x.player, points: x.points, place: (j + 1), game_place: x.game_place, order: x.order })))
-            //         .orderBy(o => o.id)
-            //         .thenBy(o => o.place)
-            //         .toArray();
-            // }
-    
-            // let summary = Enumerable.from(paths)
-            //     //.select(x => ({...x, ...{playername: playerIDs.find(id => id.id == x.player).player.nickname}}))
-            //     .groupBy(g => g.player + g.place)
-            //     .select(r => ({ player: r.first().player,
-            //                     playername: playerIDs.find(id => id.shortcode == r.first().player).player.nickname,
-            //                     place: r.first().place,
-            //                     paths: r.count(),
-            //                     minpts: r.min(p => p.points),
-            //                     maxpts: r.max(p => p.points),
-            //                     maxgamefinish: r.max(p => p.game_place),
-            //                     mingamefinish: r.min(p => p.game_place) }))
-            //     .orderBy(o => o.player)
-            //     .thenBy(o => o.place)
-            //     .toArray();
+            paths = Enumerable.from(paths)
+                .orderBy(o => o.player)
+                .toArray();
     
             setTrackedPlayerResults(paths);
     
@@ -446,11 +418,12 @@ export default function SeriesOdds({ token, league, season, leaguemembers, statu
                             playername: playerIDs.find(id => id.shortcode == r.first().player).player.nickname,
                             place: r.first().place,
                             paths: r.count(),
+                            currentpts: standings.find(f => f.shortcode == r.first().player).points.toFixed(2),
                             minpts: r.min(p => p.points),
                             maxpts: r.max(p => p.points),
                             maxgamefinish: r.max(p => p.game_place),
                             mingamefinish: r.min(p => p.game_place) }))
-            .orderBy(o => o.player)
+            .orderBy(o => o.playername)
             .thenBy(o => o.place)
             .toArray();
 
@@ -496,140 +469,132 @@ export default function SeriesOdds({ token, league, season, leaguemembers, statu
     return (
         <div>
             {outcomes &&
-                <table className='pokertableboard'>
-                    <tr>
-                        <td>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>                            
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <table>
-                                <tr>
-                                    <td style={{"vertical-align": "top"}}>
-                                        {outcomes &&
-                                            <GroupedTable columns={mycolumns1} data={outcomes} />
+                <Tabs>
+                    <TabList>
+                        <Tab>Paths to Victory</Tab>
+                        <Tab>Eliminations</Tab>
+                        <Tab>Player Result Tracking</Tab>
+                    </TabList>
+
+                    <TabPanel>
+                        {outcomes &&
+                            <GroupedTable columns={mycolumns1} data={outcomes} />
+                        }
+                    </TabPanel>
+                    <TabPanel>
+                        <table className='pokertableboard'>
+                            <tr>
+                                <td colSpan={2}>
+                                    <select id="selectPlayer" name="selectPlayer" defaultValue={{ label: "Select Player", value: "" }} onChange={(e) => setSelectedPlayer(e.currentTarget.value)}>
+                                        <option value={""}>Select Player</option>
+                                        {   playerIDs &&
+                                            Enumerable.from(playerIDs)
+                                            .where(f => pathFilters.length == 0 ||
+                                                ( pathFilters.length > 0 &&
+                                                !(Enumerable.from(pathFilters).any(p => p.player == f.shortcode))))
+                                            .toArray()
+                                            .map(o => {
+                                                return (
+                                                    <option value={`${o.shortcode}`}>{`(${o.shortcode}) ${o.player.nickname}`}</option>
+                                                )
+                                            })
                                         }
-                                    </td>
-                                    <td style={{"vertical-align": "top"}}>
-                                        <table className='pokertableboard'>
-                                            <tr>
-                                                <td colSpan={2}>
-                                                    <select id="selectPlayer" name="selectPlayer" defaultValue={{ label: "Select Player", value: "" }} onChange={(e) => setSelectedPlayer(e.currentTarget.value)}>
-                                                        <option value={""}>Select Player</option>
-                                                        {   playerIDs &&
-                                                            Enumerable.from(playerIDs)
-                                                            .where(f => pathFilters.length == 0 ||
-                                                                ( pathFilters.length > 0 &&
-                                                                !(Enumerable.from(pathFilters).any(p => p.player == f.shortcode))))
-                                                            .toArray()
-                                                            .map(o => {
-                                                                return (
-                                                                    <option value={`${o.shortcode}`}>{`(${o.shortcode}) ${o.player.nickname}`}</option>
-                                                                )
-                                                            })
-                                                        }
-                                                    </select>
-                                                    {/* <input disabled={true} width={50} value={`${selectedPlace}`} /> */}
-                                                    {/* <select onChange={(e) => setSelectedPlace(parseInt(e.currentTarget.value))}>
-                                                        <option></option>
-                                                        {   playerIDs &&
-                                                            playerIDs.map((o, i) => {
-                                                                return (
-                                                                    <option value={i+1}>{i+1}</option>
-                                                                )
-                                                            })
-                                                        }
-                                                    </select> */}
-                                                    <button onClick={() => addPathsFilter()}>Add Finish</button>
-                                                    <button onClick={async () => await resetOriginalPaths()}>Remove Finishes</button>
-                                                </td>
+                                    </select>
+                                    {/* <input disabled={true} width={50} value={`${selectedPlace}`} /> */}
+                                    {/* <select onChange={(e) => setSelectedPlace(parseInt(e.currentTarget.value))}>
+                                        <option></option>
+                                        {   playerIDs &&
+                                            playerIDs.map((o, i) => {
+                                                return (
+                                                    <option value={i+1}>{i+1}</option>
+                                                )
+                                            })
+                                        }
+                                    </select> */}
+                                    <button onClick={() => addPathsFilter()}>Add Finish</button>
+                                    <button onClick={async () => await resetOriginalPaths()}>Remove Finishes</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colSpan={2}>Finished</td>
+                            </tr>
+                            <tr>
+                                <td>Player</td>
+                                <td>Place</td>
+                            </tr>
+                            {
+                                pathFilters.map(o => {
+                                    return (
+                                        <tr> {/* onClick={() => addPathsFilter(o.player, o.place)}> */}
+                                            <td>{`${playerIDs.find(id => id.shortcode == o.player).player.nickname}`}</td>
+                                            <td>{`${o.place}`}</td>
+                                        </tr>
+                                    )
+                                    console.log(o);
+                                })
+                            }
+                        </table>
+                    </TabPanel>
+                    <TabPanel>
+                        <table className='pokertableboard'>
+                            <tr>
+                                <td colSpan={3}>
+                                    <select onChange={(e) => setTrackedPlayer(e.currentTarget.value)}>
+                                        <option></option>
+                                        {   playerIDs &&
+                                            playerIDs.map(o => {
+                                                return (
+                                                    <option value={`${o.shortcode}`}>{`(${o.shortcode}) ${o.player.nickname}`}</option>
+                                                )
+                                            })
+                                        }
+                                    </select>
+                                    <select onChange={(e) => setTrackedPlace(parseInt(e.currentTarget.value))}>
+                                        <option></option>
+                                        {   playerIDs &&
+                                            playerIDs.map((o, i) => {
+                                                return (
+                                                    <option value={i+1}>{i+1}</option>
+                                                )
+                                            })
+                                        }
+                                    </select>
+                                    <button onClick={() => getPlayerTrackingInfo()}>Track Results</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colSpan={3}>Series Finish Tracking</td>
+                            </tr>
+                            <tr>
+                                <td colSpan={3}>
+                                {playerIDs.length > 0 &&
+                                    trackedPlayer &&
+                                    `Player (${playerIDs.find(id => id.shortcode == trackedPlayer).player.nickname})
+                                        needs the following results to finish the
+                                        series in ${trackedPlace} spot.`
+                                }
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Player</td>
+                                <td>Best Finish</td>
+                                <td>Worst Finish</td>
+                            </tr>
+                                {   trackedPlayerResults &&
+                                    trackedPlayerResults.map(o => {
+                                        return (
+                                            <tr> {/* onClick={() => addPathsFilter(o.player, o.place)}> */}
+                                                <td>{`${o.player}`}</td>
+                                                <td>{`${o.minfinish}`}</td>
+                                                <td>{`${o.maxfinish}`}</td>
                                             </tr>
-                                            <tr>
-                                                <td colSpan={2}>Finished</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Player</td>
-                                                <td>Place</td>
-                                            </tr>
-                                            {
-                                                pathFilters.map(o => {
-                                                    return (
-                                                        <tr> {/* onClick={() => addPathsFilter(o.player, o.place)}> */}
-                                                            <td>{`${playerIDs.find(id => id.shortcode == o.player).player.nickname}`}</td>
-                                                            <td>{`${o.place}`}</td>
-                                                        </tr>
-                                                    )
-                                                    console.log(o);
-                                                })
-                                            }
-                                        </table>
-                                    </td>
-                                    <td style={{"vertical-align": "top"}}>
-                                        <table className='pokertableboard'>
-                                            <tr>
-                                                <td colSpan={3}>
-                                                    <select onChange={(e) => setTrackedPlayer(e.currentTarget.value)}>
-                                                        <option></option>
-                                                        {   playerIDs &&
-                                                            playerIDs.map(o => {
-                                                                return (
-                                                                    <option value={`${o.shortcode}`}>{`(${o.shortcode}) ${o.player.nickname}`}</option>
-                                                                )
-                                                            })
-                                                        }
-                                                    </select>
-                                                    <select onChange={(e) => setTrackedPlace(parseInt(e.currentTarget.value))}>
-                                                        <option></option>
-                                                        {   playerIDs &&
-                                                            playerIDs.map((o, i) => {
-                                                                return (
-                                                                    <option value={i+1}>{i+1}</option>
-                                                                )
-                                                            })
-                                                        }
-                                                    </select>
-                                                    <button onClick={() => getPlayerTrackingInfo()}>Track Results</button>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td colSpan={3}>Series Finish Tracking for </td>
-                                            </tr>
-                                            <tr>
-                                                <td colSpan={3}>
-                                                {playerIDs.length > 0 &&
-                                                    trackedPlayer &&
-                                                    `${playerIDs.find(id => id.shortcode == trackedPlayer).player.nickname}`
-                                                }
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>Player</td>
-                                                <td>High Finish</td>
-                                                <td>Low Finish</td>
-                                            </tr>
-                                                {   trackedPlayerResults &&
-                                                    trackedPlayerResults.map(o => {
-                                                        return (
-                                                            <tr> {/* onClick={() => addPathsFilter(o.player, o.place)}> */}
-                                                                <td>{`${o.player}`}</td>
-                                                                <td>{`${o.minfinish}`}</td>
-                                                                <td>{`${o.maxfinish}`}</td>
-                                                            </tr>
-                                                        )
-                                                        console.log(o);
-                                                    })
-                                                }
-                                        </table>
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-                </table>
+                                        )
+                                        console.log(o);
+                                    })
+                                }
+                        </table>
+                    </TabPanel>
+                </Tabs>
             }
             {error &&
                 <div>Error: {error}</div>
