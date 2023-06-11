@@ -4,10 +4,15 @@ import Enumerable from 'linq';
 import GroupedTable from './GroupedTable';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
+import TreeView, { flattenTree } from "react-accessible-treeview";
+//import "./styles.css";
 
 export default function SeriesOdds({ token, league, season, leaguemembers, status }) {
     const [standings, setStandings] = useState();
     const [points, setPoints] = useState();
+    const [seriesLength, setSeriesLength] = useState();
+    const [dataTree, setDataTree] = useState();
+    const [seriesGamesPlayed, setSeriesGamesPlayed] = useState();
     //const [playerShortCodes, setPlayerShortCodes] = useState();
     const [playerIDs, setPlayerIDs] = useState([]);
     const [standingsdetails, setStandingsdetails] = useState();
@@ -19,15 +24,41 @@ export default function SeriesOdds({ token, league, season, leaguemembers, statu
     const seasontkn = pe.REACT_APP_SEASON_TOKEN;
     const sf = pe.REACT_APP_SPACE_FILLER;
 
-    /*
-    <td>{`${o.playername}`}</td>
-    <td>{`${o.place}`}</td>
-    <td>{`${o.paths}`}</td>
-    <td>{`${o.maxpts.toFixed(2)}`}</td>
-    <td>{`${o.minpts.toFixed(2)}`}</td>
-    <td>{`${o.maxgamefinish}`}</td>
-    <td>{`${o.mingamefinish}`}</td>    
-    */
+
+    /*** treeview **/
+    const folder = {
+        name: "",
+        children: [
+            {
+                name: "B",
+                children: [
+                    {
+                        name: "D",
+                        children: [
+                            {
+                                name: "C"
+                            }
+                        ]
+                    },
+                    {
+                        name: "C",
+                        children: [
+                            {
+                                name: "A"
+                            },
+                            {
+                                name: "D"
+                            }
+                        ]
+                    }
+                ],
+            }
+        ],
+    };
+
+    const data = flattenTree(folder);
+
+    /*** treeview ****/
 
     /***** ORIG ******/
     const [outcomes, setOutcomes] = useState([]);
@@ -62,12 +93,12 @@ export default function SeriesOdds({ token, league, season, leaguemembers, statu
         //     ],
         // },
         {
-            Header: 'Outcomes',
+            Header: `${season} Series Outcomes Contingent on Game ${seriesGamesPlayed + 1} Finishes`,
             columns: [
                 {
                     Header: 'Player',
                     accessor: 'playername',
-                    Aggregated: ({ value }) => {isNullOrUndefined(value,"")}
+                    Aggregated: ({ value }) => { isNullOrUndefined(value, "") }
                     //Cell: ({value}) =>  <div>{value}</div>,
                     //canGroupBy: true
                 },
@@ -76,7 +107,7 @@ export default function SeriesOdds({ token, league, season, leaguemembers, statu
                     accessor: 'place',
                     aggregate: 'min',
                     Aggregated: ({ value }) => <div style={{ textAlign: "right" }}>{parseInt(value).toLocaleString()}</div>,
-                    Cell: ({value}) => <div style={{ textAlign: "right" }}>{parseInt(value).toLocaleString()}</div>,
+                    Cell: ({ value }) => <div style={{ textAlign: "right" }}>{parseInt(value).toLocaleString()}</div>,
                     canGroupBy: true
                 },
                 {
@@ -84,23 +115,23 @@ export default function SeriesOdds({ token, league, season, leaguemembers, statu
                     accessor: 'paths',
                     aggregate: 'sum',
                     Aggregated: ({ value }) => <div style={{ textAlign: "right" }}>{parseInt(value).toLocaleString()}</div>,
-                    Cell: ({value}) => <div style={{ textAlign: "right" }}>{parseInt(value).toLocaleString()}</div>,
+                    Cell: ({ value }) => <div style={{ textAlign: "right" }}>{parseInt(value).toLocaleString()}</div>,
                     canGroupBy: false
                 },
                 {
-                    Header: 'Worst Finish',
+                    Header: `${season}G${seriesGamesPlayed + 1}\nWorst Finish`,
                     accessor: 'maxgamefinish',
                     aggregate: 'max',
                     Aggregated: ({ value }) => <div style={{ textAlign: "right" }}>{parseInt(value).toLocaleString()}</div>,
-                    Cell: ({value}) => <div style={{ textAlign: "right" }}>{parseInt(value).toLocaleString()}</div>,
+                    Cell: ({ value }) => <div style={{ textAlign: "right" }}>{parseInt(value).toLocaleString()}</div>,
                     canGroupBy: false
                 },
                 {
-                    Header: 'Best Finish',
+                    Header: `${season}G${seriesGamesPlayed + 1}\nBest Finish`,
                     accessor: 'mingamefinish',
                     aggregate: 'min',
                     Aggregated: ({ value }) => <div style={{ textAlign: "right" }}>{parseInt(value).toLocaleString()}</div>,
-                    Cell: ({value}) => <div style={{ textAlign: "right" }}>{parseInt(value).toLocaleString()}</div>,
+                    Cell: ({ value }) => <div style={{ textAlign: "right" }}>{parseInt(value).toLocaleString()}</div>,
                     canGroupBy: false
                 },
                 {
@@ -108,7 +139,7 @@ export default function SeriesOdds({ token, league, season, leaguemembers, statu
                     accessor: 'currentpts',
                     aggregate: 'max',
                     Aggregated: ({ value }) => <div style={{ textAlign: "right" }}>{parseFloat(value).toFixed(2)}</div>,
-                    Cell: ({value}) => <div style={{ textAlign: "right" }}>{parseFloat(value).toFixed(2)}</div>,
+                    Cell: ({ value }) => <div style={{ textAlign: "right" }}>{parseFloat(value).toFixed(2)}</div>,
                     canGroupBy: false
                 },
                 {
@@ -116,7 +147,7 @@ export default function SeriesOdds({ token, league, season, leaguemembers, statu
                     accessor: 'maxpts',
                     aggregate: 'max',
                     Aggregated: ({ value }) => <div style={{ textAlign: "right" }}>{parseFloat(value).toFixed(2)}</div>,
-                    Cell: ({value}) => <div style={{ textAlign: "right" }}>{parseFloat(value).toFixed(2)}</div>,
+                    Cell: ({ value }) => <div style={{ textAlign: "right" }}>{parseFloat(value).toFixed(2)}</div>,
                     canGroupBy: false
                 },
                 {
@@ -124,7 +155,7 @@ export default function SeriesOdds({ token, league, season, leaguemembers, statu
                     accessor: 'minpts',
                     aggregate: 'min',
                     Aggregated: ({ value }) => <div style={{ textAlign: "right" }}>{parseFloat(value).toFixed(2)}</div>,
-                    Cell: ({value}) => <div style={{ textAlign: "right" }}>{parseFloat(value).toFixed(2)}</div>,
+                    Cell: ({ value }) => <div style={{ textAlign: "right" }}>{parseFloat(value).toFixed(2)}</div>,
                     canGroupBy: false
                 }
             ],
@@ -139,7 +170,7 @@ export default function SeriesOdds({ token, league, season, leaguemembers, statu
 
                 const loadedPoints = await getPointsInfo();
                 console.log("points loaded =>", loadedPoints)
-            
+
             } catch (error) {
                 setError(error.message);
             } finally {
@@ -150,15 +181,15 @@ export default function SeriesOdds({ token, league, season, leaguemembers, statu
 
     useEffect(() => {
         //init data
-        if(playerIDs.length){
+        if (playerIDs.length) {
             (async () => {
                 try {
                     status.addToQueue();
 
                     const loadedStandings = await getStandingsInfo();
-                        
+
                     console.log("standings =>", loadedStandings)
-                
+
                 } catch (error) {
                     setError(error.message);
                 } finally {
@@ -170,7 +201,7 @@ export default function SeriesOdds({ token, league, season, leaguemembers, statu
 
     useEffect(() => {
         //init data
-        if(playerIDs.length && standings != undefined){
+        if (playerIDs.length && standings != undefined) {
             (async () => {
                 try {
                     status.addToQueue();
@@ -180,8 +211,8 @@ export default function SeriesOdds({ token, league, season, leaguemembers, statu
                     const results = permute(sc);
                     const paths0 = scorePermutations(results);
                     summarizePaths(paths0);
-                    console.log("standing enumerated");    
-                
+                    console.log("standing enumerated");
+
                 } catch (error) {
                     setError(error.message);
                 } finally {
@@ -200,29 +231,34 @@ export default function SeriesOdds({ token, league, season, leaguemembers, statu
             status.addToQueue();
 
             if (outcomeDetails0.length > 0) {
-                if(pathFilters.length){
+                if (pathFilters.length) {
                     summarizePaths(outcomeDetails);
                 } else {
                     summarizePaths(outcomeDetails0);
                 }
             }
 
-    } catch (error) {
-        setError(error.message);
-    } finally {
-        status.removeFromQueue();
-    }
+        } catch (error) {
+            setError(error.message);
+        } finally {
+            status.removeFromQueue();
+        }
     }, [pathFilters])
 
     useEffect(() => {
         console.log("points =>", points);
     }, [trackedPlayer]);
 
-    async function getPlayerTrackingInfo(){
+    async function getPlayerTrackingInfo() {
         try {
             status.addToQueue();
 
-            if(trackedPlayer == "" || trackedPlayer == undefined) return;
+            if (trackedPlayer == "" || trackedPlayer == undefined) return;
+
+            //what is next place to go out, [n]
+            //what are all [player] paths to [place] => (A)
+            //enumerate all ppl in [n] position in (A)
+            //[player] needs any of these ppl to go out in [n] to finish [place]
 
             // find all paths where player finishes series in nth or better place
             // enumerate unique players that go out in all positions for player to
@@ -231,10 +267,10 @@ export default function SeriesOdds({ token, league, season, leaguemembers, statu
             let f0 = Enumerable.from(outcomeDetails)
                 .where(f => f.player == trackedPlayer &&
                     f.place == trackedPlace)
-                .select(r => ({order: r.order, place: r.place, game_place: r.game_place}))
+                .select(r => ({ order: r.order, place: r.place, game_place: r.game_place }))
                 .toArray();
 
-            if(f0.length == 0){
+            if (f0.length == 0) {
                 let res = {
                     player: "No solutions.",
                     minfinish: "",
@@ -244,6 +280,49 @@ export default function SeriesOdds({ token, league, season, leaguemembers, statu
                 return;
             }
 
+
+            console.log("");
+
+            //const mypaths = ["ADCB","ACDB","DABC","ADBC","ABDC","ACBD","ABCD"];
+            const mypaths = Enumerable.from(f0).select(r => r.order).toArray();
+
+            let level1 = Enumerable.from(mypaths)
+                .select(r => ({ value: r[playerIDs.length-1] }))
+                .groupBy(r => r.value)
+                .select(r => ({ value: r.first().value }))
+                .toArray();
+            console.log("");
+            const mytree = { name: "", children: [] };
+            function getChildren(values, level, parent) {
+                values.forEach(v => {
+                    if (level > 0) {
+                        let level1 = Enumerable.from(mypaths)
+                            .where(w => w.substring(level) == v.value)
+                            .select(r => ({ value: r.substring(level - 1) }))
+                            .groupBy(r => r.value)
+                            .select(r => ({ value: r.first().value }))
+                            .toArray();
+                        //console.log("level: ", level, ", value:", v)
+                        const child = { name: playerIDs.find(id => id.shortcode == v.value.substring(0,1)).player.nickname, children: [] }
+                        parent.children.push(child);
+                        getChildren(level1, level - 1, child)
+                    }
+                })
+            }
+
+            getChildren(level1, playerIDs.length-1, mytree);
+            const data = flattenTree(mytree);
+            //const data = flattenTree(folder);
+            setDataTree(data);
+            console.log("");
+
+
+
+
+
+
+
+
             // let finishes = Array(playerIDs.length);
             // for(let n = 0; n < playerIDs.length; n++) {
             //     finishes[n] = {id: playerIDs[n].shortcode, maxfinish: 0, minfinish: 0};
@@ -251,33 +330,40 @@ export default function SeriesOdds({ token, league, season, leaguemembers, statu
 
             // const players = {A:{min:0, max:0},  B:{min:0, max:0}, C:{min:0, max:0}, D:{min:0, max:0},
             //     E:{min:0, max:0}, F:{min:0, max:0}, G:{min:0, max:0}, H:{min:0, max:0}, I:{min:0, max:0}};
-            const players = {A:{places: []},  B:{places: []}, C:{places: []}, D:{places: []},
-                E:{places: []}, F:{places: []}, G:{places: []}, H:{places: []}, I:{places: []}};
+            const players = {
+                A: { places: [] }, B: { places: [] }, C: { places: [] }, D: { places: [] },
+                E: { places: [] }, F: { places: [] }, G: { places: [] }, H: { places: [] }, I: { places: [] },
+                J: { places: [] }
+            };
 
             // for each player, find their max finish for tracked player to finish nth
             f0.forEach(p => {
-                for(let n= 0; n < p.order.length; n++){
-                    players[p.order[n]].places.push(n+1);
+                for (let n = 0; n < p.order.length; n++) {
+                    players[p.order[n]].places.push(n + 1);
                 }
             })
 
             let paths = [];
-            Object.keys(players).map(o => {
+            let count = 0;
+            Object.keys(players).every(o => {
                 console.log(o);
                 let finishes = {
-                                player: playerIDs.find(id => id.shortcode == o).player.nickname,
-                                minfinish: Math.min(...players[o].places),
-                                maxfinish: Math.max(...players[o].places)
-                            };
+                    player: playerIDs.find(id => id.shortcode == o).player.nickname,
+                    minfinish: Math.min(...players[o].places),
+                    maxfinish: Math.max(...players[o].places)
+                };
                 paths.push(finishes);
+                count++;
+                if (count == playerIDs.length) return false;
+                return true;
             });
 
             paths = Enumerable.from(paths)
                 .orderBy(o => o.player)
                 .toArray();
-    
+
             setTrackedPlayerResults(paths);
-    
+
             console.log("Scoring permutations complete.");
 
         } catch (error) {
@@ -297,13 +383,15 @@ export default function SeriesOdds({ token, league, season, leaguemembers, statu
         });
         let info = await res.json();
         let p = Enumerable.from(info.Results.Summary)
-            .select(r => ({ player: r.Player,
-                            shortcode: playerIDs.find(id => id.player.mavens_login == r.Player).shortcode,
-                            points: parseFloat(r.Pts),
-                            gold: r.Gold,
-                            silver: r.Silver,
-                            bronze: r.Bronze,
-                            paths: new Array(playerIDs.length)}))
+            .select(r => ({
+                player: r.Player,
+                shortcode: playerIDs.find(id => id.player.mavens_login == r.Player).shortcode,
+                points: parseFloat(r.Pts),
+                gold: r.Gold,
+                silver: r.Silver,
+                bronze: r.Bronze,
+                paths: new Array(playerIDs.length)
+            }))
             .toArray();
         setStandings(p);
         setStandingsdetails(info.Results.Details);
@@ -320,20 +408,22 @@ export default function SeriesOdds({ token, league, season, leaguemembers, statu
         });
         let info = await res.json();
         setPoints(info.Points);
+        setSeriesLength(info.SeriesLength);
+        setSeriesGamesPlayed(info.GameCount);
         getEncodedPlayers(info.Players);
 
         return true;
     }
 
-    function getEncodedPlayers(playerIDs){
+    function getEncodedPlayers(playerIDs) {
         //fromCharCode
         console.dir(leaguemembers);
         const i = 0;
         //const p = [];
         const pinfo = [];
-        for(let n = 0; n < playerIDs.length; n++) {
+        for (let n = 0; n < playerIDs.length; n++) {
             let char = String.fromCharCode(65 + n);
-            pinfo.push({shortcode: char, player: leaguemembers.find(f => f.id == playerIDs[n])});
+            pinfo.push({ shortcode: char, player: leaguemembers.find(f => f.id == playerIDs[n]) });
         }
         setPlayerIDs(pinfo);
         //setSelectedPlace(pinfo.length);
@@ -362,8 +452,8 @@ export default function SeriesOdds({ token, league, season, leaguemembers, statu
             for (let n = 0; n < results[j].length; n++) {
                 let standing = standings.find(r => r.shortcode == results[j][n]);
                 let sumpoints = standing.points +
-                    standing.gold * .001 + 
-                    standing.silver * .0001 + 
+                    standing.gold * .001 +
+                    standing.silver * .0001 +
                     standing.bronze * .00001 +
                     points[n];
                 let res = { ...{ player: results[j][n] }, ...{ place: 0, points: sumpoints, id: `R${j}`, order: results[j].toString().replaceAll(",", ""), game_place: (n + 1) } };
@@ -386,7 +476,7 @@ export default function SeriesOdds({ token, league, season, leaguemembers, statu
         }
 
         let paths = [];
-        if(pathFilters.length == 0){
+        if (pathFilters.length == 0) {
             paths = Enumerable.from(paths0)
                 .orderByDescending(o => o.points)
                 .groupBy(x => x.id)
@@ -394,13 +484,13 @@ export default function SeriesOdds({ token, league, season, leaguemembers, statu
                     h.select((x, j) => ({ id: x.id, player: x.player, points: x.points, place: (j + 1), game_place: x.game_place, order: x.order })))
                 .orderBy(o => o.id)
                 .thenBy(o => o.place)
-                .toArray();                
+                .toArray();
         } else {
             paths = Enumerable.from(paths0)
                 .join(Enumerable.from(f0),
                     a => a.id,
                     b => b.id,
-                    (a, b) => ({ ...a, ...b}))
+                    (a, b) => ({ ...a, ...b }))
                 //.where(f => pathFilters.length == 0 || (Enumerable.from(f0).any(r => r.id == f.id)))
                 .orderByDescending(o => o.points)
                 .groupBy(x => x.id)
@@ -414,15 +504,17 @@ export default function SeriesOdds({ token, league, season, leaguemembers, statu
         let summary = Enumerable.from(paths)
             //.select(x => ({...x, ...{playername: playerIDs.find(id => id.id == x.player).player.nickname}}))
             .groupBy(g => g.player + g.place)
-            .select(r => ({ player: r.first().player,
-                            playername: playerIDs.find(id => id.shortcode == r.first().player).player.nickname,
-                            place: r.first().place,
-                            paths: r.count(),
-                            currentpts: standings.find(f => f.shortcode == r.first().player).points.toFixed(2),
-                            minpts: r.min(p => p.points),
-                            maxpts: r.max(p => p.points),
-                            maxgamefinish: r.max(p => p.game_place),
-                            mingamefinish: r.min(p => p.game_place) }))
+            .select(r => ({
+                player: r.first().player,
+                playername: playerIDs.find(id => id.shortcode == r.first().player).player.nickname,
+                place: r.first().place,
+                paths: r.count(),
+                currentpts: standings.find(f => f.shortcode == r.first().player).points.toFixed(2),
+                minpts: r.min(p => p.points),
+                maxpts: r.max(p => p.points),
+                maxgamefinish: r.max(p => p.game_place),
+                mingamefinish: r.min(p => p.game_place)
+            }))
             .orderBy(o => o.playername)
             .thenBy(o => o.place)
             .toArray();
@@ -435,9 +527,9 @@ export default function SeriesOdds({ token, league, season, leaguemembers, statu
     }
 
     function addPathsFilter() {
-        if(selectedPlayer == "" || selectedPlayer == undefined) return;
+        if (selectedPlayer == "" || selectedPlayer == undefined) return;
         const filters = pathFilters.slice();
-        if(filters && filters.length == playerIDs.length) return;
+        if (filters && filters.length == playerIDs.length) return;
         const place = playerIDs.length - filters.length;
         filters.push({ player: selectedPlayer, place: place });
         setPathFilters(filters);
@@ -445,7 +537,7 @@ export default function SeriesOdds({ token, league, season, leaguemembers, statu
         setSelectedPlace(place);
     }
 
-    async function resetOriginalPaths(){
+    async function resetOriginalPaths() {
         try {
             status.addToQueue();
             setPathFilters([]);
@@ -459,8 +551,8 @@ export default function SeriesOdds({ token, league, season, leaguemembers, statu
         }
     }
 
-    function isNullOrUndefined(value, replace){
-        if(value == null || value == undefined || value == "")
+    function isNullOrUndefined(value, replace) {
+        if (value == null || value == undefined || value == "")
             return replace;
         else
             return value;
@@ -474,6 +566,7 @@ export default function SeriesOdds({ token, league, season, leaguemembers, statu
                         <Tab>Paths to Victory</Tab>
                         <Tab>Eliminations</Tab>
                         <Tab>Player Result Tracking</Tab>
+                        <Tab>Treeview</Tab>
                     </TabList>
 
                     <TabPanel>
@@ -487,17 +580,17 @@ export default function SeriesOdds({ token, league, season, leaguemembers, statu
                                 <td colSpan={2}>
                                     <select id="selectPlayer" name="selectPlayer" defaultValue={{ label: "Select Player", value: "" }} onChange={(e) => setSelectedPlayer(e.currentTarget.value)}>
                                         <option value={""}>Select Player</option>
-                                        {   playerIDs &&
+                                        {playerIDs &&
                                             Enumerable.from(playerIDs)
-                                            .where(f => pathFilters.length == 0 ||
-                                                ( pathFilters.length > 0 &&
-                                                !(Enumerable.from(pathFilters).any(p => p.player == f.shortcode))))
-                                            .toArray()
-                                            .map(o => {
-                                                return (
-                                                    <option value={`${o.shortcode}`}>{`(${o.shortcode}) ${o.player.nickname}`}</option>
-                                                )
-                                            })
+                                                .where(f => pathFilters.length == 0 ||
+                                                    (pathFilters.length > 0 &&
+                                                        !(Enumerable.from(pathFilters).any(p => p.player == f.shortcode))))
+                                                .toArray()
+                                                .map(o => {
+                                                    return (
+                                                        <option value={`${o.shortcode}`}>{`(${o.shortcode}) ${o.player.nickname}`}</option>
+                                                    )
+                                                })
                                         }
                                     </select>
                                     {/* <input disabled={true} width={50} value={`${selectedPlace}`} /> */}
@@ -541,7 +634,7 @@ export default function SeriesOdds({ token, league, season, leaguemembers, statu
                                 <td colSpan={3}>
                                     <select onChange={(e) => setTrackedPlayer(e.currentTarget.value)}>
                                         <option></option>
-                                        {   playerIDs &&
+                                        {playerIDs &&
                                             playerIDs.map(o => {
                                                 return (
                                                     <option value={`${o.shortcode}`}>{`(${o.shortcode}) ${o.player.nickname}`}</option>
@@ -551,15 +644,15 @@ export default function SeriesOdds({ token, league, season, leaguemembers, statu
                                     </select>
                                     <select onChange={(e) => setTrackedPlace(parseInt(e.currentTarget.value))}>
                                         <option></option>
-                                        {   playerIDs &&
+                                        {playerIDs &&
                                             playerIDs.map((o, i) => {
                                                 return (
-                                                    <option value={i+1}>{i+1}</option>
+                                                    <option value={i + 1}>{i + 1}</option>
                                                 )
                                             })
                                         }
                                     </select>
-                                    <button onClick={() => getPlayerTrackingInfo()}>Track Results</button>
+                                    <button onClick={async () => getPlayerTrackingInfo()}>Track Results</button>
                                 </td>
                             </tr>
                             <tr>
@@ -567,12 +660,12 @@ export default function SeriesOdds({ token, league, season, leaguemembers, statu
                             </tr>
                             <tr>
                                 <td colSpan={3}>
-                                {playerIDs.length > 0 &&
-                                    trackedPlayer &&
-                                    `Player (${playerIDs.find(id => id.shortcode == trackedPlayer).player.nickname})
+                                    {playerIDs.length > 0 &&
+                                        trackedPlayer &&
+                                        `Player (${playerIDs.find(id => id.shortcode == trackedPlayer).player.nickname})
                                         needs the following results to finish the
                                         series in ${trackedPlace} spot.`
-                                }
+                                    }
                                 </td>
                             </tr>
                             <tr>
@@ -580,19 +673,33 @@ export default function SeriesOdds({ token, league, season, leaguemembers, statu
                                 <td>Best Finish</td>
                                 <td>Worst Finish</td>
                             </tr>
-                                {   trackedPlayerResults &&
-                                    trackedPlayerResults.map(o => {
-                                        return (
-                                            <tr> {/* onClick={() => addPathsFilter(o.player, o.place)}> */}
-                                                <td>{`${o.player}`}</td>
-                                                <td>{`${o.minfinish}`}</td>
-                                                <td>{`${o.maxfinish}`}</td>
-                                            </tr>
-                                        )
-                                        console.log(o);
-                                    })
-                                }
+                            {trackedPlayerResults &&
+                                trackedPlayerResults.map(o => {
+                                    return (
+                                        <tr> {/* onClick={() => addPathsFilter(o.player, o.place)}> */}
+                                            <td>{`${o.player}`}</td>
+                                            <td>{`${o.minfinish}`}</td>
+                                            <td>{`${o.maxfinish}`}</td>
+                                        </tr>
+                                    )
+                                    console.log(o);
+                                })
+                            }
                         </table>
+                    </TabPanel>
+                    <TabPanel>
+                        {dataTree &&
+                            <TreeView
+                                data={dataTree}
+                                className="basic"
+                                aria-label="basic example tree"
+                                nodeRenderer={({ element, getNodeProps, level, handleSelect }) => (
+                                    <div {...getNodeProps()} style={{ paddingLeft: 20 * (level - 1) }}>
+                                        {element.name}
+                                    </div>
+                                )}
+                        />
+                        }
                     </TabPanel>
                 </Tabs>
             }
