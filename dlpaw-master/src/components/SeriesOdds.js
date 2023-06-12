@@ -11,7 +11,7 @@ export default function SeriesOdds({ token, league, season, leaguemembers, statu
     const [standings, setStandings] = useState();
     const [points, setPoints] = useState();
     const [seriesLength, setSeriesLength] = useState();
-    const [dataTree, setDataTree] = useState();
+    const [dataTree, setDataTree] = useState([]);
     const [seriesGamesPlayed, setSeriesGamesPlayed] = useState();
     //const [playerShortCodes, setPlayerShortCodes] = useState();
     const [playerIDs, setPlayerIDs] = useState([]);
@@ -23,7 +23,6 @@ export default function SeriesOdds({ token, league, season, leaguemembers, statu
     const leaguetkn = pe.REACT_APP_LEAGUE_TOKEN;
     const seasontkn = pe.REACT_APP_SEASON_TOKEN;
     const sf = pe.REACT_APP_SPACE_FILLER;
-
 
     /*** treeview **/
     const folder = {
@@ -71,6 +70,25 @@ export default function SeriesOdds({ token, league, season, leaguemembers, statu
     const [selectedPlace, setSelectedPlace] = useState();
     const [pathFilters, setPathFilters] = useState([]);
     const players = [];
+    const settterFunctions = [
+        {name: setOutcomes, defaultValue: []}, //([]),
+        {name: setOutcomeDetails0, defaultValue: []}, //([]),
+        {name: setOutcomeDetails, defaultValue: []}, //([]),
+        {name: setPlayerIDs, defaultValue: []}, //([]),
+        {name: setSelectedPlayer, defaultValue: undefined}, //(undefined);
+        {name: setTrackedPlayer, defaultValue: undefined}, //(undefined);
+        {name: setTrackedPlayerResults, defaultValue: []}, //(undefined);
+        {name: setTrackedPlace, defaultValue: undefined}, //(undefined);
+        {name: setSelectedPlace, defaultValue: undefined}, //(undefined);
+        {name: setPathFilters, defaultValue: []}, //(undefined);
+        {name: setStandings, defaultValue: []}, //(undefined);
+        {name: setPoints, defaultValue: []}, //(undefined);
+        {name: setSeriesLength, defaultValue: undefined}, //(undefined);
+        {name: setDataTree, defaultValue: []}, //(undefined);
+        {name: setSeriesGamesPlayed, defaultValue: undefined}, //(undefined);
+        {name: setStandingsdetails, defaultValue: []} //(undefined);
+    ];
+
     //const players = ["A", "B", "C", "D"];//,"E","F","G","H","I"];
     //const points = [10.87, 6.63, 4.25, 2.87];//,2.05,1.55,1.25,1.08,1];
     // const standings = [{ player: "A", points: 10, paths: new Array(9) },
@@ -161,12 +179,19 @@ export default function SeriesOdds({ token, league, season, leaguemembers, statu
             ],
         },
     ];
+ 
+    // useEffect(() => {
+    //     //init data
+        
+    // }, []);
 
     useEffect(() => {
         //init data
         (async () => {
             try {
                 status.addToQueue();
+
+                resetComponent();
 
                 const loadedPoints = await getPointsInfo();
                 console.log("points loaded =>", loadedPoints)
@@ -177,7 +202,7 @@ export default function SeriesOdds({ token, league, season, leaguemembers, statu
                 status.removeFromQueue();
             }
         })();
-    }, []);
+    }, [season]);
 
     useEffect(() => {
         //init data
@@ -249,9 +274,40 @@ export default function SeriesOdds({ token, league, season, leaguemembers, statu
         console.log("points =>", points);
     }, [trackedPlayer]);
 
+    function resetComponent(){
+        settterFunctions.forEach(f => {
+            f.name(f.defaultValue);
+        })
+    }
+
+    function placementSuffix(num){
+        if(!Number.isInteger(num)) return "";
+        const ns = num.toString();
+        const char = ns[ns.length-1];
+        let retval = "";
+
+        switch (char){
+            case "1":
+                retval = "st";
+                break;
+            case "2":
+                retval = "nd";
+                break;
+            case "3":
+                retval = "rd";
+                break;
+            default:
+                retval = "th";
+                break;
+        }
+        return retval;
+    }
+
     async function getPlayerTrackingInfo() {
         try {
             status.addToQueue();
+
+            setError("");
 
             if (trackedPlayer == "" || trackedPlayer == undefined) return;
 
@@ -289,21 +345,31 @@ export default function SeriesOdds({ token, league, season, leaguemembers, statu
             let level1 = Enumerable.from(mypaths)
                 .select(r => ({ value: r[playerIDs.length-1] }))
                 .groupBy(r => r.value)
-                .select(r => ({ value: r.first().value }))
+                .select(r => ({ value: r.first().value, count: r.count() }))
                 .toArray();
             console.log("");
             const mytree = { name: "", children: [] };
             function getChildren(values, level, parent) {
+                const res = Enumerable.from(values)
+                    .where(r => r.count > 4000)
+                    .toArray()
+                if(res.length > 0){
+                    setError("Too many paths for tree processing. ")
+                    return parent;
+                }
+
                 values.forEach(v => {
-                    if (level > 0) {
+                    //if (level > 0) {
+                    if (values.length > 0 && level >= 0) {
                         let level1 = Enumerable.from(mypaths)
                             .where(w => w.substring(level) == v.value)
                             .select(r => ({ value: r.substring(level - 1) }))
                             .groupBy(r => r.value)
-                            .select(r => ({ value: r.first().value }))
+                            .select(r => ({ value: r.first().value, count: r.count() }))
                             .toArray();
                         //console.log("level: ", level, ", value:", v)
-                        const child = { name: playerIDs.find(id => id.shortcode == v.value.substring(0,1)).player.nickname, children: [] }
+                        const child = { name: `${(level + 1)}${placementSuffix(level + 1)} - ${playerIDs.find(id => id.shortcode == v.value.substring(0,1)).player.nickname}, Paths: ${v.count}, Encoding: (${v.value})`, children: [] }
+                        //const child = { name: `${playerIDs.find(id => id.shortcode == v.value.substring(0,1)).player.nickname}`, children: [] }
                         parent.children.push(child);
                         getChildren(level1, level - 1, child)
                     }
@@ -566,7 +632,7 @@ export default function SeriesOdds({ token, league, season, leaguemembers, statu
                         <Tab>Paths to Victory</Tab>
                         <Tab>Eliminations</Tab>
                         <Tab>Player Result Tracking</Tab>
-                        <Tab>Treeview</Tab>
+                        <Tab>Path Details</Tab>
                     </TabList>
 
                     <TabPanel>
@@ -662,9 +728,9 @@ export default function SeriesOdds({ token, league, season, leaguemembers, statu
                                 <td colSpan={3}>
                                     {playerIDs.length > 0 &&
                                         trackedPlayer &&
-                                        `Player (${playerIDs.find(id => id.shortcode == trackedPlayer).player.nickname})
-                                        needs the following results to finish the
-                                        series in ${trackedPlace} spot.`
+                                        `${playerIDs.find(id => id.shortcode == trackedPlayer).player.nickname}
+                                        needs the following G${seriesGamesPlayed + 1} results to finish the
+                                        series in ${trackedPlace}${placementSuffix(trackedPlace)}.`
                                     }
                                 </td>
                             </tr>
@@ -678,8 +744,8 @@ export default function SeriesOdds({ token, league, season, leaguemembers, statu
                                     return (
                                         <tr> {/* onClick={() => addPathsFilter(o.player, o.place)}> */}
                                             <td>{`${o.player}`}</td>
-                                            <td>{`${o.minfinish}`}</td>
-                                            <td>{`${o.maxfinish}`}</td>
+                                            <td>{`${o.minfinish}${placementSuffix(o.minfinish)}`}</td>
+                                            <td>{`${o.maxfinish}${placementSuffix(o.maxfinish)}`}</td>
                                         </tr>
                                     )
                                     console.log(o);
@@ -688,18 +754,37 @@ export default function SeriesOdds({ token, league, season, leaguemembers, statu
                         </table>
                     </TabPanel>
                     <TabPanel>
-                        {dataTree &&
-                            <TreeView
-                                data={dataTree}
-                                className="basic"
-                                aria-label="basic example tree"
-                                nodeRenderer={({ element, getNodeProps, level, handleSelect }) => (
-                                    <div {...getNodeProps()} style={{ paddingLeft: 20 * (level - 1) }}>
-                                        {element.name}
-                                    </div>
-                                )}
-                        />
+                        {  
+                            (dataTree.length > 0) &&
+                            trackedPlayer &&
+                            trackedPlace &&
+                            <table className='pokertableboard'>
+                                <tr>
+                                    <td>
+                                        {   (playerIDs.length > 0) &&
+                                            trackedPlayer &&
+                                            trackedPlace &&
+                                            `G${seriesGamesPlayed + 1} Paths to a ${trackedPlace}${placementSuffix(trackedPlace)} place ${season} finish for ${playerIDs.find(id => id.shortcode == trackedPlayer).player.nickname}`
+                                        }
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <TreeView
+                                                data={dataTree}
+                                                className="basic"
+                                                aria-label="basic example tree"
+                                                nodeRenderer={({ element, getNodeProps, level, handleSelect }) => (
+                                                    <div {...getNodeProps()} style={{ paddingLeft: 20 * (level - 1) }}>
+                                                        {element.name}
+                                                    </div>
+                                                )}
+                                        />
+                                    </td>
+                                </tr>
+                            </table>
                         }
+
                     </TabPanel>
                 </Tabs>
             }

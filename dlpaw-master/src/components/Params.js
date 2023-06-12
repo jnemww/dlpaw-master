@@ -78,19 +78,19 @@ export default function Params() {
         setSelectedgamedata
     ];
 
-    useEffect(() => {
-        const storage = storageAvailable("localStorage");
-        if (storage) {
-            console.log("storage: yes");
-            const mystoragevalue = localStorage.getItem("MyObject");
-            if(mystoragevalue == undefined){
-                localStorage.setItem("MyObject", JSON.stringify({MyObject: {key: "Data", value: "hhhhheeee"}}));
-            }
-          } else {
-            console.log("storage: no");
-          }
-        setIsLocalStorage(storage);
-    },[])
+    // useEffect(() => {
+    //     const storage = storageAvailable("localStorage");
+    //     if (storage) {
+    //         console.log("storage: yes");
+    //         const mystoragevalue = localStorage.getItem("MyObject");
+    //         if(mystoragevalue == undefined){
+    //             localStorage.setItem("MyObject", JSON.stringify({MyObject: {key: "Data", value: "hhhhheeee"}}));
+    //         }
+    //       } else {
+    //         console.log("storage: no");
+    //       }
+    //     setIsLocalStorage(storage);
+    // },[])
 
     useEffect(() => {
         let s = screenstack;
