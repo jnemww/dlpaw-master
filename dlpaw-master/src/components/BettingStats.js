@@ -3,10 +3,12 @@ import DataTable from './DataTable';
 import React, { useEffect, useState, useContext } from 'react';
 import { SEATS } from '../enums';
 import GroupedTable from './GroupedTable';
-import {GameDataContext} from './Params'
+//import {GameDataContext} from './Params'
+//import {FunctionSubscription, canUse} from './FunctionSubscription'
+import {FunctionSubscription} from './FunctionSubscription'
 
 export default function BettingStats({ token, league, season, status }) {
-    const gameData = useContext(GameDataContext);
+    //const gameData = useContext(GameDataContext);
 
     const pe = process.env;
     const gamessurl = pe.REACT_APP_SERVICE_URL + pe.REACT_APP_ALL_GAMES_URL;
@@ -34,6 +36,12 @@ export default function BettingStats({ token, league, season, status }) {
     const [openingbetdetails, setOpeningbetdetails] = useState();
     const [nemesis, setNemesis] = useState();
     const [thrbdetails, setThrbdetails] = useState();
+    //const [hasPermission, setHasPermission] = useState(isPermitted.value);
+
+    //setHasPermission(isPermitted.value);
+
+    // const [canUse, setCanUse] = useState(false);
+    // const [subCode, setSubCode] = useState();
 
     /******************************************/
 
@@ -1053,97 +1061,109 @@ export default function BettingStats({ token, league, season, status }) {
             return value;
     }
 
+    // function isSubscribed(){
+    //     let sum = 0;
+    //     if(subCode){
+    //         [...subCode].forEach(l => {
+    //             sum += l.charCodeAt(0);
+    //         })
+    //     }
+    //     return sum == 304;
+    // }
+
     return (
         <div>
-            <table className='pokertableboard'>
-                <tr>
-                    <td>
-                        {/* <button onClick={getSeasonGameData}>Get Standings</button>  */}
-                        Click on player name for individual results.
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <select onChange={(e) => { setStreet(e.target.value) }}>
-                            <option>Select a Street</option>
-                            <option>PREFLOP</option>
-                            <option>FLOP</option>
-                            <option>TURN</option>
-                            <option>RIVER</option>
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <select onChange={(e) => { setSelbetType(e.target.value) }}>
-                            <option>Select Bet Type</option>
-                            {
-                                BETTYPE.map((m) => {
-                                        return (<option value={m.Name}>{m.Name}</option>)
-                                        })
-                            }
+            <FunctionSubscription>
+                <table className='pokertableboard'>
+                    <tr>
+                        <td>
+                            {/* <button onClick={getSeasonGameData}>Get Standings</button>  */}
+                            Click on player name for individual results.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <select onChange={(e) => { setStreet(e.target.value) }}>
+                                <option>Select a Street</option>
+                                <option>PREFLOP</option>
+                                <option>FLOP</option>
+                                <option>TURN</option>
+                                <option>RIVER</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <select onChange={(e) => { setSelbetType(e.target.value) }}>
+                                <option>Select Bet Type</option>
+                                {
+                                    BETTYPE.map((m) => {
+                                            return (<option value={m.Name}>{m.Name}</option>)
+                                            })
+                                }
 
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        {selbettype  &&
-                            <table>
-                                <tr>
-                                    <td>
-                                        {thrbsumry &&
-                                            <DataTable tbodyData={thrbsumry}
-                                                classes={["text", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric"]}
-                                                rowclasses={["datatablegrey", "datatablewhite"]}
-                                                functions={[setSelectedplayer, , , , , ,]}
-                                            // columns = {["Player", "Pts", "Place", "Back", "Gold", "Silver", "Bronze"]}
-                                            />
-                                        }
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td align='top'>
-                                        {selthrbdetails &&
-                                            <GroupedTable columns={mycolumns1} data={selthrbdetails} />
-                                        }
-                                        {/* <ReactTable columns={mycolumns} data={selthrbdetails} /> */}
-                                        {/* 
-                                        <DataTable tbodyData={selthrbdetails}
-                                            classes={["text", "text", "numeric", "numeric", "numeric", "numeric"]}
-                                            rowclasses={["datatablegrey", "datatablewhite"]}
-                                            //functions={[setSelectedgame, , , ,]}
-                                        /> 
-                                    */}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td align='top'>
-                                        {selnemesis &&
-                                            <DataTable tbodyData={selnemesis}
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            {selbettype  &&
+                                <table>
+                                    <tr>
+                                        <td>
+                                            {thrbsumry &&
+                                                <DataTable tbodyData={thrbsumry}
+                                                    classes={["text", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric"]}
+                                                    rowclasses={["datatablegrey", "datatablewhite"]}
+                                                    functions={[setSelectedplayer, , , , , ,]}
+                                                // columns = {["Player", "Pts", "Place", "Back", "Gold", "Silver", "Bronze"]}
+                                                />
+                                            }
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td align='top'>
+                                            {selthrbdetails &&
+                                                <GroupedTable columns={mycolumns1} data={selthrbdetails} />
+                                            }
+                                            {/* <ReactTable columns={mycolumns} data={selthrbdetails} /> */}
+                                            {/* 
+                                            <DataTable tbodyData={selthrbdetails}
                                                 classes={["text", "text", "numeric", "numeric", "numeric", "numeric"]}
                                                 rowclasses={["datatablegrey", "datatablewhite"]}
-                                                functions={[setSelectedgame, , , ,]}
-                                            />
-                                        }
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        {selectedgamedetails &&
-                                            <DataTable tbodyData={selectedgamedetails}
-                                                classes={["text", "numeric", "numeric", "numeric", "numeric"]}
-                                                rowclasses={["datatablegrey", "datatablewhite"]}
-                                                functions={[, , , ,]}
-                                            />
-                                        }
-                                    </td>
-                                </tr>
-                            </table>
-                        }
-                    </td>
-                </tr>
-            </table>
+                                                //functions={[setSelectedgame, , , ,]}
+                                            /> 
+                                        */}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td align='top'>
+                                            {selnemesis &&
+                                                <DataTable tbodyData={selnemesis}
+                                                    classes={["text", "text", "numeric", "numeric", "numeric", "numeric"]}
+                                                    rowclasses={["datatablegrey", "datatablewhite"]}
+                                                    functions={[setSelectedgame, , , ,]}
+                                                />
+                                            }
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            {selectedgamedetails &&
+                                                <DataTable tbodyData={selectedgamedetails}
+                                                    classes={["text", "numeric", "numeric", "numeric", "numeric"]}
+                                                    rowclasses={["datatablegrey", "datatablewhite"]}
+                                                    functions={[, , , ,]}
+                                                />
+                                            }
+                                        </td>
+                                    </tr>
+                                </table>
+                            }
+                        </td>
+                    </tr>
+                </table>
+            </FunctionSubscription>
             <p />
             {error &&
                 <div>Error: {error}</div>

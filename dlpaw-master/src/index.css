@@ -724,7 +724,7 @@ img.check{
 /* The container <div> - needed to position the dropdown content */
 .dropdown {
   position: relative;
-  display: inline-block;
+  /* display: inline-block; */
 }
 /* Dropdown Content (Hidden by Default) */
 .dropdown-content {
@@ -740,14 +740,14 @@ img.check{
   color: black;
   padding: 12px 16px;
   text-decoration: none;
-  display: block;
+  /* display: block; */
 }
 /* Change color of dropdown links on hover */
 .dropdown-content a:hover {background-color: #f1f1f1
 }
 /* Show the dropdown menu on hover */
 .dropdown:hover .dropdown-content {
-  display: block;
+  /* display: block; */
 }
 /* Change the background color of the dropdown button when the dropdown content is shown */
 .dropdown:hover .dropbtn {
@@ -883,21 +883,31 @@ div.divider{
 }
 
 
+
+
+
+
+
+
+
+
+/* TREE VIEW  */
+
 .basic.tree {
-  list-style: none;
+  list-style:none;
   margin: 0;
-  padding: 20px;
+  padding: 2px;
 }
 .basic .tree-node,
 .basic .tree-node-group {
   list-style: none;
-  margin: 0;
+  margin: 2px;
   padding: 0;
 }
 
 .basic .tree-branch-wrapper,
 .basic .tree-node__leaf {
-  outline: none;
+  outline: 1px green;
 }
 
 .basic .tree-node--focused {
@@ -905,6 +915,7 @@ div.divider{
   outline-style: auto;
   outline-width: 2px;
   display: block;
+  background-color: lightblue;
 }
 
 .basic .tree-node__branch {
@@ -913,4 +924,8 @@ div.divider{
 
 .basic .tree-node {
   cursor: pointer;
+  color: blue;
+  font-weight: bold;
 }
+
+/* TREE VIEW  */

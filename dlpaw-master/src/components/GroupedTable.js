@@ -49,12 +49,15 @@ export default function GroupedTable({ columns, data }) {
         canNextPage,
         canPreviousPage,
         prepareRow,
+        getGroupByToggleProps,
         setGroupBy,
-        state: { groupBy, expanded },
+        //state: { groupBy, expanded },
     } = useTable(
         {
             columns,
             data,
+            //autoResetExpanded: false,
+            initialState: { pageSize: 20}
         },
         useGroupBy,
         useExpanded,

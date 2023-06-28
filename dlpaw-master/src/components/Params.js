@@ -214,6 +214,7 @@ export default function Params() {
 
     function addToQueue(){
         setProcessingqueue((previous) => {
+            console.log("adding to queue =>",previous.length);
             const queue = [...previous];//previous.slice();
             queue.push({});
             return queue;
@@ -222,6 +223,7 @@ export default function Params() {
 
     function removeFromQueue(){
         setProcessingqueue((previous) => {
+            console.log("removing from queue =>",previous.length);
             const queue = [...previous];//previous.slice();
             queue.pop({});
             return queue;
@@ -532,25 +534,25 @@ export default function Params() {
                             }
                             {screen === SCREEN.BettingStats &&
                                 <div>
-                                    {selectedseason &&
+                                    {/* {selectedseason && */}
                                         <BettingStats
                                             token = {token}
                                             league={league}
                                             season={selectedseason}
                                             status={{addToQueue, removeFromQueue}} />
-                                    }
+                                    {/* } */}
                                 </div>
                             }
                             {screen === SCREEN.SeriesOdds &&
                                 <div>
-                                    {selectedseason &&
+                                    {/* {selectedseason && */}
                                         <SeriesOdds
                                             token = {token}
                                             league={league}
                                             season={selectedseason}
                                             leaguemembers={leaguemembers}
                                             status={{addToQueue, removeFromQueue}} />
-                                    }
+                                    {/* } */}
                                 </div>
                             }
                         </div>
